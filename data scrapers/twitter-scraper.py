@@ -9,6 +9,11 @@ ahmet mert tezcan
 tweet scraper :p
 """
 
+
+#zaman aralıkları bir algortimaya oturtullmalı
+
+#komutanım beni soğuk değil sizin mont sözünüz öldürdü
+
 import time
 import json
 import random
@@ -27,7 +32,7 @@ import os
 from dotenv import load_dotenv
 
 
-
+# istanbul ankara izmir ikçe olarak eklenebilir ya da büyük ilçeler konya ereğli falan
 SEHIRLER = [
     'Adana','Adıyaman','Afyonkarahisar','Ağrı','Amasya','Ankara','Antalya','Artvin','Aydın','Balıkesir',
     'Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli',
