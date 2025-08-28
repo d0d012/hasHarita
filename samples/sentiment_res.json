@@ -1,0 +1,8 @@
+{
+  "id": "tw_001",
+  "sentiment": { "label": "negative", "score": 0.91 },
+  "topics": [
+    { "label": "altyapi", "score": 0.63 },
+    { "label": "yardim", "score": 0.52 }
+  ]
+}
