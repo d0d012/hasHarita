@@ -1,0 +1,6 @@
+{
+  "model_name": "savasy/bert-base-turkish-sentiment-cased",
+  "thresholds": { "low": 0.45, "high": 0.55 },
+  "neutral_policy": "band",
+  "max_length": 256
+}
