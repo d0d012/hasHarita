@@ -6,6 +6,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import API from "./pages/API";
+import ApiTest from "./pages/ApiTest";
 import Documentation from "./pages/Documentation";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/api" element={<API />} />
+          <Route path="/api-test" element={<ApiTest />} />
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

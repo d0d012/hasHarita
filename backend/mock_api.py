@@ -308,11 +308,15 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # Next.js dev server
         "http://localhost:3001",  # Alternative port
+        "http://localhost:8080",  # Vite dev server
+        "http://localhost:8081",  # Vite dev server (alternative)
         "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001"
+        "http://127.0.0.1:3001",
+        "http://127.0.0.1:8080",
+        "http://127.0.0.1:8081"
     ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

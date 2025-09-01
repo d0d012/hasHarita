@@ -9,6 +9,24 @@ export interface DisasterAlert {
     lat: number;
     lng: number;
   };
+  // API entegrasyonu için ek alanlar
+  damageScore?: number;
+  sentiment?: {
+    label: 'positive' | 'neutral' | 'negative';
+    score: number;
+  };
+  topics?: Array<{
+    label: string;
+    score: number;
+  }>;
+  visionAnalysis?: {
+    detectedClasses: Array<{
+      name: 'collapsed_building' | 'flooded_area' | 'burned_area';
+      area_px: number;
+      confidence: number;
+    }>;
+    maskUri?: string;
+  };
 }
 
 export interface SustainabilityData {
@@ -24,6 +42,16 @@ export interface SustainabilityData {
     lat: number;
     lng: number;
   };
+  // API entegrasyonu için ek alanlar
+  sentiment?: {
+    label: 'positive' | 'neutral' | 'negative';
+    score: number;
+  };
+  topics?: Array<{
+    label: string;
+    score: number;
+  }>;
+  keywords?: string[];
 }
 
 export interface City {

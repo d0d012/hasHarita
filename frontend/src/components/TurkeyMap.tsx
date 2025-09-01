@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { DisasterAlert, SustainabilityData } from '../types/disaster';
 import turkeyMapImage from '../assets/turkey-map.png';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Minus, 
+  MapPin, 
+  Building2, 
+  AlertTriangle, 
+  BarChart3, 
+  Zap, 
+  Activity,
+  Target,
+  PieChart
+} from 'lucide-react';
+
 
 interface TurkeyMapProps {
   disasters: DisasterAlert[];
   sustainabilityData: SustainabilityData[];
-  monitoringMode: 'disaster' | 'sustainability';
-  onMonitoringModeChange: (mode: 'disaster' | 'sustainability') => void;
+  monitoringMode: 'disaster' | 'sustainability' | 'lightning';
+  onMonitoringModeChange: (mode: 'disaster' | 'sustainability' | 'lightning') => void;
+  onTextAnalysis?: (text: string, coordinates?: { lat: number; lng: number }) => Promise<any>;
 }
 
 // eliminen tek tek yazmaca
@@ -140,9 +158,40 @@ const ACTIVE_REGIONS = [
   'Antalya', 'Adana', 'Mersin', 'Hatay', 'Osmaniye', 'Isparta', 'Burdur'
 ];
 
-const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, monitoringMode, onMonitoringModeChange }) => {
+const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, monitoringMode, onMonitoringModeChange, onTextAnalysis }) => {
   const [regionFilter, setRegionFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
+  // Global click event listener - kart açıkken herhangi bir yere tıklandığında kapat
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      if (selectedCity) {
+        setSelectedCity(null);
+      }
+    };
+
+    // Event listener'ı ekle
+    document.addEventListener('click', handleGlobalClick);
+    
+    // Cleanup function
+    return () => {
+      document.removeEventListener('click', handleGlobalClick);
+    };
+  }, [selectedCity]);
+
+  // Mock lightning data
+  const lightningData = useMemo(() => {
+    const cities = Object.keys(cityCoordinates);
+    return cities.map(city => ({
+      location: city,
+      intensity: Math.floor(Math.random() * 100) + 1,
+      strikes: Math.floor(Math.random() * 50) + 1,
+      lastStrike: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
+      risk: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low'
+    }));
+  }, []);
 
 
 
@@ -164,7 +213,22 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     return acc;
   }, {} as Record<string, SustainabilityData[]>);
 
+  const cityLightningData = lightningData.reduce((acc, data) => {
+    if (!acc[data.location]) {
+      acc[data.location] = [];
+    }
+    acc[data.location].push(data);
+    return acc;
+  }, {} as Record<string, typeof lightningData>);
+
   const getFilteredCities = () => {
+    // In lightning mode, show all cities without filtering
+    if (monitoringMode === 'lightning') {
+      return Object.entries(cityCoordinates).filter(([cityName]) => 
+        ACTIVE_REGIONS.includes(cityName)
+      );
+    }
+    
     return Object.entries(cityCoordinates).filter(([cityName, cityData]) => {
       if (!ACTIVE_REGIONS.includes(cityName)) return false;
       
@@ -175,7 +239,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
         if (monitoringMode === 'disaster') {
           const alerts = cityAlerts[cityName];
           if (!alerts || !alerts.some(alert => alert.type === typeFilter)) return false;
-        } else {
+        } else if (monitoringMode === 'sustainability') {
           const sustainabilityData = citySustainabilityData[cityName];
           if (!sustainabilityData || !sustainabilityData.some(data => data.type === typeFilter)) return false;
         }
@@ -189,69 +253,280 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     const cityData = cityCoordinates[cityName as keyof typeof cityCoordinates];
     if (!cityData) return null;
     
-    // şehir filtreleri
-    if (regionFilter !== 'all' && cityData.region !== regionFilter) return null;
+    // şehir filtreleri (skip in lightning mode)
+    if (monitoringMode !== 'lightning' && regionFilter !== 'all' && cityData.region !== regionFilter) return null;
     
     if (monitoringMode === 'disaster') {
       const alerts = cityAlerts[cityName];
-      if (!alerts || alerts.length === 0) return '#3b82f6'; // Aktif şehirler için mavi nokta (afet yoksa)
+      if (!alerts || alerts.length === 0) return '#2563eb'; // Daha canlı mavi (afet yoksa)
       
       // en yüksek seviye
       const hasCritical = alerts.some(alert => alert.severity === 'critical');
       const hasHigh = alerts.some(alert => alert.severity === 'high');
       const hasMedium = alerts.some(alert => alert.severity === 'medium');
       
-      if (hasCritical) return '#7f1d1d'; // çok kötü
-      if (hasHigh) return '#991b1b';     // kötü
-      if (hasMedium) return '#ea580c';   // orta
-      return '#dc2626';                  // kötü
-    } else {
+      if (hasCritical) return '#dc2626'; // Daha canlı kırmızı (kritik)
+      if (hasHigh) return '#ea580c';     // Turuncu (yüksek)
+      if (hasMedium) return '#f59e0b';   // Sarı (orta)
+      return '#ef4444';                  // Kırmızı (düşük)
+    } else if (monitoringMode === 'sustainability') {
       const sustainabilityData = citySustainabilityData[cityName];
-      if (!sustainabilityData || sustainabilityData.length === 0) return '#3b82f6'; //  şehirler için mavi nokta
+      if (!sustainabilityData || sustainabilityData.length === 0) return '#2563eb'; // Daha canlı mavi
       
       // Get highest status
       const hasExcellent = sustainabilityData.some(data => data.status === 'excellent');
       const hasGood = sustainabilityData.some(data => data.status === 'good');
       const hasFair = sustainabilityData.some(data => data.status === 'fair');
       
-      if (hasExcellent) return '#059669'; // çok iyi
-      if (hasGood) return '#10b981';     // iyi
-      if (hasFair) return '#f59e0b';     // orta
-      return '#dc2626';                  // kötü
+      if (hasExcellent) return '#16a34a'; // Daha canlı yeşil (mükemmel)
+      if (hasGood) return '#22c55e';     // Yeşil (iyi)
+      if (hasFair) return '#eab308';     // Sarı (orta)
+      return '#ef4444';                  // Kırmızı (kötü)
+    } else if (monitoringMode === 'lightning') {
+      const lightningData = cityLightningData[cityName];
+      if (!lightningData || lightningData.length === 0) return '#3b82f6'; // Mavi (veri yok)
+      
+      // Get highest risk
+      const hasHigh = lightningData.some(data => data.risk === 'high');
+      const hasMedium = lightningData.some(data => data.risk === 'medium');
+      
+      if (hasHigh) return '#1e40af'; // Koyu mavi (yüksek risk)
+      if (hasMedium) return '#3b82f6'; // Mavi (orta risk)
+      return '#60a5fa'; // Açık mavi (düşük risk)
     }
+    
+    return null;
   };
 
   const getPointSize = (cityName: string) => {
     const cityData = cityCoordinates[cityName as keyof typeof cityCoordinates];
     if (!cityData) return 0;
     
-    // şehir filtreleri
-    if (regionFilter !== 'all' && cityData.region !== regionFilter) return 0;
+    // şehir filtreleri (skip in lightning mode)
+    if (monitoringMode !== 'lightning' && regionFilter !== 'all' && cityData.region !== regionFilter) return 0;
+    
+    // Büyük şehirler için daha büyük nokta
+    const baseSize = cityData.isGrandCity ? 10 : 8;
     
     if (monitoringMode === 'disaster') {
       const alerts = cityAlerts[cityName];
-      if (!alerts || alerts.length === 0) return 8; // afet yoksa  mavi nokta
+      if (!alerts || alerts.length === 0) return baseSize; // afet yoksa temel boyut
       
       const hasCritical = alerts.some(alert => alert.severity === 'critical');
       const hasHigh = alerts.some(alert => alert.severity === 'high');
+      const hasMedium = alerts.some(alert => alert.severity === 'medium');
       
-      if (hasCritical) return 16;
-      if (hasHigh) return 12;
-      return 8;
-    } else {
+      if (hasCritical) return baseSize + 8; // Kritik için en büyük
+      if (hasHigh) return baseSize + 5;     // Yüksek için orta
+      if (hasMedium) return baseSize + 2;   // Orta için küçük artış
+      return baseSize;                      // Düşük için temel boyut
+    } else if (monitoringMode === 'sustainability') {
       const sustainabilityData = citySustainabilityData[cityName];
-      if (!sustainabilityData || sustainabilityData.length === 0) return 8; // veri yoksa küçük mavi nokta
+      if (!sustainabilityData || sustainabilityData.length === 0) return baseSize; // veri yoksa temel boyut
       
       const hasExcellent = sustainabilityData.some(data => data.status === 'excellent');
       const hasGood = sustainabilityData.some(data => data.status === 'good');
+      const hasFair = sustainabilityData.some(data => data.status === 'fair');
       
-      if (hasExcellent) return 16;
-      if (hasGood) return 12;
-      return 8;
+      if (hasExcellent) return baseSize + 8; // Mükemmel için en büyük
+      if (hasGood) return baseSize + 5;      // İyi için orta
+      if (hasFair) return baseSize + 2;      // Orta için küçük artış
+      return baseSize;                       // Kötü için temel boyut
+    } else if (monitoringMode === 'lightning') {
+      const lightningData = cityLightningData[cityName];
+      if (!lightningData || lightningData.length === 0) return baseSize; // veri yoksa temel boyut
+      
+      const hasHigh = lightningData.some(data => data.risk === 'high');
+      const hasMedium = lightningData.some(data => data.risk === 'medium');
+      
+      if (hasHigh) return baseSize + 8; // Yüksek risk için en büyük
+      if (hasMedium) return baseSize + 4; // Orta risk için orta
+      return baseSize; // Düşük risk için temel boyut
     }
+    
+    return baseSize;
   };
 
   const filteredCities = getFilteredCities();
+
+  // Timeline verileri
+  const getTimelineData = () => {
+    const now = new Date();
+    const periods = [
+      { period: 'Son 24 Saat', days: 1 },
+      { period: 'Son 7 Gün', days: 7 },
+      { period: 'Son 30 Gün', days: 30 },
+      { period: 'Son 3 Ay', days: 90 }
+    ];
+
+    return periods.map(period => {
+      const mockValue = Math.floor(Math.random() * 50) + 10;
+      const trend = Math.random() > 0.5 ? 'up' : Math.random() > 0.3 ? 'down' : 'stable';
+      const percentage = Math.floor(Math.random() * 100);
+      
+      return {
+        period: period.period,
+        value: monitoringMode === 'disaster' 
+          ? `${mockValue} Uyarı` 
+          : monitoringMode === 'sustainability'
+          ? `${mockValue} Puan`
+          : `${mockValue} Yıldırım`,
+        trend,
+        percentage,
+        description: monitoringMode === 'disaster' 
+          ? `${mockValue} yeni afet uyarısı tespit edildi`
+          : monitoringMode === 'sustainability'
+          ? `Sürdürülebilirlik skoru ${mockValue} puana ulaştı`
+          : `${mockValue} yıldırım aktivitesi kaydedildi`
+      };
+    });
+  };
+
+  // Bölge karşılaştırma verileri
+  const getRegionComparisonData = () => {
+    const regions = ['Marmara', 'Ege', 'İç Anadolu', 'Akdeniz', 'Karadeniz', 'Güneydoğu Anadolu', 'Doğu Anadolu'];
+    
+    return regions.map(region => {
+      const citiesInRegion = Object.entries(cityCoordinates).filter(([_, data]) => data.region === region);
+      const totalCities = citiesInRegion.length;
+      const activeAlerts = citiesInRegion.reduce((sum, [cityName]) => {
+        if (monitoringMode === 'disaster') {
+          return sum + (cityAlerts[cityName]?.length || 0);
+        } else if (monitoringMode === 'sustainability') {
+          return sum + (citySustainabilityData[cityName]?.length || 0);
+        } else {
+          return sum + (cityLightningData[cityName]?.length || 0);
+        }
+      }, 0);
+      
+      const riskScore = Math.max(0, 100 - (activeAlerts * 10));
+      const status = riskScore > 80 ? 'excellent' : riskScore > 60 ? 'good' : 'poor';
+      
+      return {
+        name: region,
+        totalCities,
+        activeAlerts,
+        riskScore,
+        status,
+        lastUpdate: new Date().toLocaleTimeString('tr-TR')
+      };
+    });
+  };
+
+  // Şehir indeksi verileri
+  const getCityIndexData = () => {
+    const totalCities = Object.keys(cityCoordinates).length;
+    const citiesWithData = Object.keys(
+      monitoringMode === 'disaster' ? cityAlerts : 
+      monitoringMode === 'sustainability' ? citySustainabilityData : 
+      cityLightningData
+    ).length;
+    const totalAlerts = Object.values(
+      monitoringMode === 'disaster' ? cityAlerts : 
+      monitoringMode === 'sustainability' ? citySustainabilityData : 
+      cityLightningData
+    ).flat().length;
+    
+    const avgResponseTime = Math.floor(Math.random() * 120) + 30; // 30-150 dakika
+    const coveragePercentage = Math.floor((citiesWithData / totalCities) * 100);
+    
+    return [
+      {
+        icon: <Building2 className="h-6 w-6" />,
+        name: 'Kapsama Oranı',
+        value: `${coveragePercentage}%`,
+        percentage: coveragePercentage,
+        color: coveragePercentage > 80 ? '#16a34a' : coveragePercentage > 60 ? '#eab308' : '#ef4444',
+        description: `${citiesWithData}/${totalCities} şehir`
+      },
+      {
+        icon: monitoringMode === 'disaster' ? <AlertTriangle className="h-6 w-6" /> : 
+              monitoringMode === 'sustainability' ? <BarChart3 className="h-6 w-6" /> : 
+              <Zap className="h-6 w-6" />,
+        name: monitoringMode === 'disaster' ? 'Toplam Uyarı' : 
+              monitoringMode === 'sustainability' ? 'Toplam Veri' : 'Toplam Yıldırım',
+        value: totalAlerts.toString(),
+        percentage: Math.min(100, (totalAlerts / 50) * 100),
+        color: totalAlerts > 30 ? '#ef4444' : totalAlerts > 15 ? '#eab308' : '#16a34a',
+        description: monitoringMode === 'disaster' ? 'Aktif afet uyarıları' : 
+                     monitoringMode === 'sustainability' ? 'Sürdürülebilirlik verileri' : 
+                     'Yıldırım aktiviteleri'
+      },
+      {
+        icon: <Zap className="h-6 w-6" />,
+        name: 'Ortalama Yanıt',
+        value: `${avgResponseTime}dk`,
+        percentage: Math.max(0, 100 - (avgResponseTime / 2)),
+        color: avgResponseTime < 60 ? '#16a34a' : avgResponseTime < 90 ? '#eab308' : '#ef4444',
+        description: 'Ortalama yanıt süresi'
+      },
+      {
+        icon: <TrendingUp className="h-6 w-6" />,
+        name: 'Trend',
+        value: '+12%',
+        percentage: 75,
+        color: '#16a34a',
+        description: 'Son 30 günlük değişim'
+      }
+    ];
+  };
+
+  // Dağılım analizi verileri
+  const getDistributionData = () => {
+    if (monitoringMode === 'disaster') {
+      const severityCounts = disasters.reduce((acc, disaster) => {
+        acc[disaster.severity] = (acc[disaster.severity] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const total = disasters.length;
+      return [
+        { label: 'Kritik', value: severityCounts.critical || 0, percentage: Math.floor(((severityCounts.critical || 0) / total) * 100), color: '#dc2626' },
+        { label: 'Yüksek', value: severityCounts.high || 0, percentage: Math.floor(((severityCounts.high || 0) / total) * 100), color: '#ea580c' },
+        { label: 'Orta', value: severityCounts.medium || 0, percentage: Math.floor(((severityCounts.medium || 0) / total) * 100), color: '#f59e0b' },
+        { label: 'Düşük', value: severityCounts.low || 0, percentage: Math.floor(((severityCounts.low || 0) / total) * 100), color: '#84cc16' }
+      ];
+    } else {
+      const statusCounts = sustainabilityData.reduce((acc, data) => {
+        acc[data.status] = (acc[data.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const total = sustainabilityData.length;
+      return [
+        { label: 'Mükemmel', value: statusCounts.excellent || 0, percentage: Math.floor(((statusCounts.excellent || 0) / total) * 100), color: '#16a34a' },
+        { label: 'İyi', value: statusCounts.good || 0, percentage: Math.floor(((statusCounts.good || 0) / total) * 100), color: '#22c55e' },
+        { label: 'Orta', value: statusCounts.fair || 0, percentage: Math.floor(((statusCounts.fair || 0) / total) * 100), color: '#eab308' },
+        { label: 'Kötü', value: statusCounts.poor || 0, percentage: Math.floor(((statusCounts.poor || 0) / total) * 100), color: '#ef4444' }
+      ];
+    }
+  };
+
+  // Performans metrikleri
+  const getPerformanceMetrics = () => {
+    return [
+      {
+        name: 'Sistem Kararlılığı',
+        value: '98.5%',
+        percentage: 98.5
+      },
+      {
+        name: 'Veri Güncelliği',
+        value: '95.2%',
+        percentage: 95.2
+      },
+      {
+        name: 'API Yanıt Süresi',
+        value: '245ms',
+        percentage: 85
+      },
+      {
+        name: 'Kullanıcı Memnuniyeti',
+        value: '4.7/5',
+        percentage: 94
+      }
+    ];
+  };
 
   return (
     <div className="w-full h-full bg-accent/20 rounded-lg border border-border p-4">
@@ -259,87 +534,147 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
         
         </div>
 
-            {/* Filtreler */}
-      <div className="flex items-center gap-4 mb-4 p-3 bg-card rounded-lg border border-border">
-        <div className="flex items-center gap-2">
-          <Switch
-            id="monitoring-mode"
-            checked={monitoringMode === 'sustainability'}
-            onCheckedChange={(checked) => {
-              onMonitoringModeChange(checked ? 'sustainability' : 'disaster');
-              setTypeFilter('all'); // tür filtreleri sıfırla switch çalışınca
+            {/* Filtreler - Hidden in Lightning Mode */}
+      {monitoringMode !== 'lightning' && (
+        <div className="flex items-center gap-4 mb-4 p-3 bg-card rounded-lg border border-border">
+          <div className="flex items-center gap-2">
+            <Switch
+              id="monitoring-mode"
+              checked={monitoringMode === 'sustainability'}
+              onCheckedChange={(checked) => {
+                onMonitoringModeChange(checked ? 'sustainability' : 'disaster');
+                setTypeFilter('all'); // tür filtreleri sıfırla switch çalışınca
+              }}
+              className={`${
+                monitoringMode === 'sustainability' 
+                  ? 'data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-green-600' 
+                  : 'data-[state=unchecked]:bg-red-600'
+              }`}
+            />
+            <Label htmlFor="monitoring-mode" className="text-sm font-medium w-32 text-left">
+              {monitoringMode === 'disaster' ? 'Afet' : 'Sürdürülebilirlik'}
+            </Label>
+          </div>
+
+                  <div className="flex items-center gap-2 mx-auto">
+            <Select value={regionFilter} onValueChange={setRegionFilter}>
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder="Tüm Bölgeler" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tüm Bölgeler</SelectItem>
+                <SelectItem value="Marmara">Marmara</SelectItem>
+                <SelectItem value="Ege">Ege</SelectItem>
+                <SelectItem value="İç Anadolu">İç Anadolu</SelectItem>
+                <SelectItem value="Akdeniz">Akdeniz</SelectItem>
+                <SelectItem value="Karadeniz">Karadeniz</SelectItem>
+                <SelectItem value="Güneydoğu Anadolu">Güneydoğu Anadolu</SelectItem>
+                <SelectItem value="Doğu Anadolu">Doğu Anadolu</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder={monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'}</SelectItem>
+                {monitoringMode === 'disaster' ? (
+                  <>
+                    <SelectItem value="earthquake">Deprem</SelectItem>
+                    <SelectItem value="flood">Sel</SelectItem>
+                    <SelectItem value="fire">Yangın</SelectItem>
+                    <SelectItem value="landslide">Heyelan</SelectItem>
+                    <SelectItem value="storm">Fırtına</SelectItem>
+                    <SelectItem value="drought">Kuraklık</SelectItem>
+                    <SelectItem value="avalanche">Çığ</SelectItem>
+                    <SelectItem value="snowstorm">Kar Fırtınası</SelectItem>
+                  </>
+                ) : (
+                  <>
+                    <SelectItem value="renewable">Yenilenebilir Enerji</SelectItem>
+                    <SelectItem value="waste">Atık Yönetimi</SelectItem>
+                    <SelectItem value="water">Su Yönetimi</SelectItem>
+                    <SelectItem value="air">Hava Kalitesi</SelectItem>
+                    <SelectItem value="biodiversity">Biyoçeşitlilik</SelectItem>
+                    <SelectItem value="transport">Sürdürülebilir Ulaşım</SelectItem>
+                  </>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
+                  <div className="flex items-center gap-3">
+          <div className="text-sm text-muted-foreground min-w-[120px] text-right">
+            {filteredCities.length} şehir gösteriliyor
+          </div>
+          <button
+            onClick={() => {
+              onMonitoringModeChange('lightning');
+              setTypeFilter('all');
             }}
-            className={`${
-              monitoringMode === 'sustainability' 
-                ? 'data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-green-600' 
-                : 'data-[state=unchecked]:bg-red-600'
-            }`}
-          />
-          <Label htmlFor="monitoring-mode" className="text-sm font-medium w-32 text-left">
-            {monitoringMode === 'disaster' ? 'Afet' : 'Sürdürülebilirlik'}
-          </Label>
+            className="p-2 rounded-lg border transition-all duration-200 bg-background border-border hover:bg-muted hover:border-blue-300 hover:text-blue-600"
+            title="Yıldırım Modu"
+          >
+            <Zap className="h-4 w-4" />
+          </button>
         </div>
-
-        <div className="flex items-center gap-2 mx-auto">
-          <Select value={regionFilter} onValueChange={setRegionFilter}>
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder="Tüm Bölgeler" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tüm Bölgeler</SelectItem>
-              <SelectItem value="Marmara">Marmara</SelectItem>
-              <SelectItem value="Ege">Ege</SelectItem>
-              <SelectItem value="İç Anadolu">İç Anadolu</SelectItem>
-              <SelectItem value="Akdeniz">Akdeniz</SelectItem>
-              <SelectItem value="Karadeniz">Karadeniz</SelectItem>
-              <SelectItem value="Güneydoğu Anadolu">Güneydoğu Anadolu</SelectItem>
-              <SelectItem value="Doğu Anadolu">Doğu Anadolu</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-32">
-              <SelectValue placeholder={monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'}</SelectItem>
-              {monitoringMode === 'disaster' ? (
-                <>
-                  <SelectItem value="earthquake">Deprem</SelectItem>
-                  <SelectItem value="flood">Sel</SelectItem>
-                  <SelectItem value="fire">Yangın</SelectItem>
-                  <SelectItem value="landslide">Heyelan</SelectItem>
-                  <SelectItem value="storm">Fırtına</SelectItem>
-                  <SelectItem value="drought">Kuraklık</SelectItem>
-                  <SelectItem value="avalanche">Çığ</SelectItem>
-                  <SelectItem value="snowstorm">Kar Fırtınası</SelectItem>
-                </>
-              ) : (
-                <>
-                  <SelectItem value="renewable">Yenilenebilir Enerji</SelectItem>
-                  <SelectItem value="waste">Atık Yönetimi</SelectItem>
-                  <SelectItem value="water">Su Yönetimi</SelectItem>
-                  <SelectItem value="air">Hava Kalitesi</SelectItem>
-                  <SelectItem value="biodiversity">Biyoçeşitlilik</SelectItem>
-                  <SelectItem value="transport">Sürdürülebilir Ulaşım</SelectItem>
-                </>
-              )}
-            </SelectContent>
-          </Select>
         </div>
+      )}
 
-        <div className="text-sm text-muted-foreground min-w-[150px] text-right">
-          {filteredCities.length} şehir gösteriliyor
+      {/* Lightning Mode Header */}
+      {monitoringMode === 'lightning' && (
+        <div className="flex items-center justify-between mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
+              <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">Yıldırım Modu</h3>
+              <p className="text-sm text-blue-700 dark:text-blue-300">Gerçek zamanlı yıldırım aktivitesi</p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              onMonitoringModeChange('disaster');
+              setTypeFilter('all');
+            }}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
+          >
+            <Zap className="h-4 w-4" />
+            Çıkış
+          </button>
         </div>
-      </div>
+      )}
       
-      <div className="relative w-full h-[500px] flex items-center justify-center">
-        <div className="relative max-w-full max-h-full">
+      <div 
+        ref={mapContainerRef}
+        className={`relative w-full h-[500px] flex items-center justify-center ${
+          monitoringMode === 'lightning' ? 'bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200 dark:border-blue-800' : ''
+        }`}
+      >
+        <div 
+          className="relative max-w-full max-h-full"
+          onClick={(e) => {
+            // Harita arka planına tıklandığında seçili şehri kapat
+            if (e.target === e.currentTarget) {
+              setSelectedCity(null);
+            }
+          }}
+        >
           <img 
             src={turkeyMapImage} 
             alt="Türkiye Haritası"
-            className="max-w-full max-h-full object-contain filter drop-shadow-lg"
-            style={{ filter: 'drop-shadow(0 4px 12px hsl(var(--primary) / 0.1))' }}
+            className={`max-w-full max-h-full object-contain filter drop-shadow-lg transition-all duration-500 ${
+              monitoringMode === 'lightning' 
+                ? 'brightness-110 contrast-125 saturate-150 hue-rotate-15' 
+                : ''
+            }`}
+            style={{ 
+              filter: monitoringMode === 'lightning' 
+                ? 'drop-shadow(0 4px 20px rgba(59, 130, 246, 0.3)) brightness(1.1) contrast(1.25) saturate(1.5) hue-rotate(15deg)' 
+                : 'drop-shadow(0 4px 12px hsl(var(--primary) / 0.1))'
+            }}
           />
           
           {/* şehirler için noktalar */}
@@ -353,39 +688,138 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
               return (
                 <div
                   key={cityName}
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+                  className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group
+                             transition-all duration-300 ease-in-out hover:scale-110
+                             ${selectedCity === cityName ? 'z-20' : 'z-10'}`}
                   style={{
                     left: `${coords.x}%`,
                     top: `${coords.y}%`,
                   }}
-                  title={`${cityName} - ${monitoringMode === 'disaster' 
-                    ? `${cityAlerts[cityName]?.length || 0} uyarı` 
-                    : `${citySustainabilityData[cityName]?.length || 0} veri`}`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Global click event'ini engelle
+                    // Eğer aynı şehir seçiliyse kapat, değilse aç
+                    if (selectedCity === cityName) {
+                      setSelectedCity(null);
+                    } else {
+                      setSelectedCity(cityName);
+                    }
+                  }}
+                  title={`${cityName} - ${
+                    monitoringMode === 'disaster' 
+                      ? `${cityAlerts[cityName]?.length || 0} uyarı` 
+                      : monitoringMode === 'sustainability'
+                      ? `${citySustainabilityData[cityName]?.length || 0} veri`
+                      : `${cityLightningData[cityName]?.length || 0} yıldırım`
+                  } (Tıklayın)`}
                 >
-                  {/* uyarı noktası */}
+                  {/* uyarı noktası - tıklanabilir ve seçili durum */}
                   <div
-                    className="rounded-full animate-pulse shadow-lg"
+                    className={`rounded-full shadow-lg transition-all duration-300 ease-in-out
+                               group-hover:shadow-2xl group-hover:animate-none
+                               relative overflow-hidden border-2
+                               ${selectedCity === cityName 
+                                 ? 'border-white shadow-2xl scale-110' 
+                                 : 'border-transparent'}
+                               `}
                     style={{
                       backgroundColor: color,
                       width: `${size}px`,
                       height: `${size}px`,
-                      boxShadow: `0 0 ${size}px ${color}40`
+                      boxShadow: selectedCity === cityName 
+                        ? `0 0 ${size * 2}px ${color}80, 0 0 ${size * 3}px ${color}40`
+                        : `0 0 ${size}px ${color}40`
                     }}
-                  />
-                  
-                  {/* şehir etiketi */}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 
-                                  bg-card text-card-foreground text-xs px-2 py-1 rounded shadow-md
-                                  opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                                  whitespace-nowrap z-10">
-                    {cityName}
-                    <br />
-                    <span className="text-muted-foreground">
-                      {monitoringMode === 'disaster' 
-                        ? `${cityAlerts[cityName]?.length || 0} uyarı`
-                        : `${citySustainabilityData[cityName]?.length || 0} veri`}
-                    </span>
+                  >
+                    {/* Seçili durum için iç halka */}
+                    <div className={`absolute inset-0 rounded-full bg-white/20 
+                                    transition-transform duration-300 ease-out
+                                    ${selectedCity === cityName 
+                                      ? 'scale-100' 
+                                      : 'scale-0 group-hover:scale-100'}`}></div>
+                    
+                    {/* Merkez nokta */}
+                    <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+                                    w-2 h-2 bg-white/80 rounded-full
+                                    transition-transform duration-200 delay-100
+                                    ${selectedCity === cityName 
+                                      ? 'scale-100' 
+                                      : 'scale-0 group-hover:scale-100'}`}></div>
                   </div>
+                  
+                  {/* şehir etiketi - sadece seçili şehir için göster */}
+                  {selectedCity === cityName && (
+                    <div 
+                      className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 
+                                    bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
+                                    text-xs px-3 py-2 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700
+                                    opacity-100 transition-all duration-300 ease-in-out
+                                    whitespace-nowrap z-[9999] min-w-[140px] backdrop-blur-sm
+                                    scale-105 -translate-y-1"
+                    >
+                      <div className="font-semibold text-sm mb-1 text-center border-b border-gray-200 dark:border-gray-600 pb-1">
+                        {cityName}
+                      </div>
+                      <div className="text-center mb-2">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                          ${monitoringMode === 'disaster' 
+                            ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' 
+                            : monitoringMode === 'sustainability'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'}`}>
+                          {monitoringMode === 'disaster' 
+                            ? `${cityAlerts[cityName]?.length || 0} uyarı`
+                            : monitoringMode === 'sustainability'
+                            ? `${citySustainabilityData[cityName]?.length || 0} veri`
+                            : `${cityLightningData[cityName]?.length || 0} yıldırım`}
+                        </span>
+                      </div>
+                      
+                      {/* Detaylı bilgi */}
+                      {monitoringMode === 'disaster' && cityAlerts[cityName] && (
+                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                          {cityAlerts[cityName].slice(0, 2).map((alert, index) => (
+                            <div key={index} className="truncate">
+                              • {alert.type} ({alert.severity})
+                            </div>
+                          ))}
+                          {cityAlerts[cityName].length > 2 && (
+                            <div className="text-gray-500">+{cityAlerts[cityName].length - 2} daha...</div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {monitoringMode === 'sustainability' && citySustainabilityData[cityName] && (
+                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                          {citySustainabilityData[cityName].slice(0, 2).map((data, index) => (
+                            <div key={index} className="truncate">
+                              • {data.type} ({data.status})
+                            </div>
+                          ))}
+                          {citySustainabilityData[cityName].length > 2 && (
+                            <div className="text-gray-500">+{citySustainabilityData[cityName].length - 2} daha...</div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {monitoringMode === 'lightning' && cityLightningData[cityName] && (
+                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                          {cityLightningData[cityName].slice(0, 2).map((data, index) => (
+                            <div key={index} className="truncate">
+                              • Yoğunluk: {data.intensity}% ({data.risk})
+                            </div>
+                          ))}
+                          {cityLightningData[cityName].length > 2 && (
+                            <div className="text-gray-500">+{cityLightningData[cityName].length - 2} daha...</div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {/* Ok işareti */}
+                      <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 
+                                      bg-white dark:bg-gray-800 border-l border-t border-gray-200 dark:border-gray-700 
+                                      rotate-45"></div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -396,9 +830,232 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
       <div className="mt-4 text-center text-sm text-muted-foreground">
         Son güncelleme: {new Date().toLocaleString('tr-TR')}
       </div>
+
+      {/* Yeni Bileşenler - Hidden in Lightning Mode */}
+      {monitoringMode !== 'lightning' && (
+        <div className="mt-6 space-y-6">
+        {/* Timeline Analizi */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5" />
+              Zaman Çizelgesi Analizi
+              <Badge variant="outline">
+                {monitoringMode === 'disaster' ? 'Afet Trendleri' : 
+                 monitoringMode === 'sustainability' ? 'Sürdürülebilirlik Trendleri' : 
+                 'Yıldırım Trendleri'}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {getTimelineData().map((item, index) => (
+                <div key={index} className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">{item.period}</span>
+                    <Badge variant={item.trend === 'up' ? 'destructive' : item.trend === 'down' ? 'default' : 'secondary'}>
+                      {item.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : item.trend === 'down' ? <TrendingDown className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
+                    </Badge>
+                  </div>
+                  <div className="text-2xl font-bold mb-1">{item.value}</div>
+                  <div className="text-xs text-muted-foreground">{item.description}</div>
+                  <Progress value={item.percentage} className="mt-2" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bölge Karşılaştırma */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Bölge Karşılaştırma
+              <Badge variant="outline">7 Bölge Analizi</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {getRegionComparisonData().map((region, index) => (
+                <div key={index} className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-semibold">{region.name}</h3>
+                    <Badge variant={region.status === 'excellent' ? 'default' : region.status === 'good' ? 'secondary' : 'destructive'}>
+                      {region.status === 'excellent' ? 'Mükemmel' : region.status === 'good' ? 'İyi' : 'Kötü'}
+                    </Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Toplam Şehir:</span>
+                      <span className="font-medium">{region.totalCities}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Aktif Uyarı:</span>
+                      <span className="font-medium text-red-600">{region.activeAlerts}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Risk Skoru:</span>
+                      <span className="font-medium">{region.riskScore}/100</span>
+                    </div>
+                    <Progress value={region.riskScore} className="h-2" />
+                    <div className="text-xs text-muted-foreground">
+                      Son güncelleme: {region.lastUpdate}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Şehir İndeksi */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              Şehir Durumu İndeksi
+              <Badge variant="outline">{selectedCity || 'Tüm Şehirler'}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {getCityIndexData().map((index, idx) => (
+                <div key={idx} className="relative group">
+                  <div className="p-6 border rounded-xl bg-gradient-to-br from-background to-muted/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    {/* Icon Container */}
+                    <div className="flex items-center justify-center w-12 h-12 rounded-full mb-4 mx-auto" 
+                         style={{ backgroundColor: `${index.color}15` }}>
+                      <div style={{ color: index.color }}>
+                        {index.icon}
+                      </div>
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-sm font-semibold text-center mb-2 text-foreground">
+                      {index.name}
+                    </h3>
+                    
+                    {/* Value */}
+                    <div className="text-center mb-4">
+                      <span className="text-3xl font-bold" style={{ color: index.color }}>
+                        {index.value}
+                      </span>
+                    </div>
+                    
+                    {/* Progress Bar */}
+                    <div className="mb-3">
+                      <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                        <span>0</span>
+                        <span>100</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div 
+                          className="h-2 rounded-full transition-all duration-500 ease-out"
+                          style={{ 
+                            width: `${index.percentage}%`,
+                            backgroundColor: index.color
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    {/* Description */}
+                    <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                      {index.description}
+                    </p>
+                    
+                    {/* Status Badge */}
+                    <div className="absolute top-3 right-3">
+                      <div className={`w-3 h-3 rounded-full ${
+                        index.percentage > 80 ? 'bg-green-500' : 
+                        index.percentage > 60 ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Summary Stats */}
+            <div className="mt-6 p-4 bg-muted/30 rounded-lg border">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-primary">
+                    {getCityIndexData().reduce((sum, item) => sum + item.percentage, 0) / 4}%
+                  </div>
+                  <div className="text-sm text-muted-foreground">Ortalama Performans</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {getCityIndexData().filter(item => item.percentage > 80).length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Mükemmel Durum</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {getCityIndexData().filter(item => item.percentage <= 80 && item.percentage > 60).length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">İyileştirme Gerekli</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Analitik Paneli */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <PieChart className="h-5 w-5" />
+                Dağılım Analizi
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {getDistributionData().map((item, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                      <span className="text-sm">{item.label}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">{item.value}</span>
+                      <span className="text-xs text-muted-foreground">({item.percentage}%)</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                Performans Metrikleri
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {getPerformanceMetrics().map((metric, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>{metric.name}</span>
+                      <span className="font-medium">{metric.value}</span>
+                    </div>
+                    <Progress value={metric.percentage} className="h-2" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      )}
     </div>
   );
 };
 
-export default TurkeyMap;
-//ayetel kürsü
+export default TurkeyMap;//ayetel kürsü
