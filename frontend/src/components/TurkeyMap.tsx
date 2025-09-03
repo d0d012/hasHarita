@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -18,7 +20,9 @@ import {
   Zap, 
   Activity,
   Target,
-  PieChart
+  PieChart,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 
@@ -163,6 +167,26 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Analiz sekmelerinin açık/kapalı durumları - varsayılan olarak kapalı
+  const [expandedSections, setExpandedSections] = useState({
+    timeline: false,
+    regionComparison: false,
+    cityIndex: false,
+    analytics: false,
+    // Yıldırım modu için analizler
+    lightningTimeline: false,
+    lightningIntensity: false,
+    lightningAnalytics: false
+  });
+
+  // Toggle fonksiyonu
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   // Global click event listener - kart açıkken herhangi bir yere tıklandığında kapat
   useEffect(() => {
@@ -528,6 +552,78 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     ];
   };
 
+  // Yıldırım Timeline verileri
+  const getLightningTimelineData = () => {
+    const now = new Date();
+    const periods = [
+      { period: 'Son 1 Saat', hours: 1 },
+      { period: 'Son 6 Saat', hours: 6 },
+      { period: 'Son 24 Saat', hours: 24 },
+      { period: 'Son 7 Gün', hours: 168 }
+    ];
+
+    return periods.map(period => {
+      const mockValue = Math.floor(Math.random() * 200) + 50;
+      const trend = Math.random() > 0.5 ? 'up' : Math.random() > 0.3 ? 'down' : 'stable';
+      const percentage = Math.floor(Math.random() * 100);
+      
+      return {
+        period: period.period,
+        value: `${mockValue} Yıldırım`,
+        trend,
+        percentage,
+        description: `${mockValue} yıldırım aktivitesi kaydedildi`
+      };
+    });
+  };
+
+  // Yıldırım Yoğunluk Analizi
+  const getLightningIntensityData = () => {
+    const intensityLevels = ['Düşük', 'Orta', 'Yüksek', 'Çok Yüksek'];
+    const colors = ['#60a5fa', '#3b82f6', '#1e40af', '#1e3a8a'];
+    
+    return intensityLevels.map((level, index) => {
+      const value = Math.floor(Math.random() * 50) + 10;
+      const total = intensityLevels.reduce((sum, _, i) => sum + (Math.floor(Math.random() * 50) + 10), 0);
+      const percentage = Math.floor((value / total) * 100);
+      
+      return {
+        label: level,
+        value,
+        percentage,
+        color: colors[index]
+      };
+    });
+  };
+
+
+
+  // Yıldırım Performans Metrikleri
+  const getLightningPerformanceMetrics = () => {
+    return [
+      {
+        name: 'Tespit Doğruluğu',
+        value: '96.8%',
+        percentage: 96.8
+      },
+      {
+        name: 'Gerçek Zamanlı Veri',
+        value: '99.1%',
+        percentage: 99.1
+      },
+      {
+        name: 'Ortalama Tespit Süresi',
+        value: '2.3s',
+        percentage: 88
+      },
+      {
+        name: 'Sistem Uptime',
+        value: '99.9%',
+        percentage: 99.9
+      }
+    ];
+  };
+
   return (
     <div className="w-full h-full bg-accent/20 rounded-lg border border-border p-4">
               <div className="flex items-center justify-between mb-4">
@@ -536,120 +632,168 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
 
             {/* Filtreler - Hidden in Lightning Mode */}
       {monitoringMode !== 'lightning' && (
-        <div className="flex items-center gap-4 mb-4 p-3 bg-card rounded-lg border border-border">
-          <div className="flex items-center gap-2">
-            <Switch
-              id="monitoring-mode"
-              checked={monitoringMode === 'sustainability'}
-              onCheckedChange={(checked) => {
-                onMonitoringModeChange(checked ? 'sustainability' : 'disaster');
-                setTypeFilter('all'); // tür filtreleri sıfırla switch çalışınca
-              }}
-              className={`${
-                monitoringMode === 'sustainability' 
-                  ? 'data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-green-600' 
-                  : 'data-[state=unchecked]:bg-red-600'
-              }`}
-            />
-            <Label htmlFor="monitoring-mode" className="text-sm font-medium w-32 text-left">
-              {monitoringMode === 'disaster' ? 'Afet' : 'Sürdürülebilirlik'}
-            </Label>
-          </div>
+        <div className="mb-4 p-3 bg-card rounded-lg border border-border">
+          {/* Mobil için dikey düzen, desktop için yatay düzen */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+            
+            {/* Mod Switch - Her zaman üstte */}
+            <div className="flex items-center justify-between lg:justify-start gap-3">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="monitoring-mode"
+                  checked={monitoringMode === 'sustainability'}
+                  onCheckedChange={(checked) => {
+                    onMonitoringModeChange(checked ? 'sustainability' : 'disaster');
+                    setTypeFilter('all');
+                  }}
+                  className={`${
+                    monitoringMode === 'sustainability' 
+                      ? 'data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-green-600' 
+                      : 'data-[state=unchecked]:bg-red-600'
+                  }`}
+                />
+                <Label htmlFor="monitoring-mode" className="text-sm font-medium">
+                  {monitoringMode === 'disaster' ? 'Afet Modu' : 'Sürdürülebilirlik Modu'}
+                </Label>
+              </div>
+              
+              {/* Yıldırım modu butonu - mobilde sağda */}
+              <button
+                onClick={() => {
+                  onMonitoringModeChange('lightning');
+                  setTypeFilter('all');
+                }}
+                className="p-2 rounded-lg border transition-all duration-200 bg-background border-border hover:bg-muted hover:border-blue-300 hover:text-blue-600 lg:hidden"
+                title="Yıldırım Modu"
+              >
+                <Zap className="h-4 w-4" />
+              </button>
+            </div>
 
-                  <div className="flex items-center gap-2 mx-auto">
-            <Select value={regionFilter} onValueChange={setRegionFilter}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder="Tüm Bölgeler" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tüm Bölgeler</SelectItem>
-                <SelectItem value="Marmara">Marmara</SelectItem>
-                <SelectItem value="Ege">Ege</SelectItem>
-                <SelectItem value="İç Anadolu">İç Anadolu</SelectItem>
-                <SelectItem value="Akdeniz">Akdeniz</SelectItem>
-                <SelectItem value="Karadeniz">Karadeniz</SelectItem>
-                <SelectItem value="Güneydoğu Anadolu">Güneydoğu Anadolu</SelectItem>
-                <SelectItem value="Doğu Anadolu">Doğu Anadolu</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Filtreler - Mobilde dikey, desktop'ta yatay */}
+            <div className="flex flex-col sm:flex-row gap-3 lg:flex-1 lg:justify-center">
+              <div className="flex-1">
+                <Select value={regionFilter} onValueChange={setRegionFilter}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Tüm Bölgeler" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tüm Bölgeler</SelectItem>
+                    <SelectItem value="Marmara">Marmara</SelectItem>
+                    <SelectItem value="Ege">Ege</SelectItem>
+                    <SelectItem value="İç Anadolu">İç Anadolu</SelectItem>
+                    <SelectItem value="Akdeniz">Akdeniz</SelectItem>
+                    <SelectItem value="Karadeniz">Karadeniz</SelectItem>
+                    <SelectItem value="Güneydoğu Anadolu">Güneydoğu Anadolu</SelectItem>
+                    <SelectItem value="Doğu Anadolu">Doğu Anadolu</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-32">
-                <SelectValue placeholder={monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'}</SelectItem>
-                {monitoringMode === 'disaster' ? (
-                  <>
-                    <SelectItem value="earthquake">Deprem</SelectItem>
-                    <SelectItem value="flood">Sel</SelectItem>
-                    <SelectItem value="fire">Yangın</SelectItem>
-                    <SelectItem value="landslide">Heyelan</SelectItem>
-                    <SelectItem value="storm">Fırtına</SelectItem>
-                    <SelectItem value="drought">Kuraklık</SelectItem>
-                    <SelectItem value="avalanche">Çığ</SelectItem>
-                    <SelectItem value="snowstorm">Kar Fırtınası</SelectItem>
-                  </>
-                ) : (
-                  <>
-                    <SelectItem value="renewable">Yenilenebilir Enerji</SelectItem>
-                    <SelectItem value="waste">Atık Yönetimi</SelectItem>
-                    <SelectItem value="water">Su Yönetimi</SelectItem>
-                    <SelectItem value="air">Hava Kalitesi</SelectItem>
-                    <SelectItem value="biodiversity">Biyoçeşitlilik</SelectItem>
-                    <SelectItem value="transport">Sürdürülebilir Ulaşım</SelectItem>
-                  </>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
+              <div className="flex-1">
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{monitoringMode === 'disaster' ? 'Tüm Afetler' : 'Tüm Türler'}</SelectItem>
+                    {monitoringMode === 'disaster' ? (
+                      <>
+                        <SelectItem value="earthquake">Deprem</SelectItem>
+                        <SelectItem value="flood">Sel</SelectItem>
+                        <SelectItem value="fire">Yangın</SelectItem>
+                        <SelectItem value="landslide">Heyelan</SelectItem>
+                        <SelectItem value="storm">Fırtına</SelectItem>
+                        <SelectItem value="drought">Kuraklık</SelectItem>
+                        <SelectItem value="avalanche">Çığ</SelectItem>
+                        <SelectItem value="snowstorm">Kar Fırtınası</SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <SelectItem value="renewable">Yenilenebilir Enerji</SelectItem>
+                        <SelectItem value="waste">Atık Yönetimi</SelectItem>
+                        <SelectItem value="water">Su Yönetimi</SelectItem>
+                        <SelectItem value="air">Hava Kalitesi</SelectItem>
+                        <SelectItem value="biodiversity">Biyoçeşitlilik</SelectItem>
+                        <SelectItem value="transport">Sürdürülebilir Ulaşım</SelectItem>
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-                  <div className="flex items-center gap-3">
-          <div className="text-sm text-muted-foreground min-w-[120px] text-right">
-            {filteredCities.length} şehir gösteriliyor
+            {/* Alt bilgi ve desktop yıldırım butonu */}
+            <div className="flex items-center justify-between lg:justify-end gap-3">
+              <div className="text-sm text-muted-foreground">
+                <span className="hidden sm:inline">{filteredCities.length} şehir gösteriliyor</span>
+                <span className="sm:hidden">{filteredCities.length} şehir</span>
+              </div>
+              
+              {/* Desktop yıldırım modu butonu */}
+              <button
+                onClick={() => {
+                  onMonitoringModeChange('lightning');
+                  setTypeFilter('all');
+                }}
+                className="hidden lg:flex p-2 rounded-lg border transition-all duration-200 bg-background border-border hover:bg-muted hover:border-blue-300 hover:text-blue-600"
+                title="Yıldırım Modu"
+              >
+                <Zap className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => {
-              onMonitoringModeChange('lightning');
-              setTypeFilter('all');
-            }}
-            className="p-2 rounded-lg border transition-all duration-200 bg-background border-border hover:bg-muted hover:border-blue-300 hover:text-blue-600"
-            title="Yıldırım Modu"
-          >
-            <Zap className="h-4 w-4" />
-          </button>
-        </div>
         </div>
       )}
 
-      {/* Lightning Mode Header */}
+      {/* Lightning Mode Header - Aynı yapıda */}
       {monitoringMode === 'lightning' && (
-        <div className="flex items-center justify-between mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
-              <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          {/* Mobil için dikey düzen, desktop için yatay düzen */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+            
+            {/* Mod Switch - Yıldırım modu için */}
+            <div className="flex items-center justify-between lg:justify-start gap-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
+                  <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">Yıldırım Modu</h3>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">Gerçek zamanlı yıldırım aktivitesi</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">Yıldırım Modu</h3>
-              <p className="text-sm text-blue-700 dark:text-blue-300">Gerçek zamanlı yıldırım aktivitesi</p>
+
+            {/* Boş alan - Lightning mode'da filtre yok */}
+            <div className="flex flex-col sm:flex-row gap-3 lg:flex-1 lg:justify-center">
+              {/* Filtreler kaldırıldı - sadece mimari korundu */}
+            </div>
+
+            {/* Alt bilgi ve çıkış butonu */}
+            <div className="flex items-center justify-between lg:justify-end gap-3">
+              {/* Şehir sayısı kaldırıldı - sadece mimari korundu */}
+              
+              {/* Çıkış butonu */}
+              <button
+                onClick={() => {
+                  onMonitoringModeChange('disaster');
+                  setTypeFilter('all');
+                }}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
+                title="Çıkış"
+              >
+                <Zap className="h-4 w-4" />
+                <span className="hidden sm:inline">Çıkış</span>
+              </button>
             </div>
           </div>
-          <button
-            onClick={() => {
-              onMonitoringModeChange('disaster');
-              setTypeFilter('all');
-            }}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
-          >
-            <Zap className="h-4 w-4" />
-            Çıkış
-          </button>
         </div>
       )}
       
       <div 
         ref={mapContainerRef}
-        className={`relative w-full h-[500px] flex items-center justify-center ${
+        className={`relative w-full h-[400px] sm:h-[500px] flex items-center justify-center ${
           monitoringMode === 'lightning' ? 'bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-lg border border-blue-200 dark:border-blue-800' : ''
         }`}
       >
@@ -831,95 +975,154 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
         Son güncelleme: {new Date().toLocaleString('tr-TR')}
       </div>
 
-      {/* Yeni Bileşenler - Hidden in Lightning Mode */}
-      {monitoringMode !== 'lightning' && (
+      {/* Analiz Bileşenleri */}
         <div className="mt-6 space-y-6">
-        {/* Timeline Analizi */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Zaman Çizelgesi Analizi
-              <Badge variant="outline">
-                {monitoringMode === 'disaster' ? 'Afet Trendleri' : 
-                 monitoringMode === 'sustainability' ? 'Sürdürülebilirlik Trendleri' : 
-                 'Yıldırım Trendleri'}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {getTimelineData().map((item, index) => (
-                <div key={index} className="p-4 border rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">{item.period}</span>
-                    <Badge variant={item.trend === 'up' ? 'destructive' : item.trend === 'down' ? 'default' : 'secondary'}>
-                      {item.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : item.trend === 'down' ? <TrendingDown className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
-                    </Badge>
+                {/* Timeline Analizi - Sadece afet ve sürdürülebilirlik modlarında göster */}
+        {monitoringMode !== 'lightning' && (
+          <Collapsible open={expandedSections.timeline} onOpenChange={() => toggleSection('timeline')}>
+            <Card>
+              <CardHeader>
+                <CollapsibleTrigger asChild>
+                  <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 -m-6 p-6 rounded-lg transition-colors">
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="h-5 w-5" />
+                      Zaman Çizelgesi Analizi
+                      <Badge variant="outline">
+                        {monitoringMode === 'disaster' ? 'Afet Trendleri' : 
+                         monitoringMode === 'sustainability' ? 'Sürdürülebilirlik Trendleri' : 
+                         'Yıldırım Trendleri'}
+                      </Badge>
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                    >
+                      {expandedSections.timeline ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
                   </div>
-                  <div className="text-2xl font-bold mb-1">{item.value}</div>
-                  <div className="text-xs text-muted-foreground">{item.description}</div>
-                  <Progress value={item.percentage} className="mt-2" />
+                </CollapsibleTrigger>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {getTimelineData().map((item, index) => (
+                    <div key={index} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">{item.period}</span>
+                        <Badge variant={item.trend === 'up' ? 'destructive' : item.trend === 'down' ? 'default' : 'secondary'}>
+                          {item.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : item.trend === 'down' ? <TrendingDown className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
+                        </Badge>
+                      </div>
+                      <div className="text-2xl font-bold mb-1">{item.value}</div>
+                      <div className="text-xs text-muted-foreground">{item.description}</div>
+                      <Progress value={item.percentage} className="mt-2" />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        )}
 
-        {/* Bölge Karşılaştırma */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
-              Bölge Karşılaştırma
-              <Badge variant="outline">7 Bölge Analizi</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {getRegionComparisonData().map((region, index) => (
-                <div key={index} className="p-4 border rounded-lg">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-semibold">{region.name}</h3>
-                    <Badge variant={region.status === 'excellent' ? 'default' : region.status === 'good' ? 'secondary' : 'destructive'}>
-                      {region.status === 'excellent' ? 'Mükemmel' : region.status === 'good' ? 'İyi' : 'Kötü'}
-                    </Badge>
+                {/* Bölge Karşılaştırma - Sadece afet ve sürdürülebilirlik modlarında göster */}
+        {monitoringMode !== 'lightning' && (
+          <Collapsible open={expandedSections.regionComparison} onOpenChange={() => toggleSection('regionComparison')}>
+            <Card>
+              <CardHeader>
+                <CollapsibleTrigger asChild>
+                  <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 -m-6 p-6 rounded-lg transition-colors">
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5" />
+                      Bölge Karşılaştırma
+                      <Badge variant="outline">7 Bölge Analizi</Badge>
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                    >
+                      {expandedSections.regionComparison ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Toplam Şehir:</span>
-                      <span className="font-medium">{region.totalCities}</span>
+                </CollapsibleTrigger>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {getRegionComparisonData().map((region, index) => (
+                    <div key={index} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-semibold">{region.name}</h3>
+                        <Badge variant={region.status === 'excellent' ? 'default' : region.status === 'good' ? 'secondary' : 'destructive'}>
+                          {region.status === 'excellent' ? 'Mükemmel' : region.status === 'good' ? 'İyi' : 'Kötü'}
+                        </Badge>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Toplam Şehir:</span>
+                          <span className="font-medium">{region.totalCities}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Aktif Uyarı:</span>
+                          <span className="font-medium text-red-600">{region.activeAlerts}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Risk Skoru:</span>
+                          <span className="font-medium">{region.riskScore}/100</span>
+                        </div>
+                        <Progress value={region.riskScore} className="h-2" />
+                        <div className="text-xs text-muted-foreground">
+                          Son güncelleme: {region.lastUpdate}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Aktif Uyarı:</span>
-                      <span className="font-medium text-red-600">{region.activeAlerts}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Risk Skoru:</span>
-                      <span className="font-medium">{region.riskScore}/100</span>
-                    </div>
-                    <Progress value={region.riskScore} className="h-2" />
-                    <div className="text-xs text-muted-foreground">
-                      Son güncelleme: {region.lastUpdate}
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        )}
 
-        {/* Şehir İndeksi */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Building2 className="h-5 w-5" />
-              Şehir Durumu İndeksi
-              <Badge variant="outline">{selectedCity || 'Tüm Şehirler'}</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Şehir İndeksi - Sadece afet ve sürdürülebilirlik modlarında göster */}
+        {monitoringMode !== 'lightning' && (
+          <Collapsible open={expandedSections.cityIndex} onOpenChange={() => toggleSection('cityIndex')}>
+            <Card>
+              <CardHeader>
+                <CollapsibleTrigger asChild>
+                  <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 -m-6 p-6 rounded-lg transition-colors">
+                    <CardTitle className="flex items-center gap-2">
+                      <Building2 className="h-5 w-5" />
+                      Şehir Durumu İndeksi
+                      <Badge variant="outline">{selectedCity || 'Tüm Şehirler'}</Badge>
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                    >
+                      {expandedSections.cityIndex ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </CollapsibleTrigger>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {getCityIndexData().map((index, idx) => (
                 <div key={idx} className="relative group">
                   <div className="p-6 border rounded-xl bg-gradient-to-br from-background to-muted/20 hover:shadow-lg transition-all duration-300 hover:scale-105">
@@ -979,7 +1182,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
             
             {/* Summary Stats */}
             <div className="mt-6 p-4 bg-muted/30 rounded-lg border">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="text-2xl font-bold text-primary">
                     {getCityIndexData().reduce((sum, item) => sum + item.percentage, 0) / 4}%
@@ -998,62 +1201,245 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
                   </div>
                   <div className="text-sm text-muted-foreground">İyileştirme Gerekli</div>
                 </div>
-              </div>
+                            </div>
             </div>
-          </CardContent>
-        </Card>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        )}
 
-        {/* Analitik Paneli */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PieChart className="h-5 w-5" />
-                Dağılım Analizi
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {getDistributionData().map((item, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                      <span className="text-sm">{item.label}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{item.value}</span>
-                      <span className="text-xs text-muted-foreground">({item.percentage}%)</span>
-                    </div>
+                {/* Analitik Paneli - Sadece afet ve sürdürülebilirlik modlarında göster */}
+        {monitoringMode !== 'lightning' && (
+          <Collapsible open={expandedSections.analytics} onOpenChange={() => toggleSection('analytics')}>
+            <Card>
+              <CardHeader>
+                <CollapsibleTrigger asChild>
+                  <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 -m-6 p-6 rounded-lg transition-colors">
+                    <CardTitle className="flex items-center gap-2">
+                      <PieChart className="h-5 w-5" />
+                      Analitik Paneli
+                      <Badge variant="outline">Detaylı Analiz</Badge>
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                    >
+                      {expandedSections.analytics ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </CollapsibleTrigger>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <PieChart className="h-5 w-5" />
+                        Dağılım Analizi
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                <div className="space-y-4">
+                  {getDistributionData().map((item, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-sm">{item.label}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">{item.value}</span>
+                        <span className="text-xs text-muted-foreground">({item.percentage}%)</span>
+                      </div>
+                    </div>
+                  ))}
+                    </div>
+                    </CardContent>
+                  </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
-                Performans Metrikleri
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {getPerformanceMetrics().map((metric, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>{metric.name}</span>
-                      <span className="font-medium">{metric.value}</span>
-                    </div>
-                    <Progress value={metric.percentage} className="h-2" />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Target className="h-5 w-5" />
+                        Performans Metrikleri
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {getPerformanceMetrics().map((metric, index) => (
+                          <div key={index} className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <span>{metric.name}</span>
+                              <span className="font-medium">{metric.value}</span>
+                            </div>
+                            <Progress value={metric.percentage} className="h-2" />
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
+        )}
+
+        {/* Yıldırım Modu Analizleri */}
+        {monitoringMode === 'lightning' && (
+          <>
+            {/* Yıldırım Timeline Analizi */}
+            <Collapsible open={expandedSections.lightningTimeline} onOpenChange={() => toggleSection('lightningTimeline')}>
+              <Card>
+                <CardHeader>
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 -m-6 p-6 rounded-lg transition-colors">
+                      <CardTitle className="flex items-center gap-2">
+                        <Zap className="h-5 w-5 text-blue-600" />
+                        Yıldırım Timeline Analizi
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          Gerçek Zamanlı Aktivite
+                        </Badge>
+                      </CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                      >
+                        {expandedSections.lightningTimeline ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
       </div>
-      )}
+                  </CollapsibleTrigger>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {getLightningTimelineData().map((item, index) => (
+                        <div key={index} className="p-4 border rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">{item.period}</span>
+                            <Badge variant={item.trend === 'up' ? 'destructive' : item.trend === 'down' ? 'default' : 'secondary'}>
+                              {item.trend === 'up' ? <TrendingUp className="h-3 w-3" /> : item.trend === 'down' ? <TrendingDown className="h-3 w-3" /> : <Minus className="h-3 w-3" />}
+                            </Badge>
+                          </div>
+                          <div className="text-2xl font-bold mb-1 text-blue-700 dark:text-blue-300">{item.value}</div>
+                          <div className="text-xs text-muted-foreground">{item.description}</div>
+                          <Progress value={item.percentage} className="mt-2" />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+
+            {/* Yıldırım Yoğunluk Analizi */}
+            <Collapsible open={expandedSections.lightningIntensity} onOpenChange={() => toggleSection('lightningIntensity')}>
+              <Card>
+                <CardHeader>
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 -m-6 p-6 rounded-lg transition-colors">
+                      <CardTitle className="flex items-center gap-2">
+                        <BarChart3 className="h-5 w-5 text-blue-600" />
+                        Yıldırım Yoğunluk Analizi
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          Yoğunluk Seviyeleri
+                        </Badge>
+                      </CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                      >
+                        {expandedSections.lightningIntensity ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </CollapsibleTrigger>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {getLightningIntensityData().map((item, index) => (
+                        <div key={index} className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+                          <div className="flex items-center gap-3">
+                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: item.color }}></div>
+                            <span className="text-sm font-medium">{item.label}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-medium">{item.value} yıldırım</span>
+                            <span className="text-xs text-muted-foreground">({item.percentage}%)</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+
+
+
+            {/* Yıldırım Analitik Paneli */}
+            <Collapsible open={expandedSections.lightningAnalytics} onOpenChange={() => toggleSection('lightningAnalytics')}>
+              <Card>
+                <CardHeader>
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center justify-between cursor-pointer hover:bg-muted/50 -m-6 p-6 rounded-lg transition-colors">
+                      <CardTitle className="flex items-center gap-2">
+                        <PieChart className="h-5 w-5 text-blue-600" />
+                        Yıldırım Analitik Paneli
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          Sistem Performansı
+                        </Badge>
+                      </CardTitle>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                      >
+                        {expandedSections.lightningAnalytics ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </CollapsibleTrigger>
+                </CardHeader>
+                <CollapsibleContent>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {getLightningPerformanceMetrics().map((metric, index) => (
+                        <div key={index} className="space-y-2 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+                          <div className="flex justify-between text-sm">
+                            <span className="font-medium">{metric.name}</span>
+                            <span className="font-bold text-blue-700 dark:text-blue-300">{metric.value}</span>
+                          </div>
+                          <Progress value={metric.percentage} className="h-2" />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+          </>
+        )}
+      </div>
     </div>
   );
 };

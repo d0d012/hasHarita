@@ -12,7 +12,6 @@ tweet scraper :p
 
 #zaman aralıkları bir algortimaya oturtullmalı
 
-#komutanım beni soğuk değil sizin mont sözünüz öldürdü
 
 import time
 import json
@@ -54,13 +53,13 @@ def detect_city_from_text(text: str) -> str | None:
 
     if not text:
         return None
-    # Basit normalize
+    # basit normalize
     candidate = text.strip()
     m = _city_pattern.search(candidate)
     if m:
-        # Orijinal şehir adını büyük/küçük/aksan açısından normalize et
+        # orijinal şehir adını büyük/küçük/aksan açısından normalize et
         found = m.group(1)
-        # Listeden tam eşleşen standard biçimi döndür
+        # listeden tam eşleşen standard biçimi döndür
         for c in SEHIRLER:
             if c.lower() == found.lower():
                 return c
@@ -87,7 +86,7 @@ class SeleniumTwitterScraper:
     
         ]
         
-        # Afet hashtag'leri
+      
         self.disaster_hashtags = [
             '#deprem', '#yangın', '#afet',
 
@@ -139,16 +138,16 @@ class SeleniumTwitterScraper:
             print("--- twitter giriş sayfası açılıyor...")
             print("+++ giriş yaptıktan sonra bu terminal'e dönün ve enter'a basın")
             
-            # Twitter giriş sayfasına git
+            # twitter giriş sayfasına git
             self.driver.get("https://twitter.com/login")
             
-            # Manuel giriş için bekle
+            # manuel giriş için bekle
             input("+++ giriş yaptıktan sonra enter'a bas")
             
-            # Giriş başarılı mı kontrol et
+            # giriş başarılı mı kontrol et
             print("--- giriş durumu kontrol ediliyor")
             
-            # Ana sayfaya git
+            # ana sayfaya git
             self.driver.get("https://twitter.com/home")
             time.sleep(3)
             
@@ -158,7 +157,7 @@ class SeleniumTwitterScraper:
                 return True
             else:
                 print("--- giriş durumu belirsiz, devam ediliyor")
-                self.is_logged_in = True  # Manuel giriş yapıldığı varsayılıyor
+                self.is_logged_in = True  # manuel giriş yapıldığı varsayılıyor
                 return True
                     
         except Exception as e:
@@ -285,13 +284,13 @@ class SeleniumTwitterScraper:
             username = "unknown"
             profile_url = None
             try:
-                # Kullanıcı adı genelde kartta ilk linklerden biri, /status/ içermeyen kullanıcı profiline gider
+                # kullanıcı adı genelde kartta ilk linklerden biri, /status/ içermeyen kullanıcı profiline gider
                 links = tweet_element.find_elements(By.CSS_SELECTOR, 'a[role="link"]')
                 for a in links:
                     href = a.get_attribute('href')
                     if href and re.match(r'^https?://(www\.)?twitter\.com/[^/]+/?$', href):
                         profile_url = href
-                        # Link text'lerinden kullanıcı adını almayı dene
+                        # link text'lerinden kullanıcı adını almayı dene
                         if a.text and a.text.strip():
                             username = a.text.strip()
                         break
@@ -306,7 +305,7 @@ class SeleniumTwitterScraper:
                 pass
             tweet_time = time_element.get_attribute('datetime') if time_element else datetime.now().isoformat()
             
-            # Tweet ID (URL'den çıkar)
+            # tweet ID (URL'den çıkar)
             tweet_id = None
             try:
                 tweet_link = tweet_element.find_element(By.CSS_SELECTOR, 'a[href*="/status/"]')
@@ -382,11 +381,6 @@ class SeleniumTwitterScraper:
     def live_monitoring_mode(self, keywords=None, interval_seconds=30, max_tweets_per_search=20):
         """
         canlı izleme modu - belirli aralıklarla arama yapar
-        
-        Args:
-            keywords (list): izlenecek anahtar kelimeler
-            interval_seconds (int): arama aralığı (saniye)
-            max_tweets_per_search (int): her aramada çekilecek tweet sayısı
         """
         if not keywords:
             keywords = self.disaster_keywords[:5] 

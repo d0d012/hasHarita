@@ -11,7 +11,7 @@ reddit scraper :f
 
 #reddit scaper twitter'da tespit edilen trendleri, veri desteği sağlamak için kullanılabilir.
 
-#r/depremanlik yanında şüpheli şehirlerin subredditleri hatta ve hatta yüksek trendlerde r/turkey, r/vlandiya, r/kgbtr scraper'ları da olabilir.
+#r/depremanlik yanında şüpheli şehirlerin subredditleri hatta ve hatta yüksek trendlerde r/turkey, r/vlandiya scraper'ları da olabilir.
 
 import requests
 import json
@@ -124,7 +124,7 @@ class RedditScraper:
             'afet', 'disaster', 'emergency', 'acil',
             'kaza', 'accident', 'felaket', 'catastrophe',
             'tsunami', 'volkan', 'volcano', 'yangın', 'fire',
-            'sel', 'flood', 'heyelan', 'landslide', 'çığ', 'avalanche' #düzenleriz
+            'sel', 'flood', 'heyelan', 'landslide', 'çığ', 'avalanche' #düzenlenecek
         ]
         
         for keyword in disaster_keywords:
@@ -134,7 +134,7 @@ class RedditScraper:
      
         disaster_hashtags = [
             '#deprem', '#earthquake', '#afet', '#disaster',
-            '#acil', '#emergency', '#kaza', '#accident' #düzenleriz
+            '#acil', '#emergency', '#kaza', '#accident' #düzenlenecek
         ]
         
         for hashtag in disaster_hashtags:

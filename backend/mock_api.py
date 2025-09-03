@@ -1,14 +1,8 @@
 """
-HasHarita Mock API
+hasHarita Mock API
 
-bunu okuyan tosun okuyana kosun
-
-lan
 ==================
-HasHarita karar destek sistemi için bir Mock API serveridir. aksini iddia edenin
-Provides schema-compliant dummy responses for all endpoints during development.  ( aynen aynen)
-
-Run with: uvicorn mock_api:app --reload
+hasHarita karar destek sistemi için bir Mock API serveridir.
 """
 
 import asyncio
@@ -24,9 +18,7 @@ from pydantic import BaseModel, Field, field_validator
 import uvicorn
 
 
-# ==============================================================================
-# Pydantic Models (aligned with Data Contracts)
-# ==============================================================================
+
 
 class GeoPoint(BaseModel):
     """WGS84'e uygun coğrafi koordinatlar """
@@ -41,7 +33,7 @@ class Sentiment(BaseModel):
 
 
 class TopicScore(BaseModel):
-    """Topic detection sonucu ve confidence score'u          turkce konus lan srfsz"""
+    """Topic detection sonucu ve confidence score'u  """
     label: str = Field(..., min_length=1)
     score: float = Field(..., ge=0, le=1)
 
@@ -64,7 +56,7 @@ class SentimentResponse(BaseModel):
 
 
 class VisionSegmentRequest(BaseModel):
-    """request payload for vision segmentation           suanlık baglasak mı bilemedim"""
+    """request payload for vision segmentation"""
     tile_id: str
     image_uri: str = Field(..., min_length=1)
     bounds: List[float] = Field(..., min_length=4, max_length=4)
@@ -117,7 +109,7 @@ class TopicsRequest(BaseModel):
 
 
 class TopicsResponse(BaseModel):
-    """response from topic extraction      kafamda turkceye cevirmeye usendim """
+    """response from topic extraction"""
     id: str
     topics: List[TopicScore] = Field(..., max_length=10)
     keywords: Optional[List[str]] = Field(default=[], max_length=20)
@@ -146,9 +138,6 @@ class HealthResponse(BaseModel):
     version: str = "1.0.0-mock"
 
 
-# ==============================================================================
-# Mock Data Generatorları
-# ==============================================================================
 
 class MockDataGenerator:
     """tüm endpointler için gerçekçi mock data üretmek mi son defa sevmek mi"""
@@ -227,7 +216,7 @@ class MockDataGenerator:
     def segment_image(tile_id: str, bounds: List[float]) -> VisionSegmentResponse:
         """
         mock image segmentation results
-        TODO: replace with real vision model.        vakit kalırsa
+        TODO: replace with real vision model.        
         """
         # hangi tür afetlerin tespit edildiğine tamamen rastgele karar ver
         classes = []
@@ -290,9 +279,7 @@ class MockDataGenerator:
         )
 
 
-# ==============================================================================
-# FastAPI Application Setup                   OOOOOOOOOOOOOOOOF
-# ==============================================================================
+
 
 app = FastAPI(
     title="HasHarita Mock API",
@@ -302,7 +289,7 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS configuration for local development
+#  configuration for local development
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -320,13 +307,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# initialize mock data generator     taabi efendim
+# initialize mock data generator
 mock_gen = MockDataGenerator()
 
 
-# ==============================================================================
-# Utility Fonksiyonları              babba
-# ==============================================================================
+
 
 async def simulate_processing_delay(min_ms: int = 50, max_ms: int = 200):
     """simulate realistic API response time. dümenden """
@@ -336,8 +321,8 @@ async def simulate_processing_delay(min_ms: int = 50, max_ms: int = 200):
 
 def load_sample_if_exists(filename: str) -> Optional[Dict[str, Any]]:
     """
-   sample/ klasöründen sample data loadlamak için               bugün fal bakmayı öğrendim
-    dosya yoksa None döndürecektir                                        elini tutabilmek için
+   sample/ klasöründen sample data loadlamak için              
+    dosya yoksa None döndürecektir                                      
     """
     sample_path = Path(f"samples/{filename}")
     if sample_path.exists():
@@ -349,9 +334,7 @@ def load_sample_if_exists(filename: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-# ==============================================================================
-# API Endpointleri
-# ==============================================================================
+
 
 @app.get("/health", response_model=HealthResponse, tags=["System"])
 async def health_check():
@@ -367,7 +350,7 @@ async def predict_sentiment(request: SentimentRequest):
     """
     analyze sentiment and extract topics from text
 
-    TODO: replace mock with real transformer model (e.g., BERTurk for Turkish).    neye niyet neye kısmet
+    TODO: replace mock with real transformer model (e.g., BERTurk for Turkish).    
     """
     await simulate_processing_delay(100, 300)
 
@@ -391,8 +374,6 @@ async def predict_sentiment(request: SentimentRequest):
 async def predict_topics(request: TopicsRequest):
     """
     extract topics and keywords from text
-
-    TODO: replace with real topic modeling (LDA/BERT-based)
     """
     await simulate_processing_delay(80, 250)
 
@@ -445,9 +426,7 @@ async def score_damage(request: DamageScoreRequest):
     return response
 
 
-# ==============================================================================
-# Error Handlers
-# ==============================================================================
+
 
 @app.exception_handler(ValueError)
 async def value_error_handler(request, exc):
@@ -467,9 +446,7 @@ async def general_exception_handler(request, exc):
     )
 
 
-# ==============================================================================
-# Startup Events
-# ==============================================================================
+
 
 @app.on_event("startup")
 async def startup_event():
@@ -488,9 +465,7 @@ async def startup_event():
     print("=" * 60)
 
 
-# ==============================================================================
-# Main Entry Point
-# ==============================================================================
+
 
 if __name__ == "__main__":
     # Run with: python mock_api.py

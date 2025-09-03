@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 sürdürülebilir şehirler hackathonu
 
@@ -40,9 +39,6 @@ class LightningDataScraper:
         self.turkey_strike_count = 0
         
     def decode_message(self, data: str) -> str:
-        """
-        JavaScript'teki LZW decode fonksiyonunun Python karşılığı
-        """
         try:
             # decode
             dictionary = {}
@@ -113,7 +109,7 @@ class LightningDataScraper:
                 'latitude': lat,
                 'longitude': lon,
                 'delay': data.get('delay', 0),
-                'mds': data.get('mds', 0),  # Maximum deviation
+                'mds': data.get('mds', 0), 
                 'status': data.get('status', 0),
                 'detectors': []
             }
@@ -147,7 +143,6 @@ class LightningDataScraper:
         """
         şimşeğin Türkiye sınırları içinde olup olmadığını kontrol eder
         """
-        # msaki milliye
         turkey_bounds = {
             'north': 42.0,
             'south': 35.8,
@@ -195,20 +190,20 @@ class LightningDataScraper:
                             if strike_data:
                                 self.strike_count += 1
                                 
-                                # Veriyi kaydet
+                               
                                 self.save_strike_data(strike_data)
                                 
-                                # Türkiye'deki şimşekleri özel olarak logla ve ayrı dosyaya kaydet
+                                # türkiye'deki şimşekleri özel olarak logla ve ayrı dosyaya kaydet
                                 if self.is_in_turkey(strike_data['latitude'], strike_data['longitude']):
                                     self.turkey_strike_count += 1
                                     logger.info(f"🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷🇹🇷 TÜRKİYE'DE ŞİMŞEK! #{self.turkey_strike_count} - "
                                               f"lat: {strike_data['latitude']:.4f}, "
                                               f"lon: {strike_data['longitude']:.4f}, "
                                               f"gecikme: {strike_data['delay']}s")
-                                    # Türkiye'deki şimşekleri ayrı dosyaya kaydet
+                                 
                                     self.save_strike_data(strike_data, "turkey_lightning_strikes.jsonl")
                                 
-                                # Her 100 şimşekte bir özet
+                                # her 100 şimşekte bir özet
                                 if self.strike_count % 100 == 0:
                                     logger.info(f"toplam {self.strike_count} şimşek verisi toplandı")
                         
@@ -279,11 +274,11 @@ async def main():
     try:
         await scraper.start()
     except KeyboardInterrupt:   
-        logger.info("Program sonlandırılıyor...")
+        logger.info("program sonlandırılıyor...")
         scraper.stop()
 
 if __name__ == "__main__":
-    print("🌩️  blitzortung lightning data scraper")
+    print("lightning data scraper")
     print("=" * 50)
     print("websocket: wss://ws1.blitzortung.org/")
     print("veriler lightning_strikes.jsonl dosyasına kaydedilecek")
