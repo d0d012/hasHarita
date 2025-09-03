@@ -1,0 +1,2843 @@
+[
+{
+    "text": "Kadıköy'de elektrik kesintisi var.",
+    "topics": [
+        "altyapı",
+            "elektrik kesintisi"
+    ]
+},
+{
+    "text": "Yoğun yağış nedeniyle trafik felç oldu.",
+    "topics": [
+        "trafik",
+        "yağış"
+    ]
+    },
+    {
+        "text": "Şiddetli yağış sonrası mahallemizde sel oluştu.",
+        "topics": [
+            "sel",
+            "yağış"
+        ]
+    },
+    {
+        "text": "Depremzede ailelere acil yardım malzemesi dağıtılıyor.",
+        "topics": [
+            "yardım",
+            "deprem",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Su kesintisi nedeniyle mahalle sakinleri zor durumda.",
+        "topics": [
+            "su kesintisi",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Fabrika bacalarından çıkan duman çevre kirliliğine neden oluyor.",
+        "topics": [
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Çöp toplama sistemi çalışmıyor, sokaklar atık dolu.",
+        "topics": [
+            "atık/çöp",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Gece yarısı inşaat gürültüsü komşuları rahatsız ediyor.",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kuruldu, enerji tasarrufu sağlanacak.",
+        "topics": [
+            "enerji"
+        ]
+    },
+    {
+        "text": "Şehir parkında yeni ağaçlar dikildi, yeşil alan artırıldı.",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Metro hattı genişletildi, ulaşım kolaylaştı.",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için geçici barınma merkezi açıldı.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi yoğun, sağlık personeli yetersiz.",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul binası yıkılıyor, öğrenciler başka okula taşınıyor.",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Apartman yangınında 3 kişi yaralandı, itfaiye müdahale etti.",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "4.5 büyüklüğünde deprem meydana geldi, hasar tespiti yapılıyor.",
+        "topics": [
+            "deprem"
+        ]
+    },
+    {
+        "text": "Belediye meydanında düzenleme çalışması başladı.",
+        "topics": [
+            "kamusal alan",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Yaşlı vatandaşlara ücretsiz sağlık taraması yapılıyor.",
+        "topics": [
+            "sağlık",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Trafik ışıkları bozuldu, kavşakta kargaşa yaşanıyor.",
+        "topics": [
+            "trafik",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kanalizasyon taştı, sokaklar su altında kaldı.",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturaları çok yüksek, enerji tasarrufu öneriliyor.",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilendi, oyun alanları genişletildi.",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri azaltıldı, ulaşım zorlaştı.",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlandı.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çöktü, hasta kabul edilemiyor.",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul servisi kazası, öğrenciler hastaneye kaldırıldı.",
+        "topics": [
+            "eğitim",
+            "trafik",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını kontrol altına alındı, çevre temizliği yapılıyor.",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edildi, başarılı oldu.",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kütüphane yenilendi, modern okuma salonları eklendi.",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı bakım evi açıldı, sosyal hizmetler genişletildi.",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği alarm seviyesinde, maske takılması öneriliyor.",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma sistemi kuruldu, geri dönüşüm artacak.",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece kulübü gürültüsü komşuları rahatsız ediyor.",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi santrali kuruldu, temiz enerji üretilecek.",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi ziyarete açıldı, doğa eğitimi verilecek.",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu yapıldı, çevre dostu ulaşım teşvik ediliyor.",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut projesi başladı, dar gelirli aileler faydalanacak.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlendi, vatandaşlar bilgilendirildi.",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilendi, araştırma imkanları arttı.",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarıldı, hasar tespiti yapılıyor.",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem simülasyonu yapıldı, vatandaşlar eğitildi.",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye binası yenilendi, hizmet kalitesi artacak.",
+        "topics": [
+            "kamusal alan",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Köprü onarımı nedeniyle trafik tek yönlü olarak düzenlendi.",
+        "topics": [
+            "trafik",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Sağanak yağış sonrası dere taştı, evler su altında kaldı.",
+        "topics": [
+            "sel",
+            "yağış"
+        ]
+    },
+    {
+        "text": "Deprem sonrası arama kurtarma ekipleri çalışıyor.",
+        "topics": [
+            "deprem",
+            "yardım"
+        ]
+    },
+    {
+        "text": "Elektrik direği devrildi, mahalle karanlıkta kaldı.",
+        "topics": [
+            "elektrik kesintisi",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Su arıtma tesisi arızalandı, içme suyu kesildi.",
+        "topics": [
+            "su kesintisi",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Hava kirliliği nedeniyle okullar tatil edildi.",
+        "topics": [
+            "çevre kirliliği",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Çöp konteynerleri taştı, sokaklar pis kokuyor.",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece kulübü müziği komşuları uyutmuyor.",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi santrali kuruldu, temiz enerji üretiliyor.",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Şehir parkında piknik alanları düzenlendi.",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Tramvay hattı genişletildi, ulaşım ağı büyüdü.",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Sosyal konut projesi tamamlandı, aileler taşındı.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi yenilendi, hasta kapasitesi arttı.",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul bahçesine oyun parkı kuruldu.",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangınında 5 daire hasar gördü.",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi aktif hale getirildi.",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Belediye meydanında konser düzenlendi.",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı vatandaşlara evde bakım hizmeti veriliyor.",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Trafik kazası nedeniyle yol kapatıldı.",
+        "topics": [
+            "trafik"
+        ]
+    },
+    {
+        "text": "Kanalizasyon borusu patladı, sokaklar su altında.",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturası çok yüksek, tasarruf öneriliyor.",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk oyun parkı yenilendi, güvenlik önlemleri alındı.",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri artırıldı, ulaşım kolaylaştı.",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci kampı kuruldu, temel ihtiyaçlar karşılanıyor.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi yenilendi, online randevu alınabiliyor.",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul kantini yenilendi, sağlıklı beslenme teşvik ediliyor.",
+        "topics": [
+            "eğitim",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını söndürüldü, çevre temizliği yapılıyor.",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem tatbikatı yapıldı, vatandaşlar bilgilendirildi.",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Kütüphane 24 saat açık hale getirildi.",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Engelli vatandaşlar için özel hizmetler başlatıldı.",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği ölçüm istasyonu kuruldu.",
+        "topics": [
+            "çevre kirliliği",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma merkezi açıldı, geri dönüşüm artacak.",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "İnşaat gürültüsü nedeniyle şikayetler arttı.",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi türbinleri kuruldu, temiz enerji üretiliyor.",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi ziyarete açıldı, doğa eğitimi veriliyor.",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu genişletildi, çevre dostu ulaşım teşvik ediliyor.",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut kurası çekildi, dar gelirli aileler seçildi.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlendi, vatandaşlar aşılandı.",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilendi, araştırma imkanları arttı.",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarıldı, hasar tespiti yapılıyor.",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem simülasyon merkezi açıldı, eğitimler veriliyor.",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye binası yenilendi, hizmet kalitesi artacak.",
+        "topics": [
+            "kamusal alan",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Yoğun kar yağışı nedeniyle okullar tatil edildi.",
+        "topics": [
+            "yağış",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Sel suları çekildi, temizlik çalışması başladı.",
+        "topics": [
+            "sel"
+        ]
+    },
+    {
+        "text": "Depremzede ailelere geçici konut verildi.",
+        "topics": [
+            "deprem",
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Elektrik kesintisi nedeniyle işyerleri kapatıldı.",
+        "topics": [
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Su kesintisi nedeniyle hastane acil duruma geçti.",
+        "topics": [
+            "su kesintisi",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Fabrika atıkları nehri kirletiyor, balık ölümleri arttı.",
+        "topics": [
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Çöp toplama aracı arızalandı, sokaklar pis kaldı.",
+        "topics": [
+            "atık/çöp",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Gece yarısı motosiklet gürültüsü komşuları rahatsız ediyor.",
+        "topics": [
+            "gürültü",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kuruldu, elektrik faturası düştü.",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Şehir parkında yürüyüş yolu yapıldı.",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Metro hattı genişletildi, ulaşım ağı büyüdü.",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için sıcak yemek dağıtılıyor.",
+        "topics": [
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi yoğun, hasta kabul edilemiyor.",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul bahçesine spor sahası kuruldu.",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangınında 2 kişi yaralandı.",
+        "topics": [
+            "yangın",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edildi.",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Belediye meydanında festival düzenlendi.",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı vatandaşlara ücretsiz sağlık taraması yapılıyor.",
+        "topics": [
+            "sağlık",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Trafik ışıkları bozuldu, kavşakta kargaşa yaşanıyor.",
+        "topics": [
+            "trafik",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kanalizasyon taştı, sokaklar su altında kaldı.",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturaları çok yüksek, tasarruf öneriliyor.",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilendi, oyun alanları genişletildi.",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri azaltıldı, ulaşım zorlaştı.",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlandı.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çöktü, hasta kabul edilemiyor.",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul servisi kazası, öğrenciler hastaneye kaldırıldı.",
+        "topics": [
+            "eğitim",
+            "trafik",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını kontrol altına alındı, çevre temizliği yapılıyor.",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edildi, başarılı oldu.",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kütüphane yenilendi, modern okuma salonları eklendi.",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı bakım evi açıldı, sosyal hizmetler genişletildi.",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği alarm seviyesinde, maske takılması öneriliyor.",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma sistemi kuruldu, geri dönüşüm artacak.",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece kulübü gürültüsü komşuları rahatsız ediyor.",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi santrali kuruldu, temiz enerji üretilecek.",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi ziyarete açıldı, doğa eğitimi verilecek.",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu yapıldı, çevre dostu ulaşım teşvik ediliyor.",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut projesi başladı, dar gelirli aileler faydalanacak.",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlendi, vatandaşlar bilgilendirildi.",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilendi, araştırma imkanları arttı.",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarıldı, hasar tespiti yapılıyor.",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem simülasyonu yapıldı, vatandaşlar eğitildi.",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye binası yenilendi, hizmet kalitesi artacak.",
+        "topics": [
+            "kamusal alan",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Yine elektrik kesildi ya, ne kadar sürecek bu sefer? 😤 #elektrik #kesinti",
+        "topics": [
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Trafik felç olmuş, 2 saattir yoldayım. Bu şehirde yaşamak zor 😅",
+        "topics": [
+            "trafik"
+        ]
+    },
+    {
+        "text": "Yağmur yağıyor ama sel olacak gibi, evden çıkmayın arkadaşlar! ⛈️",
+        "topics": [
+            "yağış",
+            "sel"
+        ]
+    },
+    {
+        "text": "Deprem oldu az önce, herkes iyi mi? @belediye acil durum planı var mı?",
+        "topics": [
+            "deprem",
+            "yardım"
+        ]
+    },
+    {
+        "text": "Su kesintisi var, ne zaman gelecek bilen var mı? Susuz kaldık 😰",
+        "topics": [
+            "su kesintisi"
+        ]
+    },
+    {
+        "text": "Hava çok kirli bugün, nefes alamıyorum. Maske takmayı unutmayın! 😷",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp konteynerleri taşmış, kimse toplamıyor. Belediye nerede? 🤢",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece yarısı inşaat gürültüsü, uyuyamıyorum. Şikayet edeceğim! 😡",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kurduk, elektrik faturası düştü. Tavsiye ederim! ☀️",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Parkta yürüyüş yapıyorum, çok güzel hava. Doğa harika 🌳",
+        "topics": [
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Metro hattı açıldı, ulaşım çok kolaylaştı. Teşekkürler belediye! 🚇",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için sıcak yemek dağıtılıyor, çok güzel bir hareket 👏",
+        "topics": [
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi çok yoğun, 5 saat bekledim. Personel yetersiz 😔",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul bahçesine oyun parkı yapılmış, çocuklar çok mutlu 🎠",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangını olmuş, itfaiye müdahale etti. Herkes güvende 🔥",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem tatbikatı yapıldı, çok faydalıydı. Herkes katılmalı 💪",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye meydanında konser var, gidiyorum. Eğlenceli olacak 🎵",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı komşumuz için evde bakım hizmeti başladı, çok memnun 👴",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Trafik kazası olmuş, yol kapatılmış. Alternatif yol var mı? 🚗",
+        "topics": [
+            "trafik"
+        ]
+    },
+    {
+        "text": "Kanalizasyon patlamış, sokaklar su altında. Ne zaman düzelecek? 💧",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturası çok yüksek, tasarruf yapmam lazım. Öneriler? 💡",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilenmiş, güvenlik önlemleri alınmış. Teşekkürler! 🎪",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri artırılmış, ulaşım kolaylaştı. Sonunda! 🚌",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlanmış, güzel bir hareket 🏠",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çökmüş, online randevu alamıyorum. Ne yapacağım? 😤",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul kantini yenilenmiş, sağlıklı yemekler var. Çocuklar sevdi 🍎",
+        "topics": [
+            "eğitim",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını söndürülmüş, çevre temizliği yapılıyor. Helal olsun! 🌲",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem simülasyon merkezi açılmış, eğitimler veriliyor. Gitmek lazım 🏢",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Kütüphane 24 saat açık olmuş, gece de gidebilirim. Harika! 📚",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Engelli vatandaşlar için özel hizmetler başlamış, çok güzel 👨‍🦽",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği ölçüm istasyonu kurulmuş, veriler paylaşılıyor. İyi! 📊",
+        "topics": [
+            "çevre kirliliği",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma merkezi açılmış, geri dönüşüm artacak. Çevre için güzel ♻️",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "İnşaat gürültüsü yüzünden uyuyamıyorum, şikayet edeceğim! 😴",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi türbinleri kurulmuş, temiz enerji üretiliyor. Süper! 💨",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi açılmış, doğa eğitimi veriliyor. Çocuklarla gideceğim 🌺",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu genişletilmiş, çevre dostu ulaşım teşvik ediliyor. Bisiklet alacağım 🚴",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut kurası çekilmiş, dar gelirli aileler seçilmiş. Adil! 🏘️",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlenmiş, vatandaşlar aşılanıyor. Sağlık için önemli 💉",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilenmiş, araştırma imkanları artmış. Öğrenciler şanslı 🧪",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarılmış, hasar tespiti yapılıyor. Allah korusun 🔥",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Yoğun kar yağışı var, okullar tatil edilmiş. Çocuklar sevindi ❄️",
+        "topics": [
+            "yağış",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Sel suları çekilmiş, temizlik çalışması başlamış. Teşekkürler ekipler! 🧹",
+        "topics": [
+            "sel"
+        ]
+    },
+    {
+        "text": "Depremzede ailelere geçici konut verilmiş, güzel bir hareket. Yardımlaşma 👥",
+        "topics": [
+            "deprem",
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Elektrik kesintisi yüzünden işyerleri kapatılmış, ne kadar sürecek? ⚡",
+        "topics": [
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Su kesintisi yüzünden hastane acil duruma geçmiş, ne zaman düzelecek? 🏥",
+        "topics": [
+            "su kesintisi",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Fabrika atıkları nehri kirletiyor, balık ölümleri artmış. Çok üzücü 🐟",
+        "topics": [
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Çöp toplama aracı arızalanmış, sokaklar pis kalmış. Ne zaman gelecek? 🚛",
+        "topics": [
+            "atık/çöp",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Gece yarısı motosiklet gürültüsü, komşuları rahatsız ediyor. Polis çağıracağım! 🏍️",
+        "topics": [
+            "gürültü",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kurulmuş, elektrik faturası düşmüş. Tavsiye ederim! ☀️",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Şehir parkında yürüyüş yolu yapılmış, çok güzel olmuş. Teşekkürler! 🚶",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Metro hattı genişletilmiş, ulaşım ağı büyümüş. Sonunda! 🚇",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için sıcak yemek dağıtılıyor, çok güzel bir hareket. Helal olsun! 🍲",
+        "topics": [
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi çok yoğun, hasta kabul edilemiyor. Ne zaman düzelecek? 😰",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul bahçesine spor sahası kurulmuş, çocuklar çok mutlu. Teşekkürler! ⚽",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangınında 2 kişi yaralanmış, hastaneye kaldırılmış. Allah korusun 🏥",
+        "topics": [
+            "yangın",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edilmiş, başarılı olmuş. Güzel! 📡",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Belediye meydanında festival düzenlenmiş, çok eğlenceli olmuş. Gidiyorum! 🎉",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı vatandaşlara ücretsiz sağlık taraması yapılıyor, çok güzel bir hizmet 👴",
+        "topics": [
+            "sağlık",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Trafik ışıkları bozulmuş, kavşakta kargaşa yaşanıyor. Ne zaman düzelecek? 🚦",
+        "topics": [
+            "trafik",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kanalizasyon taşmış, sokaklar su altında kalmış. Ne zaman düzelecek? 💧",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturaları çok yüksek, tasarruf yapmam lazım. Öneriler var mı? 💡",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilenmiş, oyun alanları genişletilmiş. Çocuklar sevindi! 🎠",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri azaltılmış, ulaşım zorlaşmış. Ne zaman düzelecek? 😤",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlanmış, güzel bir hareket. Yardımlaşma 🏠",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çökmüş, hasta kabul edilemiyor. Ne yapacağım? 😤",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul servisi kazası olmuş, öğrenciler hastaneye kaldırılmış. Allah korusun! 🚌",
+        "topics": [
+            "eğitim",
+            "trafik",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını kontrol altına alınmış, çevre temizliği yapılıyor. Helal olsun! 🌲",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edilmiş, başarılı olmuş. Güzel! 📡",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kütüphane yenilenmiş, modern okuma salonları eklenmiş. Çok güzel olmuş! 📚",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı bakım evi açılmış, sosyal hizmetler genişletilmiş. Teşekkürler! 👴",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği alarm seviyesinde, maske takmayı unutmayın! 😷",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma sistemi kurulmuş, geri dönüşüm artacak. Çevre için güzel! ♻️",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece kulübü gürültüsü komşuları rahatsız ediyor, şikayet edeceğim! 🎵",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi santrali kurulmuş, temiz enerji üretilecek. Süper! 💨",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi ziyarete açılmış, doğa eğitimi verilecek. Çocuklarla gideceğim! 🌺",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu yapılmış, çevre dostu ulaşım teşvik ediliyor. Bisiklet alacağım! 🚴",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut projesi başlamış, dar gelirli aileler faydalanacak. Adil! 🏘️",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlenmiş, vatandaşlar bilgilendirilmiş. Sağlık için önemli! 💉",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilenmiş, araştırma imkanları artmış. Öğrenciler şanslı! 🧪",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarılmış, hasar tespiti yapılıyor. Allah korusun! 🔥",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem simülasyonu yapılmış, vatandaşlar eğitilmiş. Çok faydalı! 💪",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye binası yenilenmiş, hizmet kalitesi artacak. Teşekkürler! 🏢",
+        "topics": [
+            "kamusal alan",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "3 gündür elektrik yok, buzdolabındaki yemekler bozuldu 😭 #elektrik #kesinti #belediye",
+        "topics": [
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Trafikte 3 saat kaldım, işe geç kaldım. Bu şehirde yaşamak imkansız! 😡",
+        "topics": [
+            "trafik"
+        ]
+    },
+    {
+        "text": "Yağmur yağıyor ama sel olacak gibi, evden çıkmayın arkadaşlar! ⛈️ #sel #yağmur",
+        "topics": [
+            "yağış",
+            "sel"
+        ]
+    },
+    {
+        "text": "Deprem oldu az önce, herkes iyi mi? @belediye acil durum planı var mı? #deprem",
+        "topics": [
+            "deprem",
+            "yardım"
+        ]
+    },
+    {
+        "text": "Su kesintisi var, ne zaman gelecek bilen var mı? Susuz kaldık 😰 #su #kesinti",
+        "topics": [
+            "su kesintisi"
+        ]
+    },
+    {
+        "text": "Hava çok kirli bugün, nefes alamıyorum. Maske takmayı unutmayın! 😷 #hava #kirlilik",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp konteynerleri taşmış, kimse toplamıyor. Belediye nerede? 🤢 #çöp #belediye",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece yarısı inşaat gürültüsü, uyuyamıyorum. Şikayet edeceğim! 😡 #gürültü #şikayet",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kurduk, elektrik faturası düştü. Tavsiye ederim! ☀️ #enerji #tasarruf",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Parkta yürüyüş yapıyorum, çok güzel hava. Doğa harika 🌳 #park #doğa",
+        "topics": [
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Metro hattı açıldı, ulaşım çok kolaylaştı. Teşekkürler belediye! 🚇 #metro #ulaşım",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için sıcak yemek dağıtılıyor, çok güzel bir hareket 👏 #yardım #sosyal",
+        "topics": [
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi çok yoğun, 5 saat bekledim. Personel yetersiz 😔 #hastane #sağlık",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul bahçesine oyun parkı yapılmış, çocuklar çok mutlu 🎠 #okul #eğitim",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangını olmuş, itfaiye müdahale etti. Herkes güvende 🔥 #yangın #itfaiye",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem tatbikatı yapıldı, çok faydalıydı. Herkes katılmalı 💪 #deprem #eğitim",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye meydanında konser var, gidiyorum. Eğlenceli olacak 🎵 #konser #meydan",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı komşumuz için evde bakım hizmeti başladı, çok memnun 👴 #bakım #sağlık",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Trafik kazası olmuş, yol kapatılmış. Alternatif yol var mı? 🚗 #trafik #kaza",
+        "topics": [
+            "trafik"
+        ]
+    },
+    {
+        "text": "Kanalizasyon patlamış, sokaklar su altında. Ne zaman düzelecek? 💧 #kanalizasyon #sel",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturası çok yüksek, tasarruf yapmam lazım. Öneriler? 💡 #elektrik #fatura",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilenmiş, güvenlik önlemleri alınmış. Teşekkürler! 🎪 #park #güvenlik",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri artırılmış, ulaşım kolaylaştı. Sonunda! 🚌 #otobüs #ulaşım",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlanmış, güzel bir hareket 🏠 #mülteci #barınma",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çökmüş, online randevu alamıyorum. Ne yapacağım? 😤 #hastane #randevu",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul kantini yenilenmiş, sağlıklı yemekler var. Çocuklar sevdi 🍎 #okul #beslenme",
+        "topics": [
+            "eğitim",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını söndürülmüş, çevre temizliği yapılıyor. Helal olsun! 🌲 #yangın #çevre",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem simülasyon merkezi açılmış, eğitimler veriliyor. Gitmek lazım 🏢 #deprem #eğitim",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Kütüphane 24 saat açık olmuş, gece de gidebilirim. Harika! 📚 #kütüphane #eğitim",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Engelli vatandaşlar için özel hizmetler başlamış, çok güzel 👨‍🦽 #engelli #hizmet",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği ölçüm istasyonu kurulmuş, veriler paylaşılıyor. İyi! 📊 #hava #kirlilik",
+        "topics": [
+            "çevre kirliliği",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma merkezi açılmış, geri dönüşüm artacak. Çevre için güzel ♻️ #çöp #geri dönüşüm",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "İnşaat gürültüsü yüzünden uyuyamıyorum, şikayet edeceğim! 😴 #gürültü #şikayet",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi türbinleri kurulmuş, temiz enerji üretiliyor. Süper! 💨 #rüzgar #enerji",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi açılmış, doğa eğitimi veriliyor. Çocuklarla gideceğim 🌺 #botanik #eğitim",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu genişletilmiş, çevre dostu ulaşım teşvik ediliyor. Bisiklet alacağım 🚴 #bisiklet #ulaşım",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut kurası çekilmiş, dar gelirli aileler seçilmiş. Adil! 🏘️ #konut #sosyal",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlenmiş, vatandaşlar aşılanıyor. Sağlık için önemli 💉 #aşı #sağlık",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilenmiş, araştırma imkanları artmış. Öğrenciler şanslı 🧪 #üniversite #eğitim",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarılmış, hasar tespiti yapılıyor. Allah korusun 🔥 #yangın #kurtarma",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Yoğun kar yağışı var, okullar tatil edilmiş. Çocuklar sevindi ❄️ #kar #okul",
+        "topics": [
+            "yağış",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Sel suları çekilmiş, temizlik çalışması başlamış. Teşekkürler ekipler! 🧹 #sel #temizlik",
+        "topics": [
+            "sel"
+        ]
+    },
+    {
+        "text": "Depremzede ailelere geçici konut verilmiş, güzel bir hareket. Yardımlaşma 👥 #deprem #konut",
+        "topics": [
+            "deprem",
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Elektrik kesintisi yüzünden işyerleri kapatılmış, ne kadar sürecek? ⚡ #elektrik #iş",
+        "topics": [
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Su kesintisi yüzünden hastane acil duruma geçmiş, ne zaman düzelecek? 🏥 #su #hastane",
+        "topics": [
+            "su kesintisi",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Fabrika atıkları nehri kirletiyor, balık ölümleri artmış. Çok üzücü 🐟 #fabrika #kirlilik",
+        "topics": [
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Çöp toplama aracı arızalanmış, sokaklar pis kalmış. Ne zaman gelecek? 🚛 #çöp #arac",
+        "topics": [
+            "atık/çöp",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Gece yarısı motosiklet gürültüsü, komşuları rahatsız ediyor. Polis çağıracağım! 🏍️ #gürültü #polis",
+        "topics": [
+            "gürültü",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kurulmuş, elektrik faturası düşmüş. Tavsiye ederim! ☀️ #güneş #enerji",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Şehir parkında yürüyüş yolu yapılmış, çok güzel olmuş. Teşekkürler! 🚶 #park #yürüyüş",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Metro hattı genişletilmiş, ulaşım ağı büyümüş. Sonunda! 🚇 #metro #genişletme",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için sıcak yemek dağıtılıyor, çok güzel bir hareket. Helal olsun! 🍲 #evsiz #yardım",
+        "topics": [
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi çok yoğun, hasta kabul edilemiyor. Ne zaman düzelecek? 😰 #acil #hastane",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul bahçesine spor sahası kurulmuş, çocuklar çok mutlu. Teşekkürler! ⚽ #okul #spor",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangınında 2 kişi yaralanmış, hastaneye kaldırılmış. Allah korusun 🏥 #yangın #yaralanma",
+        "topics": [
+            "yangın",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edilmiş, başarılı olmuş. Güzel! 📡 #deprem #uyarı",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Belediye meydanında festival düzenlenmiş, çok eğlenceli olmuş. Gidiyorum! 🎉 #festival #meydan",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı vatandaşlara ücretsiz sağlık taraması yapılıyor, çok güzel bir hizmet 👴 #yaşlı #sağlık",
+        "topics": [
+            "sağlık",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Trafik ışıkları bozulmuş, kavşakta kargaşa yaşanıyor. Ne zaman düzelecek? 🚦 #trafik #ışık",
+        "topics": [
+            "trafik",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kanalizasyon taşmış, sokaklar su altında kalmış. Ne zaman düzelecek? 💧 #kanalizasyon #taşma",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturaları çok yüksek, tasarruf yapmam lazım. Öneriler var mı? 💡 #fatura #tasarruf",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilenmiş, oyun alanları genişletilmiş. Çocuklar sevindi! 🎠 #park #yenileme",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri azaltılmış, ulaşım zorlaşmış. Ne zaman düzelecek? 😤 #otobüs #azaltma",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlanmış, güzel bir hareket. Yardımlaşma 🏠 #mülteci #ev",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çökmüş, hasta kabul edilemiyor. Ne yapacağım? 😤 #randevu #sistem",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul servisi kazası olmuş, öğrenciler hastaneye kaldırılmış. Allah korusun! 🚌 #servis #kaza",
+        "topics": [
+            "eğitim",
+            "trafik",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını kontrol altına alınmış, çevre temizliği yapılıyor. Helal olsun! 🌲 #orman #yangın",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edilmiş, başarılı olmuş. Güzel! 📡 #test #başarı",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kütüphane yenilenmiş, modern okuma salonları eklenmiş. Çok güzel olmuş! 📚 #kütüphane #modern",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı bakım evi açılmış, sosyal hizmetler genişletilmiş. Teşekkürler! 👴 #bakım #hizmet",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği alarm seviyesinde, maske takmayı unutmayın! 😷 #alarm #maske",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma sistemi kurulmuş, geri dönüşüm artacak. Çevre için güzel! ♻️ #ayrıştırma #sistem",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece kulübü gürültüsü komşuları rahatsız ediyor, şikayet edeceğim! 🎵 #kulüp #gürültü",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi santrali kurulmuş, temiz enerji üretilecek. Süper! 💨 #santral #temiz",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi ziyarete açılmış, doğa eğitimi verilecek. Çocuklarla gideceğim! 🌺 #botanik #doğa",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu yapılmış, çevre dostu ulaşım teşvik ediliyor. Bisiklet alacağım! 🚴 #bisiklet #çevre",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut projesi başlamış, dar gelirli aileler faydalanacak. Adil! 🏘️ #proje #aile",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlenmiş, vatandaşlar bilgilendirilmiş. Sağlık için önemli! 💉 #kampanya #bilgi",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilenmiş, araştırma imkanları artmış. Öğrenciler şanslı! 🧪 #laboratuvar #araştırma",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarılmış, hasar tespiti yapılıyor. Allah korusun! 🔥 #kurtarma #hasar",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem simülasyonu yapılmış, vatandaşlar eğitilmiş. Çok faydalı! 💪 #simülasyon #eğitim",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye binası yenilenmiş, hizmet kalitesi artacak. Teşekkürler! 🏢 #yenileme #hizmet",
+        "topics": [
+            "kamusal alan",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Elektrik kesintisi 5 saattir devam ediyor, buzdolabındaki yemekler bozulacak 😰 #elektrik #kesinti #buzdolabı",
+        "topics": [
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Trafikte 4 saat kaldım, işe geç kaldım. Bu şehirde yaşamak imkansız! 😡 #trafik #geç #iş",
+        "topics": [
+            "trafik"
+        ]
+    },
+    {
+        "text": "Yağmur yağıyor ama sel olacak gibi, evden çıkmayın arkadaşlar! ⛈️ #sel #yağmur #güvenlik",
+        "topics": [
+            "yağış",
+            "sel"
+        ]
+    },
+    {
+        "text": "Deprem oldu az önce, herkes iyi mi? @belediye acil durum planı var mı? #deprem #acil #güvenlik",
+        "topics": [
+            "deprem",
+            "yardım"
+        ]
+    },
+    {
+        "text": "Su kesintisi var, ne zaman gelecek bilen var mı? Susuz kaldık 😰 #su #kesinti #susuzluk",
+        "topics": [
+            "su kesintisi"
+        ]
+    },
+    {
+        "text": "Hava çok kirli bugün, nefes alamıyorum. Maske takmayı unutmayın! 😷 #hava #kirlilik #maske",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp konteynerleri taşmış, kimse toplamıyor. Belediye nerede? 🤢 #çöp #belediye #pislik",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece yarısı inşaat gürültüsü, uyuyamıyorum. Şikayet edeceğim! 😡 #gürültü #şikayet #uyku",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kurduk, elektrik faturası düştü. Tavsiye ederim! ☀️ #enerji #tasarruf #güneş",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Parkta yürüyüş yapıyorum, çok güzel hava. Doğa harika 🌳 #park #doğa #yürüyüş",
+        "topics": [
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Metro hattı açıldı, ulaşım çok kolaylaştı. Teşekkürler belediye! 🚇 #metro #ulaşım #kolay",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için sıcak yemek dağıtılıyor, çok güzel bir hareket 👏 #yardım #sosyal #yemek",
+        "topics": [
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi çok yoğun, 5 saat bekledim. Personel yetersiz 😔 #hastane #sağlık #bekleme",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul bahçesine oyun parkı yapılmış, çocuklar çok mutlu 🎠 #okul #eğitim #oyun",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangını olmuş, itfaiye müdahale etti. Herkes güvende 🔥 #yangın #itfaiye #güvenlik",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem tatbikatı yapıldı, çok faydalıydı. Herkes katılmalı 💪 #deprem #eğitim #tatbikat",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye meydanında konser var, gidiyorum. Eğlenceli olacak 🎵 #konser #meydan #eğlence",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı komşumuz için evde bakım hizmeti başladı, çok memnun 👴 #bakım #sağlık #yaşlı",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Trafik kazası olmuş, yol kapatılmış. Alternatif yol var mı? 🚗 #trafik #kaza #yol",
+        "topics": [
+            "trafik"
+        ]
+    },
+    {
+        "text": "Kanalizasyon patlamış, sokaklar su altında. Ne zaman düzelecek? 💧 #kanalizasyon #sel #patlama",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturası çok yüksek, tasarruf yapmam lazım. Öneriler? 💡 #elektrik #fatura #tasarruf",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilenmiş, güvenlik önlemleri alınmış. Teşekkürler! 🎪 #park #güvenlik #yenileme",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri artırılmış, ulaşım kolaylaştı. Sonunda! 🚌 #otobüs #ulaşım #artırma",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlanmış, güzel bir hareket 🏠 #mülteci #barınma #ev",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çökmüş, online randevu alamıyorum. Ne yapacağım? 😤 #hastane #randevu #sistem",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul kantini yenilenmiş, sağlıklı yemekler var. Çocuklar sevdi 🍎 #okul #beslenme #sağlık",
+        "topics": [
+            "eğitim",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını söndürülmüş, çevre temizliği yapılıyor. Helal olsun! 🌲 #yangın #çevre #temizlik",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem simülasyon merkezi açılmış, eğitimler veriliyor. Gitmek lazım 🏢 #deprem #eğitim #simülasyon",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Kütüphane 24 saat açık olmuş, gece de gidebilirim. Harika! 📚 #kütüphane #eğitim #24saat",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Engelli vatandaşlar için özel hizmetler başlamış, çok güzel 👨‍🦽 #engelli #hizmet #özel",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği ölçüm istasyonu kurulmuş, veriler paylaşılıyor. İyi! 📊 #hava #kirlilik #ölçüm",
+        "topics": [
+            "çevre kirliliği",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma merkezi açılmış, geri dönüşüm artacak. Çevre için güzel ♻️ #çöp #geri dönüşüm #merkez",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "İnşaat gürültüsü yüzünden uyuyamıyorum, şikayet edeceğim! 😴 #gürültü #şikayet #uyku",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi türbinleri kurulmuş, temiz enerji üretiliyor. Süper! 💨 #rüzgar #enerji #türbin",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi açılmış, doğa eğitimi veriliyor. Çocuklarla gideceğim 🌺 #botanik #eğitim #doğa",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu genişletilmiş, çevre dostu ulaşım teşvik ediliyor. Bisiklet alacağım 🚴 #bisiklet #ulaşım #çevre",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut kurası çekilmiş, dar gelirli aileler seçilmiş. Adil! 🏘️ #konut #sosyal #kura",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlenmiş, vatandaşlar aşılanıyor. Sağlık için önemli 💉 #aşı #sağlık #kampanya",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilenmiş, araştırma imkanları artmış. Öğrenciler şanslı 🧪 #üniversite #eğitim #laboratuvar",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarılmış, hasar tespiti yapılıyor. Allah korusun 🔥 #yangın #kurtarma #hasar",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Yoğun kar yağışı var, okullar tatil edilmiş. Çocuklar sevindi ❄️ #kar #okul #tatil",
+        "topics": [
+            "yağış",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Sel suları çekilmiş, temizlik çalışması başlamış. Teşekkürler ekipler! 🧹 #sel #temizlik #ekip",
+        "topics": [
+            "sel"
+        ]
+    },
+    {
+        "text": "Depremzede ailelere geçici konut verilmiş, güzel bir hareket. Yardımlaşma 👥 #deprem #konut #geçici",
+        "topics": [
+            "deprem",
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Elektrik kesintisi yüzünden işyerleri kapatılmış, ne kadar sürecek? ⚡ #elektrik #iş #kapatma",
+        "topics": [
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Su kesintisi yüzünden hastane acil duruma geçmiş, ne zaman düzelecek? 🏥 #su #hastane #acil",
+        "topics": [
+            "su kesintisi",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Fabrika atıkları nehri kirletiyor, balık ölümleri artmış. Çok üzücü 🐟 #fabrika #kirlilik #nehir",
+        "topics": [
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Çöp toplama aracı arızalanmış, sokaklar pis kalmış. Ne zaman gelecek? 🚛 #çöp #arac #arıza",
+        "topics": [
+            "atık/çöp",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Gece yarısı motosiklet gürültüsü, komşuları rahatsız ediyor. Polis çağıracağım! 🏍️ #gürültü #polis #motosiklet",
+        "topics": [
+            "gürültü",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Güneş enerjisi panelleri kurulmuş, elektrik faturası düşmüş. Tavsiye ederim! ☀️ #güneş #enerji #panel",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Şehir parkında yürüyüş yolu yapılmış, çok güzel olmuş. Teşekkürler! 🚶 #park #yürüyüş #yol",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Metro hattı genişletilmiş, ulaşım ağı büyümüş. Sonunda! 🚇 #metro #genişletme #ağ",
+        "topics": [
+            "ulaşım",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Evsiz vatandaşlar için sıcak yemek dağıtılıyor, çok güzel bir hareket. Helal olsun! 🍲 #evsiz #yardım #yemek",
+        "topics": [
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane acil servisi çok yoğun, hasta kabul edilemiyor. Ne zaman düzelecek? 😰 #acil #hastane #yoğun",
+        "topics": [
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okul bahçesine spor sahası kurulmuş, çocuklar çok mutlu. Teşekkürler! ⚽ #okul #spor #saha",
+        "topics": [
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Apartman yangınında 2 kişi yaralanmış, hastaneye kaldırılmış. Allah korusun 🏥 #yangın #yaralanma #hastane",
+        "topics": [
+            "yangın",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edilmiş, başarılı olmuş. Güzel! 📡 #deprem #uyarı #test",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Belediye meydanında festival düzenlenmiş, çok eğlenceli olmuş. Gidiyorum! 🎉 #festival #meydan #eğlence",
+        "topics": [
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı vatandaşlara ücretsiz sağlık taraması yapılıyor, çok güzel bir hizmet 👴 #yaşlı #sağlık #tarama",
+        "topics": [
+            "sağlık",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Trafik ışıkları bozulmuş, kavşakta kargaşa yaşanıyor. Ne zaman düzelecek? 🚦 #trafik #ışık #kavşak",
+        "topics": [
+            "trafik",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kanalizasyon taşmış, sokaklar su altında kalmış. Ne zaman düzelecek? 💧 #kanalizasyon #taşma #sokak",
+        "topics": [
+            "altyapı",
+            "sel"
+        ]
+    },
+    {
+        "text": "Elektrik faturaları çok yüksek, tasarruf yapmam lazım. Öneriler var mı? 💡 #fatura #tasarruf #öneri",
+        "topics": [
+            "enerji",
+            "elektrik kesintisi"
+        ]
+    },
+    {
+        "text": "Çocuk parkı yenilenmiş, oyun alanları genişletilmiş. Çocuklar sevindi! 🎠 #park #yenileme #oyun",
+        "topics": [
+            "yeşil alan",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Otobüs seferleri azaltılmış, ulaşım zorlaşmış. Ne zaman düzelecek? 😤 #otobüs #azaltma #zorluk",
+        "topics": [
+            "ulaşım",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Mülteci aileler için konteyner evler hazırlanmış, güzel bir hareket. Yardımlaşma 🏠 #mülteci #ev #konteyner",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Hastane randevu sistemi çökmüş, hasta kabul edilemiyor. Ne yapacağım? 😤 #randevu #sistem #çökme",
+        "topics": [
+            "sağlık",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Okul servisi kazası olmuş, öğrenciler hastaneye kaldırılmış. Allah korusun! 🚌 #servis #kaza #öğrenci",
+        "topics": [
+            "eğitim",
+            "trafik",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Orman yangını kontrol altına alınmış, çevre temizliği yapılıyor. Helal olsun! 🌲 #orman #yangın #kontrol",
+        "topics": [
+            "yangın",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Deprem erken uyarı sistemi test edilmiş, başarılı olmuş. Güzel! 📡 #test #başarı #sistem",
+        "topics": [
+            "deprem",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kütüphane yenilenmiş, modern okuma salonları eklenmiş. Çok güzel olmuş! 📚 #kütüphane #modern #salon",
+        "topics": [
+            "eğitim",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Yaşlı bakım evi açılmış, sosyal hizmetler genişletilmiş. Teşekkürler! 👴 #bakım #hizmet #ev",
+        "topics": [
+            "sosyal yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Hava kirliliği alarm seviyesinde, maske takmayı unutmayın! 😷 #alarm #maske #seviye",
+        "topics": [
+            "çevre kirliliği",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Çöp ayrıştırma sistemi kurulmuş, geri dönüşüm artacak. Çevre için güzel! ♻️ #ayrıştırma #sistem #geri dönüşüm",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Gece kulübü gürültüsü komşuları rahatsız ediyor, şikayet edeceğim! 🎵 #kulüp #gürültü #rahatsız",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Rüzgar enerjisi santrali kurulmuş, temiz enerji üretilecek. Süper! 💨 #santral #temiz #enerji",
+        "topics": [
+            "enerji",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Botanik bahçesi ziyarete açılmış, doğa eğitimi verilecek. Çocuklarla gideceğim! 🌺 #botanik #doğa #ziyaret",
+        "topics": [
+            "yeşil alan",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Bisiklet yolu yapılmış, çevre dostu ulaşım teşvik ediliyor. Bisiklet alacağım! 🚴 #bisiklet #çevre #yol",
+        "topics": [
+            "ulaşım",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Sosyal konut projesi başlamış, dar gelirli aileler faydalanacak. Adil! 🏘️ #proje #aile #gelir",
+        "topics": [
+            "barınma",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Aşı kampanyası düzenlenmiş, vatandaşlar bilgilendirilmiş. Sağlık için önemli! 💉 #kampanya #bilgi #vatandaş",
+        "topics": [
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Üniversite laboratuvarı yenilenmiş, araştırma imkanları artmış. Öğrenciler şanslı! 🧪 #laboratuvar #araştırma #imkan",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Ev yangınında aile kurtarılmış, hasar tespiti yapılıyor. Allah korusun! 🔥 #kurtarma #hasar #tespit",
+        "topics": [
+            "yangın"
+        ]
+    },
+    {
+        "text": "Deprem simülasyonu yapılmış, vatandaşlar eğitilmiş. Çok faydalı! 💪 #simülasyon #eğitim #vatandaş",
+        "topics": [
+            "deprem",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Belediye binası yenilenmiş, hizmet kalitesi artacak. Teşekkürler! 🏢 #yenileme #hizmet #kalite",
+        "topics": [
+            "kamusal alan",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "KYK yurdunda yer çıkmadı, geçici olarak arkadaşta kalıyorum. Yurtlar dolu mu? 🏠🎒 #yurt #barınma #öğrenci",
+        "topics": [
+            "barınma",
+            "eğitim",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Üniversiteye kayıt yaptım ama yurtta sıra gelmedi, özel yurt fiyatları uçmuş 😞 #yurt #öğrenci #barınma",
+        "topics": [
+            "barınma",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurdun interneti çok yavaş, ders videoları açılmıyor. Çözüm var mı? 📶🎓 #yurt #internet #ders",
+        "topics": [
+            "eğitim",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Yurt odasında 4 kişi kalıyoruz, alan çok dar. Sağlıklı değil gibi 😷🛏️ #yurt #barınma #sağlık",
+        "topics": [
+            "barınma",
+            "sağlık",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurdun sıcak suyu yine kesildi, sabah duş alamadık. Ne zaman düzelecek? 🚿❌ #yurt #su #kesinti",
+        "topics": [
+            "su kesintisi",
+            "barınma",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Gece yarısı yurtta yangın alarmı çaldı, herkes dışarı çıktı. Allah korusun 🔔🔥 #yurt #yangın",
+        "topics": [
+            "yangın",
+            "barınma",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurt-üniversite arası ring seferleri az, sabah derse yetişemiyoruz 🚌⏰ #yurt #ulaşım #ders",
+        "topics": [
+            "ulaşım",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurtta gürültü sabaha kadar sürüyor, sınav haftası lütfen biraz sessizlik 🙏📚 #yurt #gürültü #sınav",
+        "topics": [
+            "gürültü",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurt kantinindeki yemekler pahalı ama porsiyonlar küçük. Destek şart 🍽️💸 #yurt #sosyal #öğrenci",
+        "topics": [
+            "sosyal yardım",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Deprem yönetmeliğine uygun olmayan eski yurt binaları için güçlendirme lazım 🏗️📏 #yurt #deprem #güvenlik",
+        "topics": [
+            "deprem",
+            "barınma",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Yurt önündeki aydınlatmalar çalışmıyor, akşam dönüşte çok karanlık kalıyor 💡🌙 #yurt #altyapı #güvenlik",
+        "topics": [
+            "altyapı",
+            "barınma",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurtta çamaşır makineleri bozuk, sırada beklemekten ders çalışamıyoruz 🧺⌛ #yurt #altyapı #öğrenci",
+        "topics": [
+            "altyapı",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Şehir dışından gelen öğrenciler için geçici barınma merkezi açılsa çok iyi olurdu 🏨🎒 #öğrenci #barınma",
+        "topics": [
+            "barınma",
+            "sosyal yardım",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurt başvurusu reddedilen öğrenciler için kira desteği gerekiyor 🧾🏠 #yurt #kira #destek",
+        "topics": [
+            "barınma",
+            "sosyal yardım",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurt odalarında havalandırma yetersiz, sık sık hasta oluyoruz 🤧🌬️ #yurt #sağlık #barınma",
+        "topics": [
+            "sağlık",
+            "barınma",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Yurtla kampüs arası bisiklet yolu olsa süper olurdu 🚴‍♀️🎓 #yurt #ulaşım #bisiklet",
+        "topics": [
+            "ulaşım",
+            "eğitim",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Acil yardım lazım, yaşlı komşumuz evde mahsur kaldı. Kime ulaşalım? 🙏 #yardım",
+        "topics": [
+            "yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Mahallede ihtiyaç sahiplerine erzak dağıtımı yapılıyor, katılmak isteyen var mı? 🛒 #yardım",
+        "topics": [
+            "yardım",
+            "sosyal yardım"
+        ]
+    },
+    {
+        "text": "Kayıp kedi için gönüllü arıyoruz, lütfen RT edin. Sahibi çok üzgün 💔 #yardım",
+        "topics": [
+            "yardım"
+        ]
+    },
+    {
+        "text": "Yakınlarda kan bağışı noktası var mı? Acil kana ihtiyaç var 🩸 #yardım",
+        "topics": [
+            "yardım",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Okulda tablet ihtiyacı olan öğrenciler için kampanya başlattık. Destek olur musunuz? 📱 #yardım",
+        "topics": [
+            "yardım",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "Sürekli yağmur, yollar göl oldu. Dışarı çıkmayın, dikkat! ⛈️ #yağmur",
+        "topics": [
+            "yağış",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Ani bastıran yağış yüzünden duraklar doldu, seferler aksadı. ☔ #yağış",
+        "topics": [
+            "yağış",
+            "ulaşım"
+        ]
+    },
+    {
+        "text": "Sağanak sonrası bodrumu su bastı, pompa arayan var mı? 💦 #yağış",
+        "topics": [
+            "yağış",
+            "sel",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Bugün yine yağmur uyarısı var, lütfen hazırlıklı olun. ☔ #yağış",
+        "topics": [
+            "yağış"
+        ]
+    },
+    {
+        "text": "Stadyum çevresinde yağmur yüzünden trafik akmıyor. Alternatif yol bakın 🚗 #yağış",
+        "topics": [
+            "yağış",
+            "trafik"
+        ]
+    },
+    {
+        "text": "Su kesintisi duyurusu geç geldi, haberimiz olmadı. Programlar altüst oldu 😤 #sukesintisi",
+        "topics": [
+            "su kesintisi",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Kesinti saatleri uzadı, bebekli aileler çok zorlanıyor. Çözüm? 🍼🚰 #sukesintisi",
+        "topics": [
+            "su kesintisi",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Apartmanda su yok, tanker talep eden var mı? Mahalle grubu? 🚛 #sukesintisi",
+        "topics": [
+            "su kesintisi",
+            "yardım"
+        ]
+    },
+    {
+        "text": "Planlı su kesintisi gece yapılsa keşke, işten güçten kalıyoruz 😮‍💨 #sukesintisi",
+        "topics": [
+            "su kesintisi"
+        ]
+    },
+    {
+        "text": "Kesinti sonrası su bulanık akıyor, ilk bir süre kullanmayın uyarısı geldi 🔄 #sukesintisi",
+        "topics": [
+            "su kesintisi",
+            "sağlık"
+        ]
+    },
+    {
+        "text": "Dereler taştı, parkın içi göle döndü. Lütfen o tarafa gitmeyin 🌊 #sel",
+        "topics": [
+            "sel",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Alt geçitte su birikti, araçlar mahsur kaldı. Çekici çağırdık 🚨 #sel",
+        "topics": [
+            "sel",
+            "trafik",
+            "altyapı"
+        ]
+    },
+    {
+        "text": "Sel sonrası temizlik için gönüllü ekip lazım. Eldiven, çizme getirin 🧤 #sel",
+        "topics": [
+            "sel",
+            "yardım"
+        ]
+    },
+    {
+        "text": "Kanalizasyon geri tepti, kokudan durulmuyor. Ekipler nerede? 🤢 #sel",
+        "topics": [
+            "sel",
+            "altyapı",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Çöpler toplanmamış, yağmurla birlikte her yere yayıldı. Acil müdahale! 🗑️ #atık",
+        "topics": [
+            "atık/çöp",
+            "çevre kirliliği"
+        ]
+    },
+    {
+        "text": "Geri dönüşüm kutuları dolu taşmış, kimse boşaltmıyor ♻️ #atık",
+        "topics": [
+            "atık/çöp"
+        ]
+    },
+    {
+        "text": "Sahilde piknik sonrası çöp bırakılmış, yazık gerçekten. Lütfen duyarlılık 🙏 #atık",
+        "topics": [
+            "atık/çöp",
+            "yeşil alan"
+        ]
+    },
+    {
+        "text": "Mahallede çöp konteyneri sayısı yetersiz, belediyeden talep edelim mi? 🗃️ #atık",
+        "topics": [
+            "atık/çöp",
+            "kamusal alan"
+        ]
+    },
+    {
+        "text": "Gece yarısı çöp kamyonu çok gürültü yapıyor, saat düzenlemesi lazım 🕛 #gürültü",
+        "topics": [
+            "gürültü",
+            "atık/çöp"
+        ]
+    },
+    {
+        "text": "Yurtta üst kattaki müzik sabaha kadar susmadı, sınav var yarın 😖 #gürültü",
+        "topics": [
+            "gürültü",
+            "eğitim"
+        ]
+    },
+    {
+        "text": "İnşaat sabah 6'da başladı, pazar günü bari başlamasınlar ya 😩 #gürültü",
+        "topics": [
+            "gürültü"
+        ]
+    },
+    {
+        "text": "Araç egzoz patlatma sesi yine mahalleyi inletti, denetim şart 🚓 #gürültü",
+        "topics": [
+            "gürültü",
+            "trafik"
+        ]
+    }
+]
