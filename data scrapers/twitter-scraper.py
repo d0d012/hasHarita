@@ -31,7 +31,7 @@ import os
 from dotenv import load_dotenv
 
 
-# istanbul ankara izmir ikçe olarak eklenebilir ya da büyük ilçeler konya ereğli falan
+# Official 81 cities of Turkey
 SEHIRLER = [
     'Adana','Adıyaman','Afyonkarahisar','Ağrı','Amasya','Ankara','Antalya','Artvin','Aydın','Balıkesir',
     'Bilecik','Bingöl','Bitlis','Bolu','Burdur','Bursa','Çanakkale','Çankırı','Çorum','Denizli',
@@ -44,27 +44,312 @@ SEHIRLER = [
     'Düzce'
 ]
 
+# Major districts mapped to their parent cities
+DISTRICT_TO_CITY = {
+    # İstanbul districts
+    'Adalar': 'İstanbul', 'Arnavutköy': 'İstanbul', 'Ataşehir': 'İstanbul', 'Avcılar': 'İstanbul',
+    'Bağcılar': 'İstanbul', 'Bahçelievler': 'İstanbul', 'Bakırköy': 'İstanbul', 'Başakşehir': 'İstanbul',
+    'Bayrampaşa': 'İstanbul', 'Beşiktaş': 'İstanbul', 'Beykoz': 'İstanbul', 'Beylikdüzü': 'İstanbul',
+    'Beyoğlu': 'İstanbul', 'Büyükçekmece': 'İstanbul', 'Çatalca': 'İstanbul', 'Çekmeköy': 'İstanbul',
+    'Esenler': 'İstanbul', 'Esenyurt': 'İstanbul', 'Eyüpsultan': 'İstanbul', 'Fatih': 'İstanbul',
+    'Gaziosmanpaşa': 'İstanbul', 'Güngören': 'İstanbul', 'Kadıköy': 'İstanbul', 'Kağıthane': 'İstanbul',
+    'Kartal': 'İstanbul', 'Küçükçekmece': 'İstanbul', 'Maltepe': 'İstanbul', 'Pendik': 'İstanbul',
+    'Sancaktepe': 'İstanbul', 'Sarıyer': 'İstanbul', 'Silivri': 'İstanbul', 'Sultanbeyli': 'İstanbul',
+    'Sultangazi': 'İstanbul', 'Şile': 'İstanbul', 'Şişli': 'İstanbul', 'Tuzla': 'İstanbul',
+    'Ümraniye': 'İstanbul', 'Üsküdar': 'İstanbul', 'Zeytinburnu': 'İstanbul',
+    
+    # Ankara districts
+    'Akyurt': 'Ankara', 'Altındağ': 'Ankara', 'Ayaş': 'Ankara', 'Bala': 'Ankara', 'Beypazarı': 'Ankara',
+    'Çamlıdere': 'Ankara', 'Çankaya': 'Ankara', 'Çubuk': 'Ankara', 'Elmadağ': 'Ankara', 'Etimesgut': 'Ankara',
+    'Evren': 'Ankara', 'Gölbaşı': 'Ankara', 'Güdül': 'Ankara', 'Haymana': 'Ankara', 'Kalecik': 'Ankara',
+    'Kazan': 'Ankara', 'Keçiören': 'Ankara', 'Kızılcahamam': 'Ankara', 'Mamak': 'Ankara', 'Nallıhan': 'Ankara',
+    'Polatlı': 'Ankara', 'Pursaklar': 'Ankara', 'Sincan': 'Ankara', 'Şereflikoçhisar': 'Ankara', 'Yenimahalle': 'Ankara',
+    
+    # İzmir districts
+    'Aliağa': 'İzmir', 'Balçova': 'İzmir', 'Bayındır': 'İzmir', 'Bayraklı': 'İzmir', 'Bergama': 'İzmir',
+    'Beydağ': 'İzmir', 'Bornova': 'İzmir', 'Buca': 'İzmir', 'Çeşme': 'İzmir', 'Çiğli': 'İzmir',
+    'Dikili': 'İzmir', 'Foça': 'İzmir', 'Gaziemir': 'İzmir', 'Güzelbahçe': 'İzmir', 'Karabağlar': 'İzmir',
+    'Karaburun': 'İzmir', 'Karşıyaka': 'İzmir', 'Kemalpaşa': 'İzmir', 'Kınık': 'İzmir', 'Kiraz': 'İzmir',
+    'Konak': 'İzmir', 'Menderes': 'İzmir', 'Menemen': 'İzmir', 'Narlıdere': 'İzmir', 'Ödemiş': 'İzmir',
+    'Seferihisar': 'İzmir', 'Selçuk': 'İzmir', 'Tire': 'İzmir', 'Torbalı': 'İzmir', 'Urla': 'İzmir',
+    
+    # Bursa districts
+    'Büyükorhan': 'Bursa', 'Gemlik': 'Bursa', 'Gürsu': 'Bursa', 'Harmancık': 'Bursa', 'İnegöl': 'Bursa',
+    'İznik': 'Bursa', 'Karacabey': 'Bursa', 'Keles': 'Bursa', 'Kestel': 'Bursa', 'Mudanya': 'Bursa',
+    'Mustafakemalpaşa': 'Bursa', 'Nilüfer': 'Bursa', 'Orhaneli': 'Bursa', 'Orhangazi': 'Bursa', 'Osmangazi': 'Bursa',
+    'Yenişehir': 'Bursa', 'Yıldırım': 'Bursa',
+    
+    # Antalya districts
+    'Akseki': 'Antalya', 'Aksu': 'Antalya', 'Alanya': 'Antalya', 'Demre': 'Antalya', 'Döşemealtı': 'Antalya',
+    'Elmalı': 'Antalya', 'Finike': 'Antalya', 'Gazipaşa': 'Antalya', 'Gündoğmuş': 'Antalya', 'İbradı': 'Antalya',
+    'Kaş': 'Antalya', 'Kemer': 'Antalya', 'Kepez': 'Antalya', 'Konyaaltı': 'Antalya', 'Korkuteli': 'Antalya',
+    'Kumluca': 'Antalya', 'Manavgat': 'Antalya', 'Muratpaşa': 'Antalya', 'Serik': 'Antalya',
+    
+    # Konya districts
+    'Ahırlı': 'Konya', 'Akören': 'Konya', 'Akşehir': 'Konya', 'Altınekin': 'Konya', 'Beyşehir': 'Konya',
+    'Bozkır': 'Konya', 'Cihanbeyli': 'Konya', 'Çeltik': 'Konya', 'Çumra': 'Konya', 'Derbent': 'Konya',
+    'Derebucak': 'Konya', 'Doğanhisar': 'Konya', 'Emirgazi': 'Konya', 'Ereğli': 'Konya', 'Ermenek': 'Konya',
+    'Güneysinir': 'Konya', 'Hadim': 'Konya', 'Halkapınar': 'Konya', 'Hüyük': 'Konya', 'Ilgın': 'Konya',
+    'Kadınhanı': 'Konya', 'Karapınar': 'Konya', 'Karatay': 'Konya', 'Kulu': 'Konya', 'Meram': 'Konya',
+    'Sarayönü': 'Konya', 'Selçuklu': 'Konya', 'Seydişehir': 'Konya', 'Taşkent': 'Konya', 'Tuzlukçu': 'Konya',
+    'Yalıhüyük': 'Konya', 'Yunak': 'Konya',
+    
+    # Gaziantep districts
+    'Araban': 'Gaziantep', 'İslahiye': 'Gaziantep', 'Karkamış': 'Gaziantep', 'Nizip': 'Gaziantep',
+    'Nurdağı': 'Gaziantep', 'Oğuzeli': 'Gaziantep', 'Şahinbey': 'Gaziantep', 'Şehitkamil': 'Gaziantep',
+    'Yavuzeli': 'Gaziantep',
+    
+    # Adana districts
+    'Aladağ': 'Adana', 'Ceyhan': 'Adana', 'Çukurova': 'Adana', 'Feke': 'Adana', 'İmamoğlu': 'Adana',
+    'Karaisalı': 'Adana', 'Karataş': 'Adana', 'Kozan': 'Adana', 'Pozantı': 'Adana', 'Saimbeyli': 'Adana',
+    'Sarıçam': 'Adana', 'Seyhan': 'Adana', 'Tufanbeyli': 'Adana', 'Yumurtalık': 'Adana', 'Yüreğir': 'Adana',
+    
+    # Kocaeli districts
+    'Başiskele': 'Kocaeli', 'Çayırova': 'Kocaeli', 'Darıca': 'Kocaeli', 'Derince': 'Kocaeli', 'Dilovası': 'Kocaeli',
+    'Gebze': 'Kocaeli', 'Gölcük': 'Kocaeli', 'İzmit': 'Kocaeli', 'Kandıra': 'Kocaeli', 'Karamürsel': 'Kocaeli',
+    'Kartepe': 'Kocaeli', 'Körfez': 'Kocaeli',
+    
+    # Mersin districts
+    'Akdeniz': 'Mersin', 'Anamur': 'Mersin', 'Aydıncık': 'Mersin', 'Bozyazı': 'Mersin', 'Çamlıyayla': 'Mersin',
+    'Erdemli': 'Mersin', 'Gülnar': 'Mersin', 'Mezitli': 'Mersin', 'Mut': 'Mersin', 'Silifke': 'Mersin',
+    'Tarsus': 'Mersin', 'Toroslar': 'Mersin', 'Yenişehir': 'Mersin',
+    
+    # Diyarbakır districts
+    'Bağlar': 'Diyarbakır', 'Bismil': 'Diyarbakır', 'Çermik': 'Diyarbakır', 'Çınar': 'Diyarbakır', 'Çüngüş': 'Diyarbakır',
+    'Dicle': 'Diyarbakır', 'Eğil': 'Diyarbakır', 'Ergani': 'Diyarbakır', 'Hani': 'Diyarbakır', 'Hazro': 'Diyarbakır',
+    'Kayapınar': 'Diyarbakır', 'Kocaköy': 'Diyarbakır', 'Kulp': 'Diyarbakır', 'Lice': 'Diyarbakır', 'Silvan': 'Diyarbakır',
+    'Sur': 'Diyarbakır', 'Yenişehir': 'Diyarbakır',
+    
+    # Hatay districts
+    'Altınözü': 'Hatay', 'Arsuz': 'Hatay', 'Belen': 'Hatay', 'Defne': 'Hatay', 'Dörtyol': 'Hatay',
+    'Erzin': 'Hatay', 'Hassa': 'Hatay', 'İskenderun': 'Hatay', 'Kırıkhan': 'Hatay', 'Kumlu': 'Hatay',
+    'Payas': 'Hatay', 'Reyhanlı': 'Hatay', 'Samandağ': 'Hatay', 'Yayladağı': 'Hatay',
+    
+    # Manisa districts
+    'Ahmetli': 'Manisa', 'Akhisar': 'Manisa', 'Alaşehir': 'Manisa', 'Demirci': 'Manisa', 'Gölmarmara': 'Manisa',
+    'Gördes': 'Manisa', 'Kırkağaç': 'Manisa', 'Köprübaşı': 'Manisa', 'Kula': 'Manisa', 'Salihli': 'Manisa',
+    'Sarıgöl': 'Manisa', 'Saruhanlı': 'Manisa', 'Selendi': 'Manisa', 'Soma': 'Manisa', 'Şehzadeler': 'Manisa',
+    'Turgutlu': 'Manisa', 'Yunusemre': 'Manisa',
+    
+    # Kayseri districts
+    'Akkışla': 'Kayseri', 'Bünyan': 'Kayseri', 'Develi': 'Kayseri', 'Felahiye': 'Kayseri', 'Hacılar': 'Kayseri',
+    'İncesu': 'Kayseri', 'Kocasinan': 'Kayseri', 'Melikgazi': 'Kayseri', 'Özvatan': 'Kayseri', 'Pınarbaşı': 'Kayseri',
+    'Sarıoğlan': 'Kayseri', 'Sarız': 'Kayseri', 'Talas': 'Kayseri', 'Tomarza': 'Kayseri', 'Yahyalı': 'Kayseri',
+    'Yeşilhisar': 'Kayseri',
+    
+    # Samsun districts
+    '19 Mayıs': 'Samsun', 'Alaçam': 'Samsun', 'Asarcık': 'Samsun', 'Atakum': 'Samsun', 'Ayvacık': 'Samsun',
+    'Bafra': 'Samsun', 'Canik': 'Samsun', 'Çarşamba': 'Samsun', 'Havza': 'Samsun', 'İlkadım': 'Samsun',
+    'Kavak': 'Samsun', 'Ladik': 'Samsun', 'Ondokuzmayıs': 'Samsun', 'Salıpazarı': 'Samsun', 'Tekkeköy': 'Samsun',
+    'Terme': 'Samsun', 'Vezirköprü': 'Samsun', 'Yakakent': 'Samsun',
+    
+    # Balıkesir districts
+    'Altıeylül': 'Balıkesir', 'Ayvalık': 'Balıkesir', 'Balya': 'Balıkesir', 'Bandırma': 'Balıkesir', 'Bigadiç': 'Balıkesir',
+    'Burhaniye': 'Balıkesir', 'Dursunbey': 'Balıkesir', 'Edremit': 'Balıkesir', 'Erdek': 'Balıkesir', 'Gömeç': 'Balıkesir',
+    'Gönen': 'Balıkesir', 'Havran': 'Balıkesir', 'İvrindi': 'Balıkesir', 'Karesi': 'Balıkesir', 'Kepsut': 'Balıkesir',
+    'Manyas': 'Balıkesir', 'Marmara': 'Balıkesir', 'Savaştepe': 'Balıkesir', 'Sındırgı': 'Balıkesir', 'Susurluk': 'Balıkesir',
+    
+    # Kahramanmaraş districts
+    'Afşin': 'Kahramanmaraş', 'Andırın': 'Kahramanmaraş', 'Çağlayancerit': 'Kahramanmaraş', 'Dulkadiroğlu': 'Kahramanmaraş',
+    'Ekinözü': 'Kahramanmaraş', 'Elbistan': 'Kahramanmaraş', 'Göksun': 'Kahramanmaraş', 'Nurhak': 'Kahramanmaraş',
+    'Onikişubat': 'Kahramanmaraş', 'Pazarcık': 'Kahramanmaraş', 'Türkoğlu': 'Kahramanmaraş',
+    
+    # Van districts
+    'Bahçesaray': 'Van', 'Başkale': 'Van', 'Çaldıran': 'Van', 'Çatak': 'Van', 'Edremit': 'Van',
+    'Erciş': 'Van', 'Gevaş': 'Van', 'Gürpınar': 'Van', 'İpekyolu': 'Van', 'Tuşba': 'Van', 'Muradiye': 'Van',
+    'Özalp': 'Van', 'Saray': 'Van',
+    
+    # Denizli districts
+    'Acıpayam': 'Denizli', 'Babadağ': 'Denizli', 'Baklan': 'Denizli', 'Bekilli': 'Denizli', 'Beyağaç': 'Denizli',
+    'Bozkurt': 'Denizli', 'Buldan': 'Denizli', 'Çal': 'Denizli', 'Çameli': 'Denizli', 'Çardak': 'Denizli',
+    'Çivril': 'Denizli', 'Güney': 'Denizli', 'Honaz': 'Denizli', 'Kale': 'Denizli', 'Merkezefendi': 'Denizli',
+    'Pamukkale': 'Denizli', 'Sarayköy': 'Denizli', 'Serinhisar': 'Denizli', 'Tavas': 'Denizli',
+    
+    # Sakarya districts
+    'Adapazarı': 'Sakarya', 'Akyazı': 'Sakarya', 'Arifiye': 'Sakarya', 'Erenler': 'Sakarya', 'Ferizli': 'Sakarya',
+    'Geyve': 'Sakarya', 'Hendek': 'Sakarya', 'Karapürçek': 'Sakarya', 'Karasu': 'Sakarya', 'Kaynarca': 'Sakarya',
+    'Kocaali': 'Sakarya', 'Pamukova': 'Sakarya', 'Sapanca': 'Sakarya', 'Serdivan': 'Sakarya', 'Söğütlü': 'Sakarya',
+    'Taraklı': 'Sakarya',
+    
+    # Muğla districts
+    'Bodrum': 'Muğla', 'Dalaman': 'Muğla', 'Datça': 'Muğla', 'Fethiye': 'Muğla', 'Kavaklıdere': 'Muğla',
+    'Köyceğiz': 'Muğla', 'Marmaris': 'Muğla', 'Menteşe': 'Muğla', 'Milas': 'Muğla', 'Ortaca': 'Muğla',
+    'Seydikemer': 'Muğla', 'Ula': 'Muğla', 'Yatağan': 'Muğla',
+    
+    # Eskişehir districts
+    'Alpu': 'Eskişehir', 'Beylikova': 'Eskişehir', 'Çifteler': 'Eskişehir', 'Günyüzü': 'Eskişehir', 'Han': 'Eskişehir',
+    'İnönü': 'Eskişehir', 'Mahmudiye': 'Eskişehir', 'Mihalgazi': 'Eskişehir', 'Mihalıççık': 'Eskişehir', 'Odunpazarı': 'Eskişehir',
+    'Sarıcakaya': 'Eskişehir', 'Seyitgazi': 'Eskişehir', 'Sivrihisar': 'Eskişehir', 'Tepebaşı': 'Eskişehir',
+    
+    # Trabzon districts
+    'Akçaabat': 'Trabzon', 'Araklı': 'Trabzon', 'Arsin': 'Trabzon', 'Beşikdüzü': 'Trabzon', 'Çarşıbaşı': 'Trabzon',
+    'Çaykara': 'Trabzon', 'Dernekpazarı': 'Trabzon', 'Düzköy': 'Trabzon', 'Hayrat': 'Trabzon', 'Köprübaşı': 'Trabzon',
+    'Maçka': 'Trabzon', 'Of': 'Trabzon', 'Ortahisar': 'Trabzon', 'Sürmene': 'Trabzon', 'Şalpazarı': 'Trabzon',
+    'Tonya': 'Trabzon', 'Vakfıkebir': 'Trabzon', 'Yomra': 'Trabzon',
+    
+    # Ordu districts
+    'Akkuş': 'Ordu', 'Altınordu': 'Ordu', 'Aybastı': 'Ordu', 'Çamaş': 'Ordu', 'Çatalpınar': 'Ordu',
+    'Çaybaşı': 'Ordu', 'Fatsa': 'Ordu', 'Gölköy': 'Ordu', 'Gülyalı': 'Ordu', 'Gürgentepe': 'Ordu',
+    'İkizce': 'Ordu', 'Kabadüz': 'Ordu', 'Kabataş': 'Ordu', 'Korgan': 'Ordu', 'Kumru': 'Ordu',
+    'Mesudiye': 'Ordu', 'Perşembe': 'Ordu', 'Piraziz': 'Ordu', 'Ulubey': 'Ordu', 'Ünye': 'Ordu',
+    
+    # Malatya districts
+    'Akçadağ': 'Malatya', 'Arapgir': 'Malatya', 'Arguvan': 'Malatya', 'Battalgazi': 'Malatya', 'Darende': 'Malatya',
+    'Doğanşehir': 'Malatya', 'Doğanyol': 'Malatya', 'Hekimhan': 'Malatya', 'Kale': 'Malatya', 'Kuluncak': 'Malatya',
+    'Pütürge': 'Malatya', 'Yazıhan': 'Malatya', 'Yeşilyurt': 'Malatya',
+    
+    # Erzurum districts
+    'Aşkale': 'Erzurum', 'Aziziye': 'Erzurum', 'Çat': 'Erzurum', 'Hınıs': 'Erzurum', 'Horasan': 'Erzurum',
+    'İspir': 'Erzurum', 'Karaçoban': 'Erzurum', 'Karayazı': 'Erzurum', 'Köprüköy': 'Erzurum', 'Narman': 'Erzurum',
+    'Oltu': 'Erzurum', 'Olur': 'Erzurum', 'Palandöken': 'Erzurum', 'Pasinler': 'Erzurum', 'Pazaryolu': 'Erzurum',
+    'Şenkaya': 'Erzurum', 'Tekman': 'Erzurum', 'Tortum': 'Erzurum', 'Uzundere': 'Erzurum', 'Yakutiye': 'Erzurum',
+    
+    # Tekirdağ districts
+    'Çerkezköy': 'Tekirdağ', 'Çorlu': 'Tekirdağ', 'Ergene': 'Tekirdağ', 'Hayrabolu': 'Tekirdağ', 'Kapaklı': 'Tekirdağ',
+    'Malkara': 'Tekirdağ', 'Marmaraereğlisi': 'Tekirdağ', 'Muratlı': 'Tekirdağ', 'Saray': 'Tekirdağ', 'Süleymanpaşa': 'Tekirdağ',
+    'Şarköy': 'Tekirdağ',
+    
+    # Zonguldak districts
+    'Alaplı': 'Zonguldak', 'Çaycuma': 'Zonguldak', 'Devrek': 'Zonguldak', 'Gökçebey': 'Zonguldak', 'Kilimli': 'Zonguldak',
+    'Kozlu': 'Zonguldak', 'Merkez': 'Zonguldak',
+    
+    # Other major districts
+}
 
-_sorted_cities = sorted(SEHIRLER, key=len, reverse=True)
-_city_pattern = re.compile(r"\b(" + "|".join(map(re.escape, _sorted_cities)) + r")(?:'?[dDbB][ea]|'?[dDtT][an]|'?[yY][ae])?\b", re.IGNORECASE)
+
+# Create combined list of cities and districts for pattern matching
+_all_locations = SEHIRLER + list(DISTRICT_TO_CITY.keys())
+_sorted_locations = sorted(_all_locations, key=len, reverse=True)
+_location_pattern = re.compile(r"\b(" + "|".join(map(re.escape, _sorted_locations)) + r")(?:'?[dDbB][ea]|'?[dDtT][an]|'?[yY][ae])?\b", re.IGNORECASE)
 
 
 def detect_city_from_text(text: str) -> str | None:
-
+    """
+    Detects city from text by checking both official cities and districts.
+    Returns the official city name (from SEHIRLER list) for display purposes.
+    
+    Args:
+        text (str): Text to search for location
+        
+    Returns:
+        str | None: Official city name or None if no location found
+    """
     if not text:
         return None
-    # basit normalize
+    
+    # Normalize text
     candidate = text.strip()
-    m = _city_pattern.search(candidate)
+    m = _location_pattern.search(candidate)
+    
     if m:
-        # orijinal şehir adını büyük/küçük/aksan açısından normalize et
         found = m.group(1)
-        # listeden tam eşleşen standard biçimi döndür
-        for c in SEHIRLER:
-            if c.lower() == found.lower():
-                return c
+        
+        # First check if it's a direct city match
+        for city in SEHIRLER:
+            if city.lower() == found.lower():
+                return city
+        
+        # Then check if it's a district and return its parent city
+        for district, parent_city in DISTRICT_TO_CITY.items():
+            if district.lower() == found.lower():
+                return parent_city
+        
+        # If no exact match found, return the found text (fallback)
         return found
+    
     return None
+
+
+def detect_location_details(text: str) -> dict | None:
+    """
+    Detects both city and district from text.
+    Returns detailed location information including both city and district.
+    
+    Args:
+        text (str): Text to search for location
+        
+    Returns:
+        dict | None: Dictionary with 'city', 'district', and 'is_district' keys, or None if no location found
+    """
+    if not text:
+        return None
+    
+    # Normalize text
+    candidate = text.strip()
+    m = _location_pattern.search(candidate)
+    
+    if m:
+        found = m.group(1)
+        
+        # First check if it's a direct city match
+        for city in SEHIRLER:
+            if city.lower() == found.lower():
+                return {
+                    'city': city,  # Return the properly capitalized city name
+                    'district': None,
+                    'is_district': False,
+                    'original_text': found
+                }
+        
+        # Then check if it's a district and return its parent city
+        for district, parent_city in DISTRICT_TO_CITY.items():
+            if district.lower() == found.lower():
+                return {
+                    'city': parent_city,
+                    'district': district,  # Return the properly capitalized district name
+                    'is_district': True,
+                    'original_text': found
+                }
+        
+        # If no exact match found, return the found text as city (fallback)
+        return {
+            'city': found,
+            'district': None,
+            'is_district': False,
+            'original_text': found
+        }
+    
+    return None
+
+
+def get_location_statistics(tweets: list) -> dict:
+    """
+    Analyzes location detection statistics from a list of tweets.
+    
+    Args:
+        tweets (list): List of tweet dictionaries
+        
+    Returns:
+        dict: Statistics about location detection
+    """
+    stats = {
+        'total_tweets': len(tweets),
+        'tweets_with_location': 0,
+        'tweets_with_district': 0,
+        'city_counts': {},
+        'district_counts': {},
+        'location_detection_rate': 0.0
+    }
+    
+    for tweet in tweets:
+        location_details = tweet.get('location_details')
+        if location_details:
+            stats['tweets_with_location'] += 1
+            
+            city = location_details.get('city')
+            district = location_details.get('district')
+            
+            if city:
+                stats['city_counts'][city] = stats['city_counts'].get(city, 0) + 1
+            
+            if district:
+                stats['tweets_with_district'] += 1
+                stats['district_counts'][district] = stats['district_counts'].get(district, 0) + 1
+    
+    if stats['total_tweets'] > 0:
+        stats['location_detection_rate'] = (stats['tweets_with_location'] / stats['total_tweets']) * 100
+    
+    return stats
 
 
 class SeleniumTwitterScraper:
@@ -332,8 +617,9 @@ class SeleniumTwitterScraper:
             # afet ile ilgili mi kontrol et
             is_disaster_related = self._is_disaster_related(text)
             
-            # metinden şehir çıkarımı
-            location = detect_city_from_text(text)
+            # metinden şehir ve ilçe çıkarımı
+            location_details = detect_location_details(text)
+            location = location_details['city'] if location_details else None
             
             tweet_data = {
                 'id': tweet_id,
@@ -342,8 +628,9 @@ class SeleniumTwitterScraper:
                 'created_at': tweet_time,
                 'search_query': search_query,
                 'disaster_related': is_disaster_related,
-                'location': location,
-                'scraping_method': 'twitter_scraper',
+                'location': location,  # Official city name for backward compatibility
+                'location_details': location_details,  # Detailed location info including district
+                'scraping_method': 'twitter_scrape',
                 'scraping_timestamp': datetime.now() #isoformat() da olabilir
             }
             
@@ -457,8 +744,11 @@ class SeleniumTwitterScraper:
     def _save_emergency_tweets(self, emergency_tweets):
         """acil durum tweet'lerini ayrı dosyaya kaydeder lazım olur belki"""
         try:
+            # twitter_data klasörünü oluştur
+            os.makedirs("twitter_data", exist_ok=True)
+            
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"emergency_tweets_{timestamp}.json"
+            filename = f"twitter_data/emergency_tweets_{timestamp}.json"
             
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(emergency_tweets, f, ensure_ascii=False, indent=2, default=str)
@@ -474,8 +764,11 @@ class SeleniumTwitterScraper:
             if not self.tweets:
                 return
             
+            # twitter_data klasörünü oluştur
+            os.makedirs("twitter_data", exist_ok=True)
+            
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"selenium_tweets_batch_{timestamp}.json"
+            filename = f"twitter_data/selenium_tweets_batch_{timestamp}.json"
             
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(self.tweets, f, ensure_ascii=False, indent=2, default=str)
@@ -572,8 +865,9 @@ def main():
         
         if tweets:
             # tweet'leri kaydet
+            os.makedirs("twitter_data", exist_ok=True)
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"selenium_tweets_{timestamp}.json"
+            filename = f"twitter_data/selenium_tweets_{timestamp}.json"
             
             with open(filename, 'w', encoding='utf-8') as f:
                 json.dump(tweets, f, ensure_ascii=False, indent=2, default=str)
@@ -582,9 +876,21 @@ def main():
             print(f"  • toplam tweet: {len(tweets)}")
             print(f"  • kayıt dosyası: {filename}") 
             
-          
             disaster_count = sum(1 for tweet in tweets if tweet.get('disaster_related', False))
             print(f"  • afet ile ilgili tweet: {disaster_count}")
+            
+            # Location statistics
+            location_stats = get_location_statistics(tweets)
+            print(f"  • konum tespit edilen tweet: {location_stats['tweets_with_location']} ({location_stats['location_detection_rate']:.1f}%)")
+            print(f"  • ilçe tespit edilen tweet: {location_stats['tweets_with_district']}")
+            
+            if location_stats['city_counts']:
+                top_cities = sorted(location_stats['city_counts'].items(), key=lambda x: x[1], reverse=True)[:5]
+                print(f"  • en çok geçen şehirler: {', '.join([f'{city}({count})' for city, count in top_cities])}")
+            
+            if location_stats['district_counts']:
+                top_districts = sorted(location_stats['district_counts'].items(), key=lambda x: x[1], reverse=True)[:3]
+                print(f"  • en çok geçen ilçeler: {', '.join([f'{district}({count})' for district, count in top_districts])}")
             
           
         
