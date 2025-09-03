@@ -367,7 +367,43 @@ class SeleniumTwitterScraper:
         
       
         self.disaster_keywords = [
-            'deprem', 'sel', 'yangın', 'heyelan', 'çığ' #ekleme yapılabilir
+            # trafik / ulaşım
+            "trafik", "yoğunluk", "kilit", "E-5", "D-100",
+            "metrobüs", "metro arızası", "otobüs gecikme", "sefer iptal", "aktarma",
+
+            # yağış / sel
+            "yağmur", "sağanak", "dolu", "fırtına", "şiddetli yağış",
+            "sel", "su baskını", "dere taştı", "mazgal", "altgeçit su",
+
+            # enerji / elektrik
+            "enerji kesintisi", "trafo", "hat arızası", "yüksek tüketim", "elektrik",
+            "elektrik kesildi", "elektrik yok", "elektrikler gitti", "arıza bildirimi", "kesinti programı",
+
+            # atık / çevre kirliliği
+            "çöp birikmiş", "çöp toplanmıyor", "koku var", "döküntü", "çöp konteyneri",
+            "kirlilik", "duman", "is kokusu", "zehirli", "sanayi atığı",
+
+            # yardım
+            "yardım lazım", "gönüllü", "ihtiyaç var", "bağış", "destek",
+
+            # afetler
+            "deprem", "artçı", "AFAD", "sarsıntı", "fay",
+            "yangın", "itfaiye", "duman yükseliyor", "orman yangını", "baca",
+
+            # gürültü
+            "gürültü", "yüksek ses", "inşaat sesi", "gece gürültü", "rahatsız",
+
+            # kamusal alan / yeşil alan
+            "park bakımsız", "kaldırım bozuk", "bank kırık", "oyun alanı", "kamusal alan",
+            "ağaç kesimi", "yeşil alan", "koru", "millet bahçesi",
+
+            # su / barınma
+            "su kesildi", "sular yok", "baraj seviyesi", "isale hattı", "şebeke suyu",
+            "barınma", "çadır", "kira çok yüksek", "yurt yok", "sokakta kaldık",
+
+            # sağlık / eğitim
+            "ambulans", "acil servis", "hastane yoğunluk", "eczane nöbet", "sağlık hizmeti",
+            "okul kapalı", "okul servisi", "uzaktan eğitim", "tatil edildi", "sınav ertelendi",
     
         ]
         
