@@ -9,6 +9,7 @@ import API from "./pages/API";
 import ApiTest from "./pages/ApiTest";
 import Documentation from "./pages/Documentation";
 import Contact from "./pages/Contact";
+import LightningLogs from "./pages/LightningLogs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/api-test" element={<ApiTest />} />
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/lightning-logs" element={<LightningLogs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,9 +1,11 @@
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Users, Shield, Globe, Target } from 'lucide-react';
+import { Users, Shield, Globe, Target, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import LinkPreview from '../components/LinkPreview';
+import TeamMemberCard from '../components/TeamMemberCard';
+import { teamMembers } from '../data/teamData';
 
 const About = () => {
   return (
@@ -32,7 +34,8 @@ const About = () => {
             </CardHeader>
             <CardContent>
               <CardDescription className="text-base leading-relaxed">
-                yazarız
+                Vatandaşların dijital etkileşimlerinden doğan kolektif bilgiyi anlamlandırarak, şehirlerin çevresel önceliklerini ve afet sonrası ihtiyaçlarını hızlı ve şeffaf biçimde görünür kılmaktır. Doğal dil işleme ve coğrafi bilgi sistemleri teknolojilerini birleştirerek, karar vericilere veri temelli içgörüler sunmak ve toplumsal dayanışmayı güçlendirmektir.
+
               </CardDescription>
             </CardContent>
           </Card>
@@ -46,7 +49,7 @@ const About = () => {
             </CardHeader>
             <CardContent>
               <CardDescription className="text-base leading-relaxed">
-                ne diyo la bu
+                Şehirlerin çevresel dayanıklılığını artıran, afetlere karşı hazırlıklı ve sürdürülebilir bir kentsel gelecek inşa etmeye katkı sunan öncü bir karar destek sistemi olmaktır. Vatandaşların dijital sesini şehir yönetimine dahil eden, teknoloji ile toplumsal faydayı buluşturan küresel ölçekte referans bir platform haline gelmektir.
               </CardDescription>
             </CardContent>
           </Card>
@@ -56,64 +59,20 @@ const About = () => {
 
         {/* Team */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">
+          <h2 className="text-3xl font-bold text-foreground mb-8 flex items-center justify-center gap-3">
             Ekibimiz
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            tuğrap efe dikpınar -- ahmet mert tezcan --
-            sürdürülebilir şehirler hackathonu 2025
-          </p>
-        </div>
+          
+          <div className="mb-6"></div>
 
-        {/* Useful Links */}
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-8">
-            Faydalı Linkler
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Afet Yönetimi</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <LinkPreview url="https://www.afad.gov.tr">
-                  AFAD Resmi Sitesi
-                </LinkPreview>
-                <LinkPreview url="https://www.afad.gov.tr/afet-bilgi-sistemi">
-                  Afet Bilgi Sistemi
-                </LinkPreview>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Meteoroloji</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <LinkPreview url="https://www.mgm.gov.tr">
-                  MGM Resmi Sitesi
-                </LinkPreview>
-                <LinkPreview url="https://www.mgm.gov.tr/tarimsal-hava-tahmini.aspx">
-                  Tarımsal Hava Tahmini
-                </LinkPreview>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Çevre ve Şehircilik</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <LinkPreview url="https://www.csb.gov.tr">
-                  Çevre ve Şehircilik Bakanlığı
-                </LinkPreview>
-                <LinkPreview url="https://cevreselgostergeler.csb.gov.tr">
-                  Çevresel Göstergeler
-                </LinkPreview>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {teamMembers.map((member) => (
+              <TeamMemberCard key={member.id} member={member} />
+            ))}
           </div>
         </div>
+
+
       </main>
 
       <Footer />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import TurkeyMap from '../components/TurkeyMap';
 import List from '../components/List';
@@ -7,52 +8,27 @@ import { mockDisasterData, mockSustainabilityData } from '../data/mockData';
 import { DisasterAlert, SustainabilityData } from '../types/disaster';
 import { useApiConnectionTest, useTextAnalysis } from '../hooks/useApi';
 import { config } from '../config/environment';
+import { processLightningData, ProcessedLightningData } from '../services/lightningService';
 
-// Mock lightning data
-const mockLightningData = [
-  {
-    location: 'İstanbul',
-    intensity: 85,
-    strikes: 23,
-    lastStrike: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-    risk: 'high' as const
-  },
-  {
-    location: 'Ankara',
-    intensity: 45,
-    strikes: 8,
-    lastStrike: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    risk: 'medium' as const
-  },
-  {
-    location: 'İzmir',
-    intensity: 25,
-    strikes: 3,
-    lastStrike: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-    risk: 'low' as const
-  },
-  {
-    location: 'Antalya',
-    intensity: 70,
-    strikes: 15,
-    lastStrike: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
-    risk: 'high' as const
-  },
-  {
-    location: 'Bursa',
-    intensity: 35,
-    strikes: 5,
-    lastStrike: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
-    risk: 'low' as const
+// Gerçek yıldırım verilerini yükle ve işle
+const loadLightningData = async (): Promise<ProcessedLightningData[]> => {
+  try {
+    return await processLightningData();
+  } catch (error) {
+    console.error('Yıldırım verileri yüklenirken hata:', error);
+    return [];
   }
-];
+};
 
 const Index = () => {
+  const navigate = useNavigate();
   const [disasters, setDisasters] = useState<DisasterAlert[]>([]);
   const [sustainabilityData, setSustainabilityData] = useState<SustainabilityData[]>([]);
-  const [lightningData, setLightningData] = useState(mockLightningData);
+  const [lightningData, setLightningData] = useState<ProcessedLightningData[]>([]);
   const [monitoringMode, setMonitoringMode] = useState<'disaster' | 'sustainability' | 'lightning'>('disaster');
   const [apiStatus, setApiStatus] = useState<'connected' | 'disconnected' | 'checking'>('checking');
+  const [showAllLightning, setShowAllLightning] = useState(false);
+  const [lightningLoading, setLightningLoading] = useState(true);
 
   // API bağlantı testi
   const { data: connectionTest } = useApiConnectionTest();
@@ -64,6 +40,26 @@ const Index = () => {
       setDisasters(mockDisasterData);
       setSustainabilityData(mockSustainabilityData);
     }
+    
+    // Gerçek yıldırım verilerini yükle
+    const loadData = async () => {
+      try {
+        const data = await loadLightningData();
+        setLightningData(data);
+        setLightningLoading(false);
+        console.log('Lightning data loaded:', data.length, 'strikes');
+      } catch (error) {
+        console.error('Lightning data loading failed:', error);
+        setLightningLoading(false);
+      }
+    };
+    
+    loadData();
+    
+    // Her 30 saniyede bir güncelle
+    const interval = setInterval(loadData, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -88,6 +84,11 @@ const Index = () => {
       }
     }
     return null;
+  };
+
+  // Daha fazla yıldırım verisi gösterme fonksiyonu
+  const handleShowMoreLightning = () => {
+    navigate('/lightning-logs');
   };
 
   return (
@@ -141,6 +142,7 @@ const Index = () => {
               lightningData={lightningData}
               monitoringMode={monitoringMode}
               onTextAnalysis={analyzeText}
+              onShowMoreLightning={handleShowMoreLightning}
             />
           </div>
         </div>

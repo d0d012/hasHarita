@@ -25,7 +25,7 @@ export interface ProcessedLightningData {
   };
 }
 
-// Şehir koordinatları (TurkeyMap'ten alındı)
+
 const cityCoordinates = {
   'İstanbul': { lat: 41.0082, lng: 28.9784 },
   'Ankara': { lat: 39.9334, lng: 32.8597 },
@@ -107,7 +107,7 @@ const cityCoordinates = {
   'Ağrı': { lat: 39.7191, lng: 43.0503 }
 };
 
-// İki nokta arasındaki mesafeyi hesapla (Haversine formülü)
+
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371; // Dünya'nın yarıçapı (km)
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -146,18 +146,27 @@ function calculateRiskLevel(intensity: number, strikes: number): 'low' | 'medium
 // Gerçek lightning verilerini işle
 export async function processLightningData(): Promise<ProcessedLightningData[]> {
   try {
-    // JSONL dosyasını oku
-    const response = await fetch('/turkey_lightning_strikes.jsonl');
+    // JSONL dosyasını oku (cache busting ile)
+    const response = await fetch(`/turkey_lightning_strikes.jsonl?t=${Date.now()}`);
     const text = await response.text();
     
     // JSONL satırlarını parse et
     const lines = text.trim().split('\n');
     const strikes: LightningStrike[] = lines.map(line => JSON.parse(line));
     
+    // Zaman bazlı filtreleme - son 7 günlük veriler
+    const now = Date.now();
+    const sevenDaysAgo = now - (7 * 24 * 60 * 60 * 1000);
+    
+    const recentStrikes = strikes.filter(strike => {
+      const strikeTime = strike.strike_time / 1000000; // Nanosaniyeyi milisaniyeye çevir
+      return strikeTime >= sevenDaysAgo;
+    });
+    
     // Şehirlere göre grupla
     const cityStrikes: Record<string, LightningStrike[]> = {};
     
-    strikes.forEach(strike => {
+    recentStrikes.forEach(strike => {
       const nearestCity = findNearestCity(strike.latitude, strike.longitude);
       if (!cityStrikes[nearestCity]) {
         cityStrikes[nearestCity] = [];
@@ -170,6 +179,7 @@ export async function processLightningData(): Promise<ProcessedLightningData[]> 
     
     console.log('Lightning data processing:', {
       totalStrikes: strikes.length,
+      recentStrikes: recentStrikes.length,
       citiesWithStrikes: Object.keys(cityStrikes).length,
       cityStrikes: Object.entries(cityStrikes).map(([city, strikes]) => ({ 
         city, 
@@ -213,6 +223,68 @@ export async function processLightningData(): Promise<ProcessedLightningData[]> 
     return processedData;
   } catch (error) {
     console.error('Lightning data işlenirken hata:', error);
+    return [];
+  }
+}
+
+// Zaman bazlı lightning verilerini al
+export async function getTimeBasedLightningData(hours: number): Promise<ProcessedLightningData[]> {
+  try {
+    const response = await fetch('/turkey_lightning_strikes.jsonl');
+    const text = await response.text();
+    
+    const lines = text.trim().split('\n');
+    const strikes: LightningStrike[] = lines.map(line => JSON.parse(line));
+    
+    // Zaman bazlı filtreleme
+    const now = Date.now();
+    const timeThreshold = now - (hours * 60 * 60 * 1000);
+    
+    const filteredStrikes = strikes.filter(strike => {
+      const strikeTime = strike.strike_time / 1000000;
+      return strikeTime >= timeThreshold;
+    });
+    
+    // Şehirlere göre grupla
+    const cityStrikes: Record<string, LightningStrike[]> = {};
+    
+    filteredStrikes.forEach(strike => {
+      const nearestCity = findNearestCity(strike.latitude, strike.longitude);
+      if (!cityStrikes[nearestCity]) {
+        cityStrikes[nearestCity] = [];
+      }
+      cityStrikes[nearestCity].push(strike);
+    });
+    
+    // İşlenmiş veri oluştur
+    const processedData: ProcessedLightningData[] = [];
+    
+    for (const [cityName, cityStrikeList] of Object.entries(cityStrikes)) {
+      if (cityStrikeList.length === 0) continue;
+      
+      const avgIntensity = Math.round(
+        cityStrikeList.reduce((sum, strike) => sum + strike.mds, 0) / cityStrikeList.length
+      );
+      
+      const lastStrike = new Date(
+        Math.max(...cityStrikeList.map(strike => strike.strike_time / 1000000))
+      );
+      
+      const risk = calculateRiskLevel(avgIntensity, cityStrikeList.length);
+      
+      processedData.push({
+        location: cityName,
+        intensity: Math.min(100, Math.round(avgIntensity / 100)),
+        strikes: cityStrikeList.length,
+        lastStrike,
+        risk,
+        coordinates: cityCoordinates[cityName as keyof typeof cityCoordinates]
+      });
+    }
+    
+    return processedData;
+  } catch (error) {
+    console.error('Time-based lightning data işlenirken hata:', error);
     return [];
   }
 }
