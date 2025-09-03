@@ -38,7 +38,7 @@ class TopicClassificationService:
     ]
     
     # Post-processing parameters
-    TOP_K = 5
+    TOP_K = 3
     MIN_SCORE = 0.30
     
     # Model configuration
