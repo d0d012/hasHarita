@@ -29,6 +29,11 @@ from fake_useragent import UserAgent
 import re
 import os
 from dotenv import load_dotenv
+from typing import Optional 
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parents[1]
+INBOX_DIR = BASE_DIR / "backend" / "twitter_data" / "inbox"
+
 
 
 # Official 81 cities of Turkey
@@ -223,7 +228,7 @@ _sorted_locations = sorted(_all_locations, key=len, reverse=True)
 _location_pattern = re.compile(r"\b(" + "|".join(map(re.escape, _sorted_locations)) + r")(?:'?[dDbB][ea]|'?[dDtT][an]|'?[yY][ae])?\b", re.IGNORECASE)
 
 
-def detect_city_from_text(text: str) -> str | None:
+def detect_city_from_text(text: str) -> Optional[str]:
     """
     Detects city from text by checking both official cities and districts.
     Returns the official city name (from SEHIRLER list) for display purposes.
@@ -260,7 +265,7 @@ def detect_city_from_text(text: str) -> str | None:
     return None
 
 
-def detect_location_details(text: str) -> dict | None:
+def detect_location_details(text: str) -> Optional[dict]:
     """
     Detects both city and district from text.
     Returns detailed location information including both city and district.
@@ -778,44 +783,104 @@ class SeleniumTwitterScraper:
             self.is_running = False
     
     def _save_emergency_tweets(self, emergency_tweets):
-        """acil durum tweet'lerini ayrı dosyaya kaydeder lazım olur belki"""
+        """Acil durum tweet'lerini JSONL olarak atomik biçimde yazar (.part -> .jsonl)."""
         try:
-            # twitter_data klasörünü oluştur
-            os.makedirs("twitter_data", exist_ok=True)
-            
+            out_dir = str(INBOX_DIR)
+            os.makedirs(out_dir, exist_ok=True)
+
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"twitter_data/emergency_tweets_{timestamp}.json"
-            
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(emergency_tweets, f, ensure_ascii=False, indent=2, default=str)
-            
-            print(f"--- acil durum tweet'leri kaydedildi: {filename}")
-            
+            base = f"tweets_emergency_{timestamp}"
+            tmp_path = os.path.join(out_dir, base + ".part")
+            final_path = os.path.join(out_dir, base + ".jsonl")
+
+            # JSONL'e SATIR SATIR yaz (şema alanlarıyla)
+            with open(tmp_path, "w", encoding="utf-8") as f:
+                for tw in emergency_tweets or []:
+                    # kaynak alanlar
+                    tweet_id = tw.get("id") or tw.get("tweet_id") or f"tmp-{int(time.time()*1000)}-{random.randint(1000,9999)}"
+                    text = (tw.get("text") or "").strip()
+                    created_at = tw.get("created_at")
+                    ts = created_at if isinstance(created_at, str) else datetime.now().isoformat()
+
+                    locd = tw.get("location_details") or {}
+                    city = (locd.get("city") or tw.get("location") or "İstanbul")
+                    district = locd.get("district")
+
+                    record = {
+                        "id": str(tweet_id),
+                        "text": text,
+                        "ts": ts,
+                        "city": city,
+                        "district": district,
+                        "search_query": tw.get("search_query"),
+                        "search_topic": tw.get("search_topic"),  # yoksa None kalır
+                        "scraping_method": tw.get("scraping_method") or "twitter_scrape",
+                        "scraping_timestamp": (
+                            tw.get("scraping_timestamp").isoformat() if hasattr(tw.get("scraping_timestamp"), "isoformat")
+                            else (tw.get("scraping_timestamp") or datetime.now().isoformat())
+                        ),
+                    }
+
+                    f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+
+            # ATOMİK: aynı klasörde .part -> .jsonl
+            os.replace(tmp_path, final_path)
+            print(f"--- acil durum tweet'leri (JSONL) kaydedildi: {final_path}")
+
         except Exception as e:
             print(f"--- acil durum kaydetme hatası: {e}")
     
     def _save_tweets_batch(self):
-        """tweet batch'ini dosyaya kaydeder"""
+        """Tweet batch'ini JSONL olarak atomik biçimde yazar (.part -> .jsonl)."""
         try:
             if not self.tweets:
                 return
-            
-            # twitter_data klasörünü oluştur
-            os.makedirs("twitter_data", exist_ok=True)
-            
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"twitter_data/selenium_tweets_batch_{timestamp}.json"
-            
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(self.tweets, f, ensure_ascii=False, indent=2, default=str)
-            
-            print(f"💾 {len(self.tweets)} tweet {filename} dosyasına kaydedildi")
-            
+
+            out_dir = str(INBOX_DIR)
+            os.makedirs(out_dir, exist_ok=True)
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            base = f"tweets_selenium_batch_{timestamp}"
+            tmp_path = os.path.join(out_dir, base + ".part")
+            final_path = os.path.join(out_dir, base + ".jsonl")
+
+            with open(tmp_path, "w", encoding="utf-8") as f:
+                for tw in self.tweets:
+                    tweet_id = tw.get("id") or tw.get("tweet_id") or f"tmp-{int(time.time()*1000)}-{random.randint(1000,9999)}"
+                    text = (tw.get("text") or "").strip()
+                    created_at = tw.get("created_at")
+                    ts = created_at if isinstance(created_at, str) else datetime.now().isoformat()
+
+                    locd = tw.get("location_details") or {}
+                    city = (locd.get("city") or tw.get("location") or "İstanbul")
+                    district = locd.get("district")
+
+                    record = {
+                        "id": str(tweet_id),
+                        "text": text,
+                        "ts": ts,
+                        "city": city,
+                        "district": district,
+                        "search_query": tw.get("search_query"),
+                        "search_topic": tw.get("search_topic"),
+                        "scraping_method": tw.get("scraping_method") or "twitter_scrape",
+                        "scraping_timestamp": (
+                            tw.get("scraping_timestamp").isoformat() if hasattr(tw.get("scraping_timestamp"), "isoformat")
+                            else (tw.get("scraping_timestamp") or datetime.now().isoformat())
+                        ),
+                    }
+                    f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+
+            # atomik rename
+            os.replace(tmp_path, final_path)
+            print(f"💾 {len(self.tweets)} tweet {final_path} dosyasına kaydedildi")
+
             # belleği temizle
             self.tweets = []
-            
+
         except Exception as e:
             print(f"--- batch kaydetme hatası: {e}")
+
     
     def search_disaster_tweets(self, keyword="deprem", count=50):
         """belirli bir afet anahtar kelimesi için tweet'leri arar"""
@@ -900,22 +965,52 @@ def main():
             tweets = scraper.search_disaster_tweets("deprem", 50)
         
         if tweets:
-            # tweet'leri kaydet
-            os.makedirs("twitter_data", exist_ok=True)
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"twitter_data/selenium_tweets_{timestamp}.json"
-            
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(tweets, f, ensure_ascii=False, indent=2, default=str)
-            
+                # JSONL'i atomik biçimde yaz: backend/twitter_data/inbox/<base>.part -> <base>.jsonl
+            out_dir = str(INBOX_DIR)
+            os.makedirs(out_dir, exist_ok=True)
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            base = f"tweets_selenium_{timestamp}"
+            tmp_path = os.path.join(out_dir, base + ".part")
+            final_path = os.path.join(out_dir, base + ".jsonl")
+
+            with open(tmp_path, "w", encoding="utf-8") as f:
+                for tw in tweets:
+                    tweet_id = tw.get("id") or tw.get("tweet_id") or f"tmp-{int(time.time()*1000)}-{random.randint(1000,9999)}"
+                    text = (tw.get("text") or "").strip()
+                    created_at = tw.get("created_at")
+                    ts = created_at if isinstance(created_at, str) else datetime.now().isoformat()
+
+                    locd = tw.get("location_details") or {}
+                    city = (locd.get("city") or tw.get("location") or "İstanbul")
+                    district = locd.get("district")
+
+                    record = {
+                        "id": str(tweet_id),
+                        "text": text,
+                        "ts": ts,
+                        "city": city,
+                        "district": district,
+                        "search_query": tw.get("search_query"),
+                        "search_topic": tw.get("search_topic"),
+                        "scraping_method": tw.get("scraping_method") or "twitter_scrape",
+                        "scraping_timestamp": (
+                            tw.get("scraping_timestamp").isoformat() if hasattr(tw.get("scraping_timestamp"), "isoformat")
+                            else (tw.get("scraping_timestamp") or datetime.now().isoformat())
+                        ),
+                    }
+                    f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+
+            os.replace(tmp_path, final_path)
+
             print(f"\n--- özet:")
             print(f"  • toplam tweet: {len(tweets)}")
-            print(f"  • kayıt dosyası: {filename}") 
-            
+            print(f"  • kayıt dosyası: {final_path}")
+
             disaster_count = sum(1 for tweet in tweets if tweet.get('disaster_related', False))
             print(f"  • afet ile ilgili tweet: {disaster_count}")
-            
-            # Location statistics
+
+            # Location statistics (aynen kalabilir)
             location_stats = get_location_statistics(tweets)
             print(f"  • konum tespit edilen tweet: {location_stats['tweets_with_location']} ({location_stats['location_detection_rate']:.1f}%)")
             print(f"  • ilçe tespit edilen tweet: {location_stats['tweets_with_district']}")
