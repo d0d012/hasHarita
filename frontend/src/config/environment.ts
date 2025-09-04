@@ -47,9 +47,9 @@ export const isTest = config.appEnv === 'test';
 // API URL'lerini oluştur
 export const apiUrls = {
   base: config.apiBaseUrl,
-  health: `${config.apiBaseUrl}/health`,
-  sentiment: `${config.apiBaseUrl}/api/v1/predict/sentiment`,
-  topics: `${config.apiBaseUrl}/api/v1/predict/topics`,
+  health: `${config.apiBaseUrl}/healthz`,
+  sentiment: `${config.apiBaseUrl}/predict/sentiment`,
+  topics: `${config.apiBaseUrl}/predict/topics`,
   vision: `${config.apiBaseUrl}/api/v1/vision/segment`,
   damage: `${config.apiBaseUrl}/api/v1/score/damage`,
 } as const;

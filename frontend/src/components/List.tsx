@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { DisasterAlert, SustainabilityData } from '../types/disaster';
+import { DataItem } from '../data/mockData';
 import LinkPreview from './LinkPreview';
 
 interface LightningData {
@@ -17,8 +17,8 @@ interface LightningData {
 }
 
 interface ListProps {
-  disasters: DisasterAlert[];
-  sustainabilityData: SustainabilityData[];
+  disasters: DataItem[];
+  sustainabilityData: DataItem[];
   lightningData: LightningData[];
   monitoringMode: 'disaster' | 'sustainability' | 'lightning';
   onTextAnalysis?: (text: string, coordinates?: { lat: number; lng: number }) => Promise<any>;
@@ -26,23 +26,33 @@ interface ListProps {
 }
 
 const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningData, monitoringMode, onTextAnalysis, onShowMoreLightning }) => {
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'critical': return 'bg-red-900 text-red-50';
-      case 'high': return 'bg-red-600 text-white';
-      case 'medium': return 'bg-orange-500 text-white';
-      case 'low': return 'bg-yellow-500 text-white';
-      default: return 'bg-gray-500 text-white';
+  const getSentimentColor = (score: number, isDisaster: boolean = true) => {
+    if (isDisaster) {
+      // Afet verileri için: yüksek skor = daha kritik (kırmızı)
+      if (score >= 0.8) return 'bg-red-900 text-red-50';
+      if (score >= 0.6) return 'bg-red-600 text-white';
+      if (score >= 0.4) return 'bg-orange-500 text-white';
+      return 'bg-yellow-500 text-white';
+    } else {
+      // Sürdürülebilirlik verileri için: yüksek skor = daha iyi (yeşil)
+      if (score >= 0.8) return 'bg-green-600 text-white';
+      if (score >= 0.6) return 'bg-green-500 text-white';
+      if (score >= 0.4) return 'bg-yellow-500 text-white';
+      return 'bg-red-500 text-white';
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'excellent': return 'bg-green-600 text-white';
-      case 'good': return 'bg-green-500 text-white';
-      case 'fair': return 'bg-yellow-500 text-white';
-      case 'poor': return 'bg-red-500 text-white';
-      default: return 'bg-gray-500 text-white';
+  const getSentimentLabel = (score: number, isDisaster: boolean = true) => {
+    if (isDisaster) {
+      if (score >= 0.8) return 'Kritik';
+      if (score >= 0.6) return 'Yüksek';
+      if (score >= 0.4) return 'Orta';
+      return 'Düşük';
+    } else {
+      if (score >= 0.8) return 'Mükemmel';
+      if (score >= 0.6) return 'İyi';
+      if (score >= 0.4) return 'Orta';
+      return 'Zayıf';
     }
   };
 
@@ -66,34 +76,33 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
 
 
 
-  const getTypeLabel = (type: string, isDisaster: boolean) => {
+  const getTypeFromDescription = (description: string, isDisaster: boolean) => {
+    const lowerDesc = description.toLowerCase();
+    
     if (isDisaster) {
-      const typeLabels: Record<string, string> = {
-        earthquake: 'Deprem',
-        flood: 'Sel',
-        fire: 'Yangın',
-        landslide: 'Heyelan',
-        storm: 'Fırtına',
-        drought: 'Kuraklık',
-        avalanche: 'Çığ',
-        snowstorm: 'Kar Fırtınası'
-      };
-      return typeLabels[type] || type;
+      if (lowerDesc.includes('deprem')) return 'Deprem';
+      if (lowerDesc.includes('sel')) return 'Sel';
+      if (lowerDesc.includes('yangın')) return 'Yangın';
+      if (lowerDesc.includes('heyelan')) return 'Heyelan';
+      if (lowerDesc.includes('fırtına')) return 'Fırtına';
+      if (lowerDesc.includes('kuraklık')) return 'Kuraklık';
+      if (lowerDesc.includes('çığ')) return 'Çığ';
+      if (lowerDesc.includes('kar')) return 'Kar Fırtınası';
+      return 'Afet';
     } else {
-      const typeLabels: Record<string, string> = {
-        renewable: 'Yenilenebilir Enerji',
-        waste: 'Atık Yönetimi',
-        water: 'Su Yönetimi',
-        air: 'Hava Kalitesi',
-        biodiversity: 'Biyoçeşitlilik',
-        transport: 'Sürdürülebilir Ulaşım'
-      };
-      return typeLabels[type] || type;
+      if (lowerDesc.includes('enerji') || lowerDesc.includes('güneş') || lowerDesc.includes('rüzgar')) return 'Yenilenebilir Enerji';
+      if (lowerDesc.includes('atık') || lowerDesc.includes('geri dönüşüm')) return 'Atık Yönetimi';
+      if (lowerDesc.includes('su')) return 'Su Yönetimi';
+      if (lowerDesc.includes('hava')) return 'Hava Kalitesi';
+      if (lowerDesc.includes('biyolojik') || lowerDesc.includes('ekosistem')) return 'Biyoçeşitlilik';
+      if (lowerDesc.includes('ulaşım') || lowerDesc.includes('otobüs')) return 'Sürdürülebilir Ulaşım';
+      return 'Sürdürülebilirlik';
     }
   };
 
-  const formatTimestamp = (timestamp: Date) => {
-    return new Date(timestamp).toLocaleString('tr-TR', {
+  const formatTimestamp = (timestamp: string | Date) => {
+    const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
+    return date.toLocaleString('tr-TR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -139,25 +148,37 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
               <p>Aktif afet uyarısı bulunmuyor</p>
             </div>
           ) : (
-            disasters.map((disaster) => (
-              <div key={disaster.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+            disasters.map((disaster, index) => (
+              <div key={index} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <Badge className={getSeverityColor(disaster.severity)}>
-                      {disaster.severity === 'critical' ? 'Kritik' :
-                       disaster.severity === 'high' ? 'Yüksek' :
-                       disaster.severity === 'medium' ? 'Orta' : 'Düşük'}
+                    <Badge className={getSentimentColor(disaster.sentiment?.score || 0, true)}>
+                      {getSentimentLabel(disaster.sentiment?.score || 0, true)}
                     </Badge>
                     <Badge variant="outline">
-                      {getTypeLabel(disaster.type, true)}
+                      {getTypeFromDescription(disaster.d, true)}
                     </Badge>
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {formatTimestamp(disaster.timestamp)}
+                    {disaster.timestamp ? formatTimestamp(disaster.timestamp) : 'Bilinmeyen zaman'}
                   </span>
                 </div>
-                <h4 className="font-semibold text-lg mb-1">{disaster.location}</h4>
-                <p className="text-sm text-muted-foreground">{disaster.description}</p>
+                <h4 className="font-semibold text-lg mb-1">{disaster.d}</h4>
+                <p className="text-sm text-muted-foreground">{disaster.text || 'Açıklama bulunmuyor'}</p>
+                {disaster.tags && disaster.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {disaster.tags.slice(0, 3).map((tag, tagIndex) => (
+                      <Badge key={tagIndex} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                    {disaster.tags.length > 3 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{disaster.tags.length - 3} daha
+                      </Badge>
+                    )}
+                  </div>
+                )}
               </div>
             ))
           )}
@@ -260,31 +281,52 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
             <p>Sürdürülebilirlik verisi bulunamadı</p>
           </div>
         ) : (
-          sustainabilityData.map((data) => (
-            <div key={data.id} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+          sustainabilityData.map((data, index) => (
+            <div key={index} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Badge className={getStatusColor(data.status)}>
-                    {data.status === 'excellent' ? 'Mükemmel' :
-                     data.status === 'good' ? 'İyi' :
-                     data.status === 'fair' ? 'Orta' : 'Zayıf'}
+                  <Badge className={getSentimentColor(data.sentiment?.score || 0, false)}>
+                    {getSentimentLabel(data.sentiment?.score || 0, false)}
                   </Badge>
                   <Badge variant="outline">
-                    {getTypeLabel(data.type, false)}
+                    {getTypeFromDescription(data.d, false)}
                   </Badge>
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {formatTimestamp(data.timestamp)}
+                  {data.timestamp ? formatTimestamp(data.timestamp) : 'Bilinmeyen zaman'}
                 </span>
               </div>
-              <h4 className="font-semibold text-lg mb-1">{data.location}</h4>
-              <p className="text-sm text-muted-foreground mb-2">{data.description}</p>
-              {data.value && data.unit && (
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="font-medium">Değer:</span>
-                  <Badge variant="secondary">
-                    {data.value} {data.unit}
-                  </Badge>
+              <h4 className="font-semibold text-lg mb-1">{data.d}</h4>
+              <p className="text-sm text-muted-foreground mb-2">{data.text || 'Açıklama bulunmuyor'}</p>
+              {data.tags && data.tags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {data.tags.slice(0, 3).map((tag, tagIndex) => (
+                    <Badge key={tagIndex} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                  {data.tags.length > 3 && (
+                    <Badge variant="secondary" className="text-xs">
+                      +{data.tags.length - 3} daha
+                    </Badge>
+                  )}
+                </div>
+              )}
+              {data.topics && data.topics.length > 0 && (
+                <div className="mt-2">
+                  <div className="text-xs text-muted-foreground mb-1">Konular:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {data.topics.slice(0, 2).map((topic, topicIndex) => (
+                      <Badge key={topicIndex} variant="outline" className="text-xs">
+                        {topic.label} ({Math.round(topic.score * 100)}%)
+                      </Badge>
+                    ))}
+                    {data.topics.length > 2 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{data.topics.length - 2} daha
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

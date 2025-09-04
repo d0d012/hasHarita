@@ -4,8 +4,7 @@ import Header from '../components/Header';
 import TurkeyMap from '../components/TurkeyMap';
 import List from '../components/List';
 import Footer from '../components/Footer';
-import { mockDisasterData, mockSustainabilityData } from '../data/mockData';
-import { DisasterAlert, SustainabilityData } from '../types/disaster';
+import { mockDisasterData, mockSustainabilityData, DataItem } from '../data/mockData';
 import { useApiConnectionTest, useTextAnalysis } from '../hooks/useApi';
 import { config } from '../config/environment';
 import { processLightningData, ProcessedLightningData } from '../services/lightningService';
@@ -22,8 +21,8 @@ const loadLightningData = async (): Promise<ProcessedLightningData[]> => {
 
 const Index = () => {
   const navigate = useNavigate();
-  const [disasters, setDisasters] = useState<DisasterAlert[]>([]);
-  const [sustainabilityData, setSustainabilityData] = useState<SustainabilityData[]>([]);
+  const [disasters, setDisasters] = useState<DataItem[]>([]);
+  const [sustainabilityData, setSustainabilityData] = useState<DataItem[]>([]);
   const [lightningData, setLightningData] = useState<ProcessedLightningData[]>([]);
   const [monitoringMode, setMonitoringMode] = useState<'disaster' | 'sustainability' | 'lightning'>('disaster');
   const [apiStatus, setApiStatus] = useState<'connected' | 'disconnected' | 'checking'>('checking');
@@ -94,8 +93,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header 
-        activeAlertsCount={disasters.length} 
-        apiStatus={apiStatus}
+        activeAlertsCount={disasters.length}
       />
       
       <main className="container mx-auto px-4 py-6 flex-1">

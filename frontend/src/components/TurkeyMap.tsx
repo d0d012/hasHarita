@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { DisasterAlert, SustainabilityData } from '../types/disaster';
+import { DataItem } from '../data/mockData';
 import { processLightningData, getMockLightningData, getTimeBasedLightningData, ProcessedLightningData } from '../services/lightningService';
 import turkeyMapImage from '../assets/turkey-map.png';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -28,8 +28,8 @@ import {
 
 
 interface TurkeyMapProps {
-  disasters: DisasterAlert[];
-  sustainabilityData: SustainabilityData[];
+  disasters: DataItem[];
+  sustainabilityData: DataItem[];
   monitoringMode: 'disaster' | 'sustainability' | 'lightning';
   onMonitoringModeChange: (mode: 'disaster' | 'sustainability' | 'lightning') => void;
   onTextAnalysis?: (text: string, coordinates?: { lat: number; lng: number }) => Promise<any>;
@@ -290,22 +290,25 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
 
 
 
+  // Yeni DataItem formatına göre şehir verilerini grupla
   const cityAlerts = disasters.reduce((acc, disaster) => {
-    if (!acc[disaster.location]) {
-      acc[disaster.location] = [];
+    // DataItem'da location yok, d alanından şehir adını çıkar
+    const cityName = disaster.d.split(' ')[0]; // İlk kelimeyi şehir adı olarak al
+    if (!acc[cityName]) {
+      acc[cityName] = [];
     }
-    acc[disaster.location].push(disaster);
+    acc[cityName].push(disaster);
     return acc;
-  }, {} as Record<string, DisasterAlert[]>);
-
+  }, {} as Record<string, DataItem[]>);
 
   const citySustainabilityData = sustainabilityData.reduce((acc, data) => {
-    if (!acc[data.location]) {
-      acc[data.location] = [];
+    const cityName = data.d.split(' ')[0]; // İlk kelimeyi şehir adı olarak al
+    if (!acc[cityName]) {
+      acc[cityName] = [];
     }
-    acc[data.location].push(data);
+    acc[cityName].push(data);
     return acc;
-  }, {} as Record<string, SustainabilityData[]>);
+  }, {} as Record<string, DataItem[]>);
 
   const cityLightningData = lightningData.reduce((acc, data) => {
     if (!acc[data.location]) {
@@ -314,6 +317,31 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     acc[data.location].push(data);
     return acc;
   }, {} as Record<string, ProcessedLightningData[]>);
+
+  // Tür belirleme fonksiyonu
+  const getTypeFromDescription = (description: string, isDisaster: boolean) => {
+    const lowerDesc = description.toLowerCase();
+    
+    if (isDisaster) {
+      if (lowerDesc.includes('deprem')) return 'Deprem';
+      if (lowerDesc.includes('sel')) return 'Sel';
+      if (lowerDesc.includes('yangın')) return 'Yangın';
+      if (lowerDesc.includes('heyelan')) return 'Heyelan';
+      if (lowerDesc.includes('fırtına')) return 'Fırtına';
+      if (lowerDesc.includes('kuraklık')) return 'Kuraklık';
+      if (lowerDesc.includes('çığ')) return 'Çığ';
+      if (lowerDesc.includes('kar')) return 'Kar Fırtınası';
+      return 'Afet';
+    } else {
+      if (lowerDesc.includes('enerji') || lowerDesc.includes('güneş') || lowerDesc.includes('rüzgar')) return 'Yenilenebilir Enerji';
+      if (lowerDesc.includes('atık') || lowerDesc.includes('geri dönüşüm')) return 'Atık Yönetimi';
+      if (lowerDesc.includes('su')) return 'Su Yönetimi';
+      if (lowerDesc.includes('hava')) return 'Hava Kalitesi';
+      if (lowerDesc.includes('biyolojik') || lowerDesc.includes('ekosistem')) return 'Biyoçeşitlilik';
+      if (lowerDesc.includes('ulaşım') || lowerDesc.includes('otobüs')) return 'Sürdürülebilir Ulaşım';
+      return 'Sürdürülebilirlik';
+    }
+  };
 
   const getFilteredCities = () => {
     // In lightning mode, show only cities with lightning data
@@ -326,16 +354,31 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     return Object.entries(cityCoordinates).filter(([cityName, cityData]) => {
       if (!ACTIVE_REGIONS.includes(cityName)) return false;
       
+      // Sadece veri olan şehirleri göster
+      if (monitoringMode === 'disaster') {
+        const alerts = cityAlerts[cityName];
+        if (!alerts || alerts.length === 0) return false;
+      } else if (monitoringMode === 'sustainability') {
+        const sustainabilityData = citySustainabilityData[cityName];
+        if (!sustainabilityData || sustainabilityData.length === 0) return false;
+      }
+      
       if (regionFilter !== 'all' && cityData.region !== regionFilter) return false;
       
-      // tür filter
+      // tür filter - artık type alanı yok, d alanından tür çıkarıyoruz
       if (typeFilter !== 'all') {
         if (monitoringMode === 'disaster') {
           const alerts = cityAlerts[cityName];
-          if (!alerts || !alerts.some(alert => alert.type === typeFilter)) return false;
+          if (!alerts || !alerts.some(alert => {
+            const alertType = getTypeFromDescription(alert.d, true).toLowerCase();
+            return alertType.includes(typeFilter.toLowerCase());
+          })) return false;
         } else if (monitoringMode === 'sustainability') {
           const sustainabilityData = citySustainabilityData[cityName];
-          if (!sustainabilityData || !sustainabilityData.some(data => data.type === typeFilter)) return false;
+          if (!sustainabilityData || !sustainabilityData.some(data => {
+            const dataType = getTypeFromDescription(data.d, false).toLowerCase();
+            return dataType.includes(typeFilter.toLowerCase());
+          })) return false;
         }
       }
       
@@ -359,28 +402,28 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
       const alerts = cityAlerts[cityName];
       if (!alerts || alerts.length === 0) return '#2563eb'; // Daha canlı mavi (afet yoksa)
       
-      // en yüksek seviye
-      const hasCritical = alerts.some(alert => alert.severity === 'critical');
-      const hasHigh = alerts.some(alert => alert.severity === 'high');
-      const hasMedium = alerts.some(alert => alert.severity === 'medium');
+      // Sentiment skoruna göre renk belirle
+      const avgSentimentScore = alerts.reduce((sum, alert) => {
+        return sum + (alert.sentiment?.score || 0);
+      }, 0) / alerts.length;
       
-      if (hasCritical) return '#dc2626'; // Daha canlı kırmızı (kritik)
-      if (hasHigh) return '#ea580c';     // Turuncu (yüksek)
-      if (hasMedium) return '#f59e0b';   // Sarı (orta)
-      return '#ef4444';                  // Kırmızı (düşük)
+      if (avgSentimentScore > 0.8) return '#dc2626'; // Çok yüksek negatif (kritik)
+      if (avgSentimentScore > 0.6) return '#ea580c'; // Yüksek negatif (yüksek)
+      if (avgSentimentScore > 0.4) return '#f59e0b'; // Orta negatif (orta)
+      return '#ef4444'; // Düşük negatif (düşük)
     } else if (monitoringMode === 'sustainability') {
       const sustainabilityData = citySustainabilityData[cityName];
       if (!sustainabilityData || sustainabilityData.length === 0) return '#2563eb'; // Daha canlı mavi
       
-      // Get highest status
-      const hasExcellent = sustainabilityData.some(data => data.status === 'excellent');
-      const hasGood = sustainabilityData.some(data => data.status === 'good');
-      const hasFair = sustainabilityData.some(data => data.status === 'fair');
+      // Sentiment skoruna göre renk belirle (pozitif değerler yeşil)
+      const avgSentimentScore = sustainabilityData.reduce((sum, data) => {
+        return sum + (data.sentiment?.score || 0);
+      }, 0) / sustainabilityData.length;
       
-      if (hasExcellent) return '#16a34a'; // Daha canlı yeşil (mükemmel)
-      if (hasGood) return '#22c55e';     // Yeşil (iyi)
-      if (hasFair) return '#eab308';     // Sarı (orta)
-      return '#ef4444';                  // Kırmızı (kötü)
+      if (avgSentimentScore > 0.8) return '#16a34a'; // Çok yüksek pozitif (mükemmel)
+      if (avgSentimentScore > 0.6) return '#22c55e'; // Yüksek pozitif (iyi)
+      if (avgSentimentScore > 0.4) return '#eab308'; // Orta pozitif (orta)
+      return '#ef4444'; // Düşük pozitif (kötü)
     } else if (monitoringMode === 'lightning') {
       const lightningData = cityLightningData[cityName];
       if (!lightningData || lightningData.length === 0) return '#93c5fd'; // Çok açık mavi (veri yok)
@@ -418,26 +461,28 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
       const alerts = cityAlerts[cityName];
       if (!alerts || alerts.length === 0) return baseSize; // afet yoksa temel boyut
       
-      const hasCritical = alerts.some(alert => alert.severity === 'critical');
-      const hasHigh = alerts.some(alert => alert.severity === 'high');
-      const hasMedium = alerts.some(alert => alert.severity === 'medium');
+      // Sentiment skoruna göre boyut belirle
+      const avgSentimentScore = alerts.reduce((sum, alert) => {
+        return sum + (alert.sentiment?.score || 0);
+      }, 0) / alerts.length;
       
-      if (hasCritical) return baseSize + 8; // Kritik için en büyük
-      if (hasHigh) return baseSize + 5;     // Yüksek için orta
-      if (hasMedium) return baseSize + 2;   // Orta için küçük artış
-      return baseSize;                      // Düşük için temel boyut
+      if (avgSentimentScore > 0.8) return baseSize + 8; // Çok yüksek negatif (kritik)
+      if (avgSentimentScore > 0.6) return baseSize + 5; // Yüksek negatif (yüksek)
+      if (avgSentimentScore > 0.4) return baseSize + 2; // Orta negatif (orta)
+      return baseSize; // Düşük negatif (düşük)
     } else if (monitoringMode === 'sustainability') {
       const sustainabilityData = citySustainabilityData[cityName];
       if (!sustainabilityData || sustainabilityData.length === 0) return baseSize; // veri yoksa temel boyut
       
-      const hasExcellent = sustainabilityData.some(data => data.status === 'excellent');
-      const hasGood = sustainabilityData.some(data => data.status === 'good');
-      const hasFair = sustainabilityData.some(data => data.status === 'fair');
+      // Sentiment skoruna göre boyut belirle (pozitif değerler büyük)
+      const avgSentimentScore = sustainabilityData.reduce((sum, data) => {
+        return sum + (data.sentiment?.score || 0);
+      }, 0) / sustainabilityData.length;
       
-      if (hasExcellent) return baseSize + 8; // Mükemmel için en büyük
-      if (hasGood) return baseSize + 5;      // İyi için orta
-      if (hasFair) return baseSize + 2;      // Orta için küçük artış
-      return baseSize;                       // Kötü için temel boyut
+      if (avgSentimentScore > 0.8) return baseSize + 8; // Çok yüksek pozitif (mükemmel)
+      if (avgSentimentScore > 0.6) return baseSize + 5; // Yüksek pozitif (iyi)
+      if (avgSentimentScore > 0.4) return baseSize + 2; // Orta pozitif (orta)
+      return baseSize; // Düşük pozitif (kötü)
     } else if (monitoringMode === 'lightning') {
       const lightningData = cityLightningData[cityName];
       if (!lightningData || lightningData.length === 0) return baseSize; // veri yoksa temel boyut
@@ -580,30 +625,52 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
   // Dağılım analizi verileri
   const getDistributionData = () => {
     if (monitoringMode === 'disaster') {
-      const severityCounts = disasters.reduce((acc, disaster) => {
-        acc[disaster.severity] = (acc[disaster.severity] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      // Sentiment skorlarına göre dağılım
+      const sentimentRanges = {
+        critical: 0, // 0.8-1.0
+        high: 0,     // 0.6-0.8
+        medium: 0,   // 0.4-0.6
+        low: 0       // 0.0-0.4
+      };
+      
+      disasters.forEach(disaster => {
+        const score = disaster.sentiment?.score || 0;
+        if (score >= 0.8) sentimentRanges.critical++;
+        else if (score >= 0.6) sentimentRanges.high++;
+        else if (score >= 0.4) sentimentRanges.medium++;
+        else sentimentRanges.low++;
+      });
       
       const total = disasters.length;
       return [
-        { label: 'Kritik', value: severityCounts.critical || 0, percentage: Math.floor(((severityCounts.critical || 0) / total) * 100), color: '#dc2626' },
-        { label: 'Yüksek', value: severityCounts.high || 0, percentage: Math.floor(((severityCounts.high || 0) / total) * 100), color: '#ea580c' },
-        { label: 'Orta', value: severityCounts.medium || 0, percentage: Math.floor(((severityCounts.medium || 0) / total) * 100), color: '#f59e0b' },
-        { label: 'Düşük', value: severityCounts.low || 0, percentage: Math.floor(((severityCounts.low || 0) / total) * 100), color: '#84cc16' }
+        { label: 'Kritik', value: sentimentRanges.critical, percentage: Math.floor((sentimentRanges.critical / total) * 100), color: '#dc2626' },
+        { label: 'Yüksek', value: sentimentRanges.high, percentage: Math.floor((sentimentRanges.high / total) * 100), color: '#ea580c' },
+        { label: 'Orta', value: sentimentRanges.medium, percentage: Math.floor((sentimentRanges.medium / total) * 100), color: '#f59e0b' },
+        { label: 'Düşük', value: sentimentRanges.low, percentage: Math.floor((sentimentRanges.low / total) * 100), color: '#84cc16' }
       ];
     } else {
-      const statusCounts = sustainabilityData.reduce((acc, data) => {
-        acc[data.status] = (acc[data.status] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      // Sentiment skorlarına göre dağılım (pozitif değerler)
+      const sentimentRanges = {
+        excellent: 0, // 0.8-1.0
+        good: 0,      // 0.6-0.8
+        fair: 0,      // 0.4-0.6
+        poor: 0       // 0.0-0.4
+      };
+      
+      sustainabilityData.forEach(data => {
+        const score = data.sentiment?.score || 0;
+        if (score >= 0.8) sentimentRanges.excellent++;
+        else if (score >= 0.6) sentimentRanges.good++;
+        else if (score >= 0.4) sentimentRanges.fair++;
+        else sentimentRanges.poor++;
+      });
       
       const total = sustainabilityData.length;
       return [
-        { label: 'Mükemmel', value: statusCounts.excellent || 0, percentage: Math.floor(((statusCounts.excellent || 0) / total) * 100), color: '#16a34a' },
-        { label: 'İyi', value: statusCounts.good || 0, percentage: Math.floor(((statusCounts.good || 0) / total) * 100), color: '#22c55e' },
-        { label: 'Orta', value: statusCounts.fair || 0, percentage: Math.floor(((statusCounts.fair || 0) / total) * 100), color: '#eab308' },
-        { label: 'Kötü', value: statusCounts.poor || 0, percentage: Math.floor(((statusCounts.poor || 0) / total) * 100), color: '#ef4444' }
+        { label: 'Mükemmel', value: sentimentRanges.excellent, percentage: Math.floor((sentimentRanges.excellent / total) * 100), color: '#16a34a' },
+        { label: 'İyi', value: sentimentRanges.good, percentage: Math.floor((sentimentRanges.good / total) * 100), color: '#22c55e' },
+        { label: 'Orta', value: sentimentRanges.fair, percentage: Math.floor((sentimentRanges.fair / total) * 100), color: '#eab308' },
+        { label: 'Kötü', value: sentimentRanges.poor, percentage: Math.floor((sentimentRanges.poor / total) * 100), color: '#ef4444' }
       ];
     }
   };
@@ -982,9 +1049,9 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
             }}
           />
           
-          {/* şehirler için noktalar */}
+          {/* şehirler için noktalar - sadece veri olan şehirler */}
           <div className="absolute inset-0">
-            {Object.entries(cityCoordinates).map(([cityName, coords]) => {
+            {filteredCities.map(([cityName, coords]) => {
               const color = getPointColor(cityName);
               const size = getPointSize(cityName);
               
@@ -1084,7 +1151,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
                         <div className="text-xs text-gray-600 dark:text-gray-400">
                           {cityAlerts[cityName].slice(0, 2).map((alert, index) => (
                             <div key={index} className="truncate">
-                              • {alert.type} ({alert.severity})
+                              • {alert.d} (Skor: {alert.sentiment?.score ? Math.round(alert.sentiment.score * 100) : 'N/A'})
                             </div>
                           ))}
                           {cityAlerts[cityName].length > 2 && (
@@ -1097,7 +1164,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
                         <div className="text-xs text-gray-600 dark:text-gray-400">
                           {citySustainabilityData[cityName].slice(0, 2).map((data, index) => (
                             <div key={index} className="truncate">
-                              • {data.type} ({data.status})
+                              • {data.d} (Skor: {data.sentiment?.score ? Math.round(data.sentiment.score * 100) : 'N/A'})
                             </div>
                           ))}
                           {citySustainabilityData[cityName].length > 2 && (

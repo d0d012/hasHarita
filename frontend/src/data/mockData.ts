@@ -1,253 +1,317 @@
-import { DisasterAlert, SustainabilityData } from '../types/disaster';
+// Yeni veri formatı için tip tanımı
+export interface DataItem {
+  d: string;
+  text?: string;
+  timestamp?: string; // ISO 8601 formatında
+  geo?: { lat: number; lon: number };
+  tags?: string[];
+  sentiment?: { label: "positive" | "neutral" | "negative"; score: number };
+  topics?: { label: string; score: number }[];
+}
 
-export const mockDisasterData: DisasterAlert[] = [
+export const mockDisasterData: DataItem[] = [
   {
-    id: '1',
-    location: 'İstanbul',
-    type: 'earthquake',
-    severity: 'high',
-    description: '5.2 büyüklüğünde deprem',
-    timestamp: new Date('2024-01-15T10:30:00Z'),
-    coordinates: { lat: 41.0082, lng: 28.9784 }
+    d: 'İstanbul deprem uyarısı',
+    text: '5.2 büyüklüğünde deprem meydana geldi. Vatandaşlarımızın dikkatli olması gerekiyor.',
+    timestamp: '2024-01-15T10:30:00Z',
+    geo: { lat: 41.0082, lon: 28.9784 },
+    tags: ['deprem', 'istanbul', 'acil', 'uyarı'],
+    sentiment: { label: 'negative', score: 0.85 },
+    topics: [
+      { label: 'doğal afet', score: 0.92 },
+      { label: 'güvenlik', score: 0.78 }
+    ]
   },
   {
-    id: '2',
-    location: 'Ankara',
-    type: 'storm',
-    severity: 'medium',
-    description: 'Şiddetli fırtına uyarısı',
-    timestamp: new Date('2024-01-15T12:15:00Z'),
-    coordinates: { lat: 39.9334, lng: 32.8597 }
+    d: 'Ankara fırtına uyarısı',
+    text: 'Şiddetli fırtına bekleniyor. Dışarı çıkmaktan kaçının.',
+    timestamp: '2024-01-15T12:15:00Z',
+    geo: { lat: 39.9334, lon: 32.8597 },
+    tags: ['fırtına', 'ankara', 'hava durumu', 'uyarı'],
+    sentiment: { label: 'negative', score: 0.72 },
+    topics: [
+      { label: 'hava durumu', score: 0.88 },
+      { label: 'güvenlik', score: 0.65 }
+    ]
   },
   {
-    id: '3',
-    location: 'İzmir',
-    type: 'flood',
-    severity: 'critical',
-    description: 'Sel felaketi riski',
-    timestamp: new Date('2024-01-15T14:45:00Z'),
-    coordinates: { lat: 38.4192, lng: 27.1287 }
+    d: 'İzmir sel riski',
+    text: 'Sel felaketi riski yüksek. Vatandaşlarımızın tedbirli olması gerekiyor.',
+    timestamp: '2024-01-15T14:45:00Z',
+    geo: { lat: 38.4192, lon: 27.1287 },
+    tags: ['sel', 'izmir', 'risk', 'acil'],
+    sentiment: { label: 'negative', score: 0.91 },
+    topics: [
+      { label: 'doğal afet', score: 0.95 },
+      { label: 'risk yönetimi', score: 0.82 }
+    ]
   },
   {
-    id: '4',
-    location: 'Antalya',
-    type: 'fire',
-    severity: 'high',
-    description: 'Orman yangını',
-    timestamp: new Date('2024-01-15T16:20:00Z'),
-    coordinates: { lat: 36.8969, lng: 30.7133 }
+    d: 'Antalya orman yangını',
+    text: 'Orman yangını başladı. İtfaiye ekipleri müdahale ediyor.',
+    timestamp: '2024-01-15T16:20:00Z',
+    geo: { lat: 36.8969, lon: 30.7133 },
+    tags: ['yangın', 'antalya', 'orman', 'acil'],
+    sentiment: { label: 'negative', score: 0.88 },
+    topics: [
+      { label: 'yangın', score: 0.94 },
+      { label: 'çevre', score: 0.76 }
+    ]
   },
   {
-    id: '5',
-    location: 'Bursa',
-    type: 'landslide',
-    severity: 'medium',
-    description: 'Heyelan riski',
-    timestamp: new Date('2024-01-15T18:00:00Z'),
-    coordinates: { lat: 40.1826, lng: 29.0665 }
+    d: 'Bursa heyelan riski',
+    text: 'Heyelan riski bulunuyor. Bölge sakinleri dikkatli olmalı.',
+    timestamp: '2024-01-15T18:00:00Z',
+    geo: { lat: 40.1826, lon: 29.0665 },
+    tags: ['heyelan', 'bursa', 'risk', 'uyarı'],
+    sentiment: { label: 'negative', score: 0.69 },
+    topics: [
+      { label: 'doğal afet', score: 0.87 },
+      { label: 'risk yönetimi', score: 0.71 }
+    ]
   },
   {
-    id: '6',
-    location: 'Adana',
-    type: 'flood',
-    severity: 'critical',
-    description: 'Seyhan Nehri taşkın riski',
-    timestamp: new Date('2024-01-15T19:30:00Z'),
-    coordinates: { lat: 37.0000, lng: 35.3213 }
+    d: 'Adana Seyhan Nehri taşkın riski',
+    text: 'Seyhan Nehri taşkın riski kritik seviyede. Acil önlemler alınıyor.',
+    timestamp: '2024-01-15T19:30:00Z',
+    geo: { lat: 37.0000, lon: 35.3213 },
+    tags: ['taşkın', 'adana', 'seyhan', 'kritik'],
+    sentiment: { label: 'negative', score: 0.93 },
+    topics: [
+      { label: 'sel', score: 0.96 },
+      { label: 'acil durum', score: 0.89 }
+    ]
   },
   {
-    id: '7',
-    location: 'Gaziantep',
-    type: 'earthquake',
-    severity: 'high',
-    description: '4.8 büyüklüğünde deprem',
-    timestamp: new Date('2024-01-15T20:15:00Z'),
-    coordinates: { lat: 37.0662, lng: 37.3833 }
+    d: 'Gaziantep deprem uyarısı',
+    text: '4.8 büyüklüğünde deprem meydana geldi. Hasarlar tespit ediliyor.',
+    timestamp: '2024-01-15T20:15:00Z',
+    geo: { lat: 37.0662, lon: 37.3833 },
+    tags: ['deprem', 'gaziantep', 'hasar', 'uyarı'],
+    sentiment: { label: 'negative', score: 0.86 },
+    topics: [
+      { label: 'doğal afet', score: 0.91 },
+      { label: 'hasar tespiti', score: 0.73 }
+    ]
   },
   {
-    id: '8',
-    location: 'Konya',
-    type: 'drought',
-    severity: 'medium',
-    description: 'Kuraklık uyarısı',
-    timestamp: new Date('2024-01-15T21:00:00Z'),
-    coordinates: { lat: 37.8667, lng: 32.4833 }
+    d: 'Konya kuraklık uyarısı',
+    text: 'Kuraklık riski artıyor. Su tasarrufu önemli.',
+    timestamp: '2024-01-15T21:00:00Z',
+    geo: { lat: 37.8667, lon: 32.4833 },
+    tags: ['kuraklık', 'konya', 'su', 'uyarı'],
+    sentiment: { label: 'negative', score: 0.58 },
+    topics: [
+      { label: 'kuraklık', score: 0.84 },
+      { label: 'çevre', score: 0.67 }
+    ]
   },
   {
-    id: '9',
-    location: 'Trabzon',
-    type: 'landslide',
-    severity: 'high',
-    description: 'Heyelan riski',
-    timestamp: new Date('2024-01-15T22:45:00Z'),
-    coordinates: { lat: 41.0015, lng: 39.7178 }
+    d: 'Trabzon heyelan riski',
+    text: 'Heyelan riski yüksek. Bölge sakinleri uyarıldı.',
+    timestamp: '2024-01-15T22:45:00Z',
+    geo: { lat: 41.0015, lon: 39.7178 },
+    tags: ['heyelan', 'trabzon', 'risk', 'uyarı'],
+    sentiment: { label: 'negative', score: 0.74 },
+    topics: [
+      { label: 'doğal afet', score: 0.89 },
+      { label: 'risk yönetimi', score: 0.76 }
+    ]
   },
   {
-    id: '10',
-    location: 'Van',
-    type: 'earthquake',
-    severity: 'critical',
-    description: '6.1 büyüklüğünde deprem',
-    timestamp: new Date('2024-01-15T23:30:00Z'),
-    coordinates: { lat: 38.4891, lng: 43.4089 }
+    d: 'Van büyük deprem',
+    text: '6.1 büyüklüğünde büyük deprem meydana geldi. Acil müdahale başladı.',
+    timestamp: '2024-01-15T23:30:00Z',
+    geo: { lat: 38.4891, lon: 43.4089 },
+    tags: ['deprem', 'van', 'büyük', 'acil'],
+    sentiment: { label: 'negative', score: 0.95 },
+    topics: [
+      { label: 'doğal afet', score: 0.98 },
+      { label: 'acil durum', score: 0.94 }
+    ]
   },
   {
-    id: '11',
-    location: 'Erzurum',
-    type: 'avalanche',
-    severity: 'high',
-    description: 'Çığ riski',
-    timestamp: new Date('2024-01-16T00:15:00Z'),
-    coordinates: { lat: 39.9000, lng: 41.2700 }
+    d: 'Erzurum çığ riski',
+    text: 'Çığ riski yüksek. Dağlık bölgelerde dikkatli olun.',
+    timestamp: '2024-01-16T00:15:00Z',
+    geo: { lat: 39.9000, lon: 41.2700 },
+    tags: ['çığ', 'erzurum', 'dağ', 'risk'],
+    sentiment: { label: 'negative', score: 0.81 },
+    topics: [
+      { label: 'doğal afet', score: 0.92 },
+      { label: 'kış', score: 0.78 }
+    ]
   },
   {
-    id: '12',
-    location: 'Diyarbakır',
-    type: 'storm',
-    severity: 'medium',
-    description: 'Şiddetli yağış uyarısı',
-    timestamp: new Date('2024-01-16T01:00:00Z'),
-    coordinates: { lat: 37.9144, lng: 40.2306 }
+    d: 'Diyarbakır şiddetli yağış',
+    text: 'Şiddetli yağış uyarısı. Sel riski bulunuyor.',
+    timestamp: '2024-01-16T01:00:00Z',
+    geo: { lat: 37.9144, lon: 40.2306 },
+    tags: ['yağış', 'diyarbakır', 'sel', 'uyarı'],
+    sentiment: { label: 'negative', score: 0.67 },
+    topics: [
+      { label: 'hava durumu', score: 0.85 },
+      { label: 'sel riski', score: 0.72 }
+    ]
   },
   {
-    id: '13',
-    location: 'Samsun',
-    type: 'flood',
-    severity: 'medium',
-    description: 'Kızılırmak taşkın riski',
-    timestamp: new Date('2024-01-16T02:30:00Z'),
-    coordinates: { lat: 41.2867, lng: 36.3300 }
+    d: 'Samsun Kızılırmak taşkın riski',
+    text: 'Kızılırmak taşkın riski orta seviyede. Takip ediliyor.',
+    timestamp: '2024-01-16T02:30:00Z',
+    geo: { lat: 41.2867, lon: 36.3300 },
+    tags: ['taşkın', 'samsun', 'kızılırmak', 'risk'],
+    sentiment: { label: 'negative', score: 0.63 },
+    topics: [
+      { label: 'sel', score: 0.78 },
+      { label: 'nehir', score: 0.69 }
+    ]
   },
   {
-    id: '14',
-    location: 'Kayseri',
-    type: 'snowstorm',
-    severity: 'high',
-    description: 'Kar fırtınası uyarısı',
-    timestamp: new Date('2024-01-16T03:15:00Z'),
-    coordinates: { lat: 38.7205, lng: 35.4826 }
+    d: 'Kayseri kar fırtınası',
+    text: 'Kar fırtınası uyarısı. Yollar kapanabilir.',
+    timestamp: '2024-01-16T03:15:00Z',
+    geo: { lat: 38.7205, lon: 35.4826 },
+    tags: ['kar', 'kayseri', 'fırtına', 'yol'],
+    sentiment: { label: 'negative', score: 0.71 },
+    topics: [
+      { label: 'hava durumu', score: 0.91 },
+      { label: 'ulaşım', score: 0.68 }
+    ]
   },
   {
-    id: '15',
-    location: 'Mersin',
-    type: 'storm',
-    severity: 'medium',
-    description: 'Deniz fırtınası uyarısı',
-    timestamp: new Date('2024-01-16T04:00:00Z'),
-    coordinates: { lat: 36.8000, lng: 34.6333 }
+    d: 'Mersin deniz fırtınası',
+    text: 'Deniz fırtınası uyarısı. Denizciler dikkatli olmalı.',
+    timestamp: '2024-01-16T04:00:00Z',
+    geo: { lat: 36.8000, lon: 34.6333 },
+    tags: ['deniz', 'mersin', 'fırtına', 'denizcilik'],
+    sentiment: { label: 'negative', score: 0.66 },
+    topics: [
+      { label: 'hava durumu', score: 0.87 },
+      { label: 'deniz', score: 0.74 }
+    ]
   }
 ];
 
-export const mockSustainabilityData: SustainabilityData[] = [
+export const mockSustainabilityData: DataItem[] = [
   {
-    id: 's1',
-    location: 'İstanbul',
-    type: 'renewable',
-    status: 'good',
-    description: 'Güneş enerjisi üretimi artışı',
-    timestamp: new Date('2024-01-15T10:30:00Z'),
-    value: 85,
-    unit: 'MW',
-    coordinates: { lat: 41.0082, lng: 28.9784 }
+    d: 'İstanbul güneş enerjisi artışı',
+    text: 'Güneş enerjisi üretimi %15 artış gösterdi. Temiz enerji hedeflerine ulaşılıyor.',
+    timestamp: '2024-01-15T10:30:00Z',
+    geo: { lat: 41.0082, lon: 28.9784 },
+    tags: ['güneş enerjisi', 'istanbul', 'temiz enerji', 'sürdürülebilirlik'],
+    sentiment: { label: 'positive', score: 0.82 },
+    topics: [
+      { label: 'yenilenebilir enerji', score: 0.94 },
+      { label: 'çevre', score: 0.87 }
+    ]
   },
   {
-    id: 's2',
-    location: 'Ankara',
-    type: 'air',
-    status: 'fair',
-    description: 'Hava kalitesi iyileşme trendi',
-    timestamp: new Date('2024-01-15T12:15:00Z'),
-    value: 65,
-    unit: 'AQI',
-    coordinates: { lat: 39.9334, lng: 32.8597 }
+    d: 'Ankara hava kalitesi iyileşmesi',
+    text: 'Hava kalitesi iyileşme trendi devam ediyor. AQI değerleri düşüyor.',
+    timestamp: '2024-01-15T12:15:00Z',
+    geo: { lat: 39.9334, lon: 32.8597 },
+    tags: ['hava kalitesi', 'ankara', 'iyileşme', 'çevre'],
+    sentiment: { label: 'positive', score: 0.75 },
+    topics: [
+      { label: 'hava kalitesi', score: 0.91 },
+      { label: 'çevre sağlığı', score: 0.78 }
+    ]
   },
   {
-    id: 's3',
-    location: 'İzmir',
-    type: 'waste',
-    status: 'excellent',
-    description: 'Geri dönüşüm oranı %85',
-    timestamp: new Date('2024-01-15T14:45:00Z'),
-    value: 85,
-    unit: '%',
-    coordinates: { lat: 38.4192, lng: 27.1287 }
+    d: 'İzmir geri dönüşüm başarısı',
+    text: 'Geri dönüşüm oranı %85\'e ulaştı. Avrupa standartlarını aştık.',
+    timestamp: '2024-01-15T14:45:00Z',
+    geo: { lat: 38.4192, lon: 27.1287 },
+    tags: ['geri dönüşüm', 'izmir', 'başarı', 'çevre'],
+    sentiment: { label: 'positive', score: 0.89 },
+    topics: [
+      { label: 'atık yönetimi', score: 0.96 },
+      { label: 'sürdürülebilirlik', score: 0.83 }
+    ]
   },
   {
-    id: 's4',
-    location: 'Antalya',
-    type: 'biodiversity',
-    status: 'good',
-    description: 'Korunan alan genişletildi',
-    timestamp: new Date('2024-01-15T16:20:00Z'),
-    value: 1200,
-    unit: 'hektar',
-    coordinates: { lat: 36.8969, lng: 30.7133 }
+    d: 'Antalya korunan alan genişletildi',
+    text: '1200 hektar yeni korunan alan eklendi. Biyolojik çeşitlilik korunuyor.',
+    timestamp: '2024-01-15T16:20:00Z',
+    geo: { lat: 36.8969, lon: 30.7133 },
+    tags: ['korunan alan', 'antalya', 'biyolojik çeşitlilik', 'doğa'],
+    sentiment: { label: 'positive', score: 0.91 },
+    topics: [
+      { label: 'biyolojik çeşitlilik', score: 0.93 },
+      { label: 'doğa koruma', score: 0.88 }
+    ]
   },
   {
-    id: 's5',
-    location: 'Bursa',
-    type: 'water',
-    status: 'excellent',
-    description: 'Su tasarrufu başarısı',
-    timestamp: new Date('2024-01-15T18:00:00Z'),
-    value: 92,
-    unit: '%',
-    coordinates: { lat: 40.1826, lng: 29.0665 }
+    d: 'Bursa su tasarrufu başarısı',
+    text: 'Su tasarrufu %92 oranında başarıldı. Örnek proje olarak gösteriliyor.',
+    timestamp: '2024-01-15T18:00:00Z',
+    geo: { lat: 40.1826, lon: 29.0665 },
+    tags: ['su tasarrufu', 'bursa', 'başarı', 'kaynak yönetimi'],
+    sentiment: { label: 'positive', score: 0.87 },
+    topics: [
+      { label: 'su yönetimi', score: 0.95 },
+      { label: 'kaynak tasarrufu', score: 0.81 }
+    ]
   },
   {
-    id: 's6',
-    location: 'Adana',
-    type: 'transport',
-    status: 'fair',
-    description: 'Elektrikli otobüs sayısı artırıldı',
-    timestamp: new Date('2024-01-15T19:30:00Z'),
-    value: 45,
-    unit: 'adet',
-    coordinates: { lat: 37.0000, lng: 35.3213 }
+    d: 'Adana elektrikli otobüs projesi',
+    text: '45 adet elektrikli otobüs hizmete girdi. Temiz ulaşım hedeflerine ulaşılıyor.',
+    timestamp: '2024-01-15T19:30:00Z',
+    geo: { lat: 37.0000, lon: 35.3213 },
+    tags: ['elektrikli otobüs', 'adana', 'temiz ulaşım', 'teknoloji'],
+    sentiment: { label: 'positive', score: 0.79 },
+    topics: [
+      { label: 'temiz ulaşım', score: 0.89 },
+      { label: 'elektrikli araçlar', score: 0.76 }
+    ]
   },
   {
-    id: 's7',
-    location: 'Gaziantep',
-    type: 'renewable',
-    status: 'good',
-    description: 'Rüzgar enerjisi projesi',
-    timestamp: new Date('2024-01-15T20:15:00Z'),
-    value: 120,
-    unit: 'MW',
-    coordinates: { lat: 37.0662, lng: 37.3833 }
+    d: 'Gaziantep rüzgar enerjisi projesi',
+    text: '120 MW rüzgar enerjisi projesi devreye alındı. Temiz enerji üretimi artıyor.',
+    timestamp: '2024-01-15T20:15:00Z',
+    geo: { lat: 37.0662, lon: 37.3833 },
+    tags: ['rüzgar enerjisi', 'gaziantep', 'temiz enerji', 'proje'],
+    sentiment: { label: 'positive', score: 0.84 },
+    topics: [
+      { label: 'yenilenebilir enerji', score: 0.92 },
+      { label: 'rüzgar', score: 0.85 }
+    ]
   },
   {
-    id: 's8',
-    location: 'Konya',
-    type: 'air',
-    status: 'poor',
-    description: 'Hava kalitesi düşük',
-    timestamp: new Date('2024-01-15T21:00:00Z'),
-    value: 25,
-    unit: 'AQI',
-    coordinates: { lat: 37.8667, lng: 32.4833 }
+    d: 'Konya hava kalitesi sorunu',
+    text: 'Hava kalitesi düşük seviyede. Hava kirliliği önlemleri gerekli.',
+    timestamp: '2024-01-15T21:00:00Z',
+    geo: { lat: 37.8667, lon: 32.4833 },
+    tags: ['hava kalitesi', 'konya', 'kirlilik', 'sorun'],
+    sentiment: { label: 'negative', score: 0.68 },
+    topics: [
+      { label: 'hava kirliliği', score: 0.88 },
+      { label: 'çevre sorunu', score: 0.74 }
+    ]
   },
   {
-    id: 's9',
-    location: 'Trabzon',
-    type: 'biodiversity',
-    status: 'excellent',
-    description: 'Deniz ekosistemi korunuyor',
-    timestamp: new Date('2024-01-15T22:45:00Z'),
-    value: 95,
-    unit: 'skor',
-    coordinates: { lat: 41.0015, lng: 39.7178 }
+    d: 'Trabzon deniz ekosistemi korunuyor',
+    text: 'Deniz ekosistemi koruma skoru 95/100. Mükemmel koruma çalışması.',
+    timestamp: '2024-01-15T22:45:00Z',
+    geo: { lat: 41.0015, lon: 39.7178 },
+    tags: ['deniz ekosistemi', 'trabzon', 'koruma', 'mükemmel'],
+    sentiment: { label: 'positive', score: 0.93 },
+    topics: [
+      { label: 'deniz koruma', score: 0.97 },
+      { label: 'ekosistem', score: 0.89 }
+    ]
   },
   {
-    id: 's10',
-    location: 'Van',
-    type: 'water',
-    status: 'good',
-    description: 'Göl su kalitesi iyi',
-    timestamp: new Date('2024-01-15T23:30:00Z'),
-    value: 78,
-    unit: 'skor',
-    coordinates: { lat: 38.4891, lng: 43.4089 }
+    d: 'Van göl su kalitesi iyi',
+    text: 'Van Gölü su kalitesi 78/100 skorla iyi seviyede. Koruma çalışmaları başarılı.',
+    timestamp: '2024-01-15T23:30:00Z',
+    geo: { lat: 38.4891, lon: 43.4089 },
+    tags: ['göl su kalitesi', 'van', 'iyi', 'koruma'],
+    sentiment: { label: 'positive', score: 0.76 },
+    topics: [
+      { label: 'su kalitesi', score: 0.91 },
+      { label: 'göl koruma', score: 0.82 }
+    ]
   }
 ];
 
