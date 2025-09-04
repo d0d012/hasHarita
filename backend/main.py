@@ -1,5 +1,3 @@
-# hasharita/backend/main.py
-
 from __future__ import annotations
 
 from typing import List, Optional
@@ -15,6 +13,9 @@ from backend.models.nlp.topics.service import TopicClassificationService
 import logging, traceback
 import os, json, time, threading
 from pathlib import Path
+from datetime import datetime, timezone, timedelta
+from collections import defaultdict, deque
+from typing import Dict, Tuple, Optional
 
 logger = logging.getLogger("api")
 
@@ -132,6 +133,23 @@ def get_topic_labels() -> List[str]:
             return list(topic_svc.TOPIC_LABELS)  # type: ignore[attr-defined]
         except Exception:
             raise HTTPException(status_code=500, detail="labels unavailable")
+#-------------------------------------------------- aggregates (in-memory) ----------
+@app.get("/map/aggregates")
+def get_map_aggregates(level: str = "city", window: str = "15m"):
+    """
+    level: 'city' (il bazlı) veya 'district' (ilçe bazlı)
+    window: '15m', '60m', '30s', '2h' gibi
+    """
+    level = (level or "city").lower()
+    if level not in ("city", "district"):
+        raise HTTPException(status_code=400, detail="level must be 'city' or 'district'")
+    try:
+        snap = _agg_snapshot(level, window)
+        return snap
+    except Exception as e:
+        logger.exception("/map/aggregates failed: %s", e)
+        raise HTTPException(status_code=500, detail="internal error")
+
         
 # --------- Topics Batch endpoint ----------
 
@@ -315,17 +333,33 @@ def _process_and_write_batch(batch_recs, batch_texts, batch_ids, fout):
         if sentiment:
             enriched["sentiment"] = sentiment
         enriched["topics"] = topics_labels or []
+
+        # >>>>> : agregata yaz
+        now_ts = time.time()
+        city = (enriched.get("city") or "İstanbul")
+        district = enriched.get("district")
+        sent_label = None
+        if sentiment:
+            sent_label = sentiment.get("label")
+
+        for tp in enriched["topics"]:
+            # Her topic için sentiment bilgisini de ekle
+            _agg_add(city, district, tp, now_ts, sent_label)
+
+        # <<<<< EKLEME BİTTİ
+
         fout.write(json.dumps(enriched, ensure_ascii=False) + "\n")
+
 
 def _process_jsonl_file(file_path: Path):
     """
     JSONL dosyasını işler:
-      - processing/’e taşır
+      - processing/'e taşır
       - satırları doğrular (400/413/other sayımı)
       - NLP (sentiment + topics) uygular
       - Eşik / relative margin / grup de-dup uygular
       - Sonucu archive/<name>.enriched.jsonl olarak yazar
-      - Ham dosyayı archive/’a taşır
+      - Ham dosyayı archive/'a taşır
     """
     ok_count = 0
     skipped_400 = 0
@@ -418,7 +452,111 @@ def _start_watcher():
     t.start()
     logger.info("[watcher] background poller thread started.")
 # ============================ /watcher section ================================
+# ================= In-memory Aggregates =================
+# Anahtar: (city, district, topic)
+# Değer: deque[(timestamp, sentiment_label)]
+AGG: Dict[Tuple[str, Optional[str], str], deque] = defaultdict(deque)
+AGG_LOCK = threading.Lock()
+
+def _parse_window_to_seconds(window_str: str) -> int:
+    """
+    '15m', '60m', '2h', '30s' gibi stringleri saniyeye çevirir.
+    """
+    if not window_str:
+        return 900  # default 15m
+
+    unit = window_str[-1]
+    try:
+        value = int(window_str[:-1])
+    except Exception:
+        return 900
+
+    if unit == "s":
+        return value
+    elif unit == "m":
+        return value * 60
+    elif unit == "h":
+        return value * 3600
+    elif unit == "d":
+        return value * 86400
+    else:
+        # bilinmeyen birim → default 15m
+        return 900
 
 
+def _agg_add(city: str, district: Optional[str], topic: str, now_ts: float, sentiment_label: Optional[str]):
+    """
+    Hem city hem district seviyesinde aggregation'a ekler.
+    """
+    # City seviyesi (district=None olarak sakla)
+    city_key = (city, None, topic)
+    with AGG_LOCK:
+        AGG[city_key].append((now_ts, sentiment_label))
+        
+        # District seviyesi (eğer district varsa)
+        if district:
+            district_key = (city, district, topic)
+            AGG[district_key].append((now_ts, sentiment_label))
 
+def _agg_snapshot(level: str, window_str: str) -> dict:
+    window_sec = _parse_window_to_seconds(window_str or "15m")
+    cutoff = time.time() - window_sec
 
+    items = []
+    purge_total = 0
+
+    with AGG_LOCK:
+        # purge & aggregate
+        for (city, district, topic), q in list(AGG.items()):
+            # eski kayıtları at
+            while q and q[0][0] < cutoff:
+                q.popleft()
+                purge_total += 1
+
+        if level == "city":
+            grouped: Dict[Tuple[str, str], dict] = defaultdict(lambda: {
+                "count": 0,
+                "sentiment_summary": {"positive": 0, "neutral": 0, "negative": 0}
+            })
+            for (city, district, topic), q in AGG.items():
+                if district is None and len(q) > 0:
+                    for _, s in q:
+                        grouped[(city, topic)]["count"] += 1
+                        if s in ("positive", "neutral", "negative"):
+                            grouped[(city, topic)]["sentiment_summary"][s] += 1
+
+            for (city, topic), agg in grouped.items():
+                items.append({
+                    "city": city,
+                    "district": None,
+                    "topic": topic,
+                    "count": agg["count"],
+                    "sentiment_summary": agg["sentiment_summary"]
+                })
+        else:
+            grouped: Dict[Tuple[str, str, str], dict] = defaultdict(lambda: {
+                "count": 0,
+                "sentiment_summary": {"positive": 0, "neutral": 0, "negative": 0}
+            })
+            for (city, district, topic), q in AGG.items():
+                if district is not None and len(q) > 0:
+                    for _, s in q:
+                        grouped[(city, district, topic)]["count"] += 1
+                        if s in ("positive", "neutral", "negative"):
+                            grouped[(city, district, topic)]["sentiment_summary"][s] += 1
+
+            for (city, district, topic), agg in grouped.items():
+                items.append({
+                    "city": city,
+                    "district": district,
+                    "topic": topic,
+                    "count": agg["count"],
+                    "sentiment_summary": agg["sentiment_summary"]
+                })
+
+    return {
+        "window": window_str,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "purged": purge_total,
+        "items": items,
+    }
