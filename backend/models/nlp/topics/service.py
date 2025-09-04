@@ -41,8 +41,8 @@ class TopicClassificationService:
     TOP_K = 3
     MIN_SCORE = 0.30
     
-    # Model configuration
-    MODEL_NAME = "joeddav/xlm-roberta-large-xnli"
+    # Model configuration - daha basit model kullan
+    MODEL_NAME = "facebook/bart-large-mnli"
     HYPOTHESIS_TEMPLATE = "Bu metin {} hakkında."
     MAX_LENGTH = 256
     MAX_BATCH = 32  # Adjust based on CPU memory

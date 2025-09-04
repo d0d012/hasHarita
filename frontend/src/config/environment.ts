@@ -32,8 +32,8 @@ export const config: AppConfig = {
   // Uygulama versiyonu
   appVersion: getEnvVar('VITE_APP_VERSION', '1.0.0'),
   
-  // Mock API kullanımı (development için true)
-  useMockApi: getEnvVar('VITE_USE_MOCK_API', 'true') === 'true',
+  // Mock API kullanımı (development için false - gerçek API kullan)
+  useMockApi: getEnvVar('VITE_USE_MOCK_API', 'false') === 'true',
   
   // Mock API gecikme süresi (ms)
   mockApiDelay: parseInt(getEnvVar('VITE_MOCK_API_DELAY', '100'), 10),

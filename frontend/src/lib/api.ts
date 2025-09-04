@@ -101,5 +101,85 @@ class HttpClient {
 // API Client instance
 const apiClient = new HttpClient(API_BASE_URL);
 
+// Aggregated data API functions
+export const aggregatedDataApi = {
+  /**
+   * Get aggregated data from backend
+   * @param level - 'city' or 'district' level aggregation
+   * @param window - Time window (e.g., '15m', '1h', '24h')
+   */
+  async getAggregatedData(level: 'city' | 'district' = 'city', window: string = '15m') {
+    const params = new URLSearchParams({
+      level,
+      window
+    });
+    
+    return apiClient.get(`/map/aggregates?${params}`);
+  }
+};
+
+// Lightning data API functions
+export const lightningApi = {
+  /**
+   * Get raw lightning strike data
+   * @param window - Time window (e.g., '15m', '1h', '24h')
+   */
+  async getLightningData(window: string = '15m') {
+    const params = new URLSearchParams({ window });
+    return apiClient.get(`/lightning/data?${params}`);
+  },
+  
+  /**
+   * Get aggregated lightning data by city
+   * @param window - Time window (e.g., '15m', '1h', '24h')
+   */
+  async getLightningAggregates(window: string = '15m') {
+    const params = new URLSearchParams({ window });
+    return apiClient.get(`/lightning/aggregates?${params}`);
+  }
+};
+
+// Disaster data API functions
+export const disasterApi = {
+  /**
+   * Get raw disaster log data
+   * @param window - Time window (e.g., '15m', '1h', '24h')
+   */
+  async getDisasterData(window: string = '15m') {
+    const params = new URLSearchParams({ window });
+    return apiClient.get(`/disaster/data?${params}`);
+  },
+  
+  /**
+   * Get aggregated disaster data by city and type
+   * @param window - Time window (e.g., '15m', '1h', '24h')
+   */
+  async getDisasterAggregates(window: string = '15m') {
+    const params = new URLSearchParams({ window });
+    return apiClient.get(`/disaster/aggregates?${params}`);
+  }
+};
+
+// Sustainability data API functions
+export const sustainabilityApi = {
+  /**
+   * Get raw sustainability log data
+   * @param window - Time window (e.g., '15m', '1h', '24h')
+   */
+  async getSustainabilityData(window: string = '15m') {
+    const params = new URLSearchParams({ window });
+    return apiClient.get(`/sustainability/data?${params}`);
+  },
+  
+  /**
+   * Get aggregated sustainability data by city and type
+   * @param window - Time window (e.g., '15m', '1h', '24h')
+   */
+  async getSustainabilityAggregates(window: string = '15m') {
+    const params = new URLSearchParams({ window });
+    return apiClient.get(`/sustainability/aggregates?${params}`);
+  }
+};
+
 export { apiClient, ApiError, type ApiResponse };
 export default apiClient;

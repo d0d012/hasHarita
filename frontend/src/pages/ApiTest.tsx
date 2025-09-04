@@ -19,6 +19,8 @@ import {
   useVisionSegmentation,
   useDamageAssessment 
 } from '@/hooks/useApi';
+import DisasterService from '@/services/disasterService';
+import SustainabilityService from '@/services/sustainabilityService';
 import { config } from '@/config/environment';
 
 const ApiTest: React.FC = () => {
@@ -120,6 +122,30 @@ const ApiTest: React.FC = () => {
     }
   };
 
+  const runDisasterTest = async () => {
+    setIsLoading(true);
+    try {
+      const result = await DisasterService.getDisasterAggregates('15m');
+      setTestResults({ type: 'disaster', data: result });
+    } catch (error) {
+      setTestResults({ type: 'error', data: error });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const runSustainabilityTest = async () => {
+    setIsLoading(true);
+    try {
+      const result = await SustainabilityService.getSustainabilityAggregates('15m');
+      setTestResults({ type: 'sustainability', data: result });
+    } catch (error) {
+      setTestResults({ type: 'error', data: error });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
@@ -194,10 +220,12 @@ const ApiTest: React.FC = () => {
 
         {/* Test Butonları */}
         <Tabs defaultValue="nlp" className="mb-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="nlp">NLP</TabsTrigger>
             <TabsTrigger value="vision">Vision</TabsTrigger>
             <TabsTrigger value="damage">Damage</TabsTrigger>
+            <TabsTrigger value="disaster">Disaster</TabsTrigger>
+            <TabsTrigger value="sustainability">Sustainability</TabsTrigger>
             <TabsTrigger value="results">Sonuçlar</TabsTrigger>
           </TabsList>
 
@@ -245,6 +273,64 @@ const ApiTest: React.FC = () => {
             >
               Damage Assessment
             </Button>
+          </TabsContent>
+
+          <TabsContent value="disaster" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button 
+                onClick={runDisasterTest} 
+                disabled={isLoading}
+                className="w-full"
+              >
+                Disaster Aggregates
+              </Button>
+              <Button 
+                onClick={async () => {
+                  setIsLoading(true);
+                  try {
+                    const result = await DisasterService.getDisasterData('15m');
+                    setTestResults({ type: 'disaster_data', data: result });
+                  } catch (error) {
+                    setTestResults({ type: 'error', data: error });
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }} 
+                disabled={isLoading}
+                className="w-full"
+              >
+                Disaster Raw Data
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="sustainability" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button 
+                onClick={runSustainabilityTest} 
+                disabled={isLoading}
+                className="w-full"
+              >
+                Sustainability Aggregates
+              </Button>
+              <Button 
+                onClick={async () => {
+                  setIsLoading(true);
+                  try {
+                    const result = await SustainabilityService.getSustainabilityData('15m');
+                    setTestResults({ type: 'sustainability_data', data: result });
+                  } catch (error) {
+                    setTestResults({ type: 'error', data: error });
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }} 
+                disabled={isLoading}
+                className="w-full"
+              >
+                Sustainability Raw Data
+              </Button>
+            </div>
           </TabsContent>
 
           <TabsContent value="results">

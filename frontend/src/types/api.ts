@@ -103,3 +103,150 @@ export interface ApiErrorResponse {
   detail: string;
   status_code?: number;
 }
+
+// Aggregated data from backend
+export interface AggregatedDataItem {
+  city: string;
+  district: string | null;
+  topic: string;
+  count: number;
+  sentiment_summary: {
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
+}
+
+// Aggregated data response
+export interface AggregatedDataResponse {
+  window: string;
+  updated_at: string;
+  purged: number;
+  items: AggregatedDataItem[];
+}
+
+// Lightning data types
+export interface LightningStrike {
+  timestamp: string;
+  strike_time: number;
+  latitude: number;
+  longitude: number;
+  delay: number;
+  mds: number;
+  status: number;
+  detectors: Array<{
+    lat: number;
+    lon: number;
+    status: number;
+  }>;
+}
+
+export interface LightningDataResponse {
+  window: string;
+  updated_at: string;
+  total_strikes: number;
+  strikes: LightningStrike[];
+}
+
+export interface LightningAggregatedItem {
+  city: string;
+  district: string | null;
+  strike_count: number;
+  avg_intensity: number;
+  last_strike: string;
+  coordinates: Array<{
+    lat: number;
+    lon: number;
+  }>;
+}
+
+export interface LightningAggregatedResponse {
+  window: string;
+  updated_at: string;
+  total_strikes: number;
+  items: LightningAggregatedItem[];
+}
+
+// Disaster data types
+export interface DisasterLog {
+  id: string;
+  timestamp: string;
+  type: string;
+  severity: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+  damage_score: number;
+  affected_area: number;
+  casualties: number;
+  injuries: number;
+}
+
+export interface DisasterDataResponse {
+  window: string;
+  updated_at: string;
+  total_disasters: number;
+  disasters: DisasterLog[];
+}
+
+export interface DisasterAggregatedItem {
+  city: string;
+  district: string | null;
+  topic: string;
+  count: number;
+  sentiment_summary: {
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
+}
+
+export interface DisasterAggregatedResponse {
+  window: string;
+  updated_at: string;
+  purged: number;
+  items: DisasterAggregatedItem[];
+}
+
+// Sustainability data types
+export interface SustainabilityLog {
+  id: string;
+  timestamp: string;
+  type: string;
+  category: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  value: number;
+  unit: string;
+  description: string;
+  status: string;
+  impact_score: number;
+}
+
+export interface SustainabilityDataResponse {
+  window: string;
+  updated_at: string;
+  total_logs: number;
+  logs: SustainabilityLog[];
+}
+
+export interface SustainabilityAggregatedItem {
+  city: string;
+  district: string | null;
+  topic: string;
+  count: number;
+  sentiment_summary: {
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
+}
+
+export interface SustainabilityAggregatedResponse {
+  window: string;
+  updated_at: string;
+  purged: number;
+  items: SustainabilityAggregatedItem[];
+}

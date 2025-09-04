@@ -10,6 +10,8 @@ import ApiTest from "./pages/ApiTest";
 import Documentation from "./pages/Documentation";
 import Contact from "./pages/Contact";
 import LightningLogs from "./pages/LightningLogs";
+import DisasterLogs from "./pages/DisasterLogs";
+import SustainabilityLogs from "./pages/SustainabilityLogs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/lightning-logs" element={<LightningLogs />} />
+          <Route path="/disaster-logs" element={<DisasterLogs />} />
+          <Route path="/sustainability-logs" element={<SustainabilityLogs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

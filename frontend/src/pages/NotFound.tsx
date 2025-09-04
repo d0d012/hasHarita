@@ -4,7 +4,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Home, MapPin, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LinkPreview from '../components/LinkPreview';
 
 const NotFound = () => {
   const location = useLocation();
@@ -46,21 +45,6 @@ const NotFound = () => {
             </Button>
           </div>
 
-          {/* Örnek linkler */}
-          <div className="mt-8 text-center">
-            <p className="text-muted-foreground mb-4">Faydalı linkler:</p>
-            <div className="flex flex-wrap gap-4 justify-center text-sm">
-              <LinkPreview url="https://www.afad.gov.tr">
-                AFAD - Afet ve Acil Durum Yönetimi
-              </LinkPreview>
-              <LinkPreview url="https://www.mgm.gov.tr">
-                Meteoroloji Genel Müdürlüğü
-              </LinkPreview>
-              <LinkPreview url="https://www.csb.gov.tr">
-                Çevre ve Şehircilik Bakanlığı
-              </LinkPreview>
-            </div>
-          </div>
 
           
         </div>

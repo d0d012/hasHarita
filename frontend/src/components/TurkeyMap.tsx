@@ -1,6 +1,51 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { DataItem } from '../data/mockData';
-import { processLightningData, getMockLightningData, getTimeBasedLightningData, ProcessedLightningData } from '../services/lightningService';
+import LightningService from '../services/lightningService';
+import type { LightningAggregatedItem } from '../types/api';
+import AggregatedDataService from '../services/aggregatedDataService';
+import type { AggregatedDataItem } from '../types/api';
+
+// ProcessedLightningData type definition
+interface ProcessedLightningData {
+  location: string;
+  strikes: number;
+  intensity: number;
+  risk: 'low' | 'medium' | 'high';
+  lastUpdate: string;
+}
+
+// Lightning data processing functions
+const processLightningData = async (): Promise<ProcessedLightningData[]> => {
+  try {
+    const response = await LightningService.getLightningAggregates('15m');
+    return response.items.map(item => ({
+      location: item.city,
+      strikes: item.strike_count,
+      intensity: item.avg_intensity,
+      risk: item.strike_count > 20 ? 'high' : item.strike_count > 10 ? 'medium' : 'low',
+      lastUpdate: item.last_strike
+    }));
+  } catch (error) {
+    console.error('Lightning data processing error:', error);
+    return getMockLightningData();
+  }
+};
+
+const getMockLightningData = (): ProcessedLightningData[] => {
+  const cities = ['İstanbul', 'Ankara', 'İzmir', 'Bursa', 'Antalya', 'Adana', 'Konya', 'Gaziantep', 'Mersin', 'Samsun'];
+  return cities.map(city => ({
+    location: city,
+    strikes: Math.floor(Math.random() * 50) + 5,
+    intensity: Math.floor(Math.random() * 100) + 10,
+    risk: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low',
+    lastUpdate: new Date().toISOString()
+  }));
+};
+
+const getTimeBasedLightningData = (): ProcessedLightningData[] => {
+  // Time-based mock data for different periods
+  return getMockLightningData();
+};
 import turkeyMapImage from '../assets/turkey-map.png';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -30,6 +75,9 @@ import {
 interface TurkeyMapProps {
   disasters: DataItem[];
   sustainabilityData: DataItem[];
+  aggregatedData?: AggregatedDataItem[];
+  lightningData?: ProcessedLightningData[];
+  lightningAggregatedData?: LightningAggregatedItem[];
   monitoringMode: 'disaster' | 'sustainability' | 'lightning';
   onMonitoringModeChange: (mode: 'disaster' | 'sustainability' | 'lightning') => void;
   onTextAnalysis?: (text: string, coordinates?: { lat: number; lng: number }) => Promise<any>;
@@ -163,7 +211,7 @@ const ACTIVE_REGIONS = [
   'Antalya', 'Adana', 'Mersin', 'Hatay', 'Osmaniye', 'Isparta', 'Burdur'
 ];
 
-const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, monitoringMode, onMonitoringModeChange, onTextAnalysis }) => {
+const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, aggregatedData, lightningData, lightningAggregatedData, monitoringMode, onMonitoringModeChange, onTextAnalysis }) => {
   const [regionFilter, setRegionFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -206,8 +254,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     };
   }, [selectedCity]);
 
-  // Lightning data state
-  const [lightningData, setLightningData] = useState<ProcessedLightningData[]>([]);
+  // Lightning data state - Index.tsx'ten gelen veriyi kullan
   const [isLoadingLightning, setIsLoadingLightning] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
   const [lightningStats, setLightningStats] = useState({
@@ -217,100 +264,84 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     highRiskCities: 0
   });
 
-  // Load real lightning data
+  // Lightning data statistics calculation - Index.tsx'ten gelen veriyi kullan
   useEffect(() => {
-    const loadLightningData = async () => {
-      if (monitoringMode === 'lightning') {
-        setIsLoadingLightning(true);
-        try {
-          const realData = await processLightningData();
-          if (realData.length > 0) {
-            setLightningData(realData);
-            setLastUpdateTime(new Date());
-            
-            // Calculate real-time statistics
-            const totalStrikes = realData.reduce((sum, data) => sum + data.strikes, 0);
-            const avgIntensity = realData.length > 0 ? realData.reduce((sum, data) => sum + data.intensity, 0) / realData.length : 0;
-            const highRiskCities = realData.filter(data => data.risk === 'high').length;
-            
-            setLightningStats({
-              totalStrikes,
-              totalCities: realData.length,
-              avgIntensity: Math.round(avgIntensity),
-              highRiskCities
-            });
-            
-            console.log('Lightning data updated:', {
-              timestamp: new Date().toISOString(),
-              dataCount: realData.length,
-              totalStrikes,
-              avgIntensity: Math.round(avgIntensity),
-              highRiskCities
-            });
-          } else {
-            // Fallback to mock data if real data fails
-            const mockData = getMockLightningData();
-            setLightningData(mockData);
-            setLastUpdateTime(new Date());
-            
-            const totalStrikes = mockData.reduce((sum, data) => sum + data.strikes, 0);
-            const avgIntensity = mockData.length > 0 ? mockData.reduce((sum, data) => sum + data.intensity, 0) / mockData.length : 0;
-            const highRiskCities = mockData.filter(data => data.risk === 'high').length;
-            
-            setLightningStats({
-              totalStrikes,
-              totalCities: mockData.length,
-              avgIntensity: Math.round(avgIntensity),
-              highRiskCities
-            });
-          }
-        } catch (error) {
-          console.error('Lightning data yüklenirken hata:', error);
-          setLightningData(getMockLightningData());
-          setLastUpdateTime(new Date());
-        } finally {
-          setIsLoadingLightning(false);
+    if (monitoringMode === 'lightning' && lightningData && lightningData.length > 0) {
+      // Calculate real-time statistics from prop data
+      const totalStrikes = lightningData.reduce((sum, data) => sum + data.strikes, 0);
+      const avgIntensity = lightningData.length > 0 ? lightningData.reduce((sum, data) => sum + data.intensity, 0) / lightningData.length : 0;
+      const highRiskCities = lightningData.filter(data => data.risk === 'high').length;
+      
+      setLightningStats({
+        totalStrikes,
+        totalCities: lightningData.length,
+        avgIntensity: Math.round(avgIntensity),
+        highRiskCities
+      });
+      
+      console.log('Lightning data updated from props:', {
+        timestamp: new Date().toISOString(),
+        dataCount: lightningData.length,
+        totalStrikes,
+        avgIntensity: Math.round(avgIntensity),
+        highRiskCities
+      });
+    }
+  }, [monitoringMode, lightningData]);
+
+
+
+
+  // Aggregated data varsa onu kullan, yoksa DataItem formatını kullan
+  const cityAlerts = useMemo(() => {
+    if (aggregatedData && aggregatedData.length > 0) {
+      // Aggregated data'yı şehir bazında grupla
+      const grouped = AggregatedDataService.groupByCity(aggregatedData);
+      const result: Record<string, DataItem[]> = {};
+      
+      Object.entries(grouped).forEach(([city, items]) => {
+        result[city] = AggregatedDataService.transformToDataItems(items);
+      });
+      
+      return result;
+    } else {
+      // Fallback: DataItem formatını kullan
+      return disasters.reduce((acc, disaster) => {
+        const cityName = disaster.d.split(' ')[0];
+        if (!acc[cityName]) {
+          acc[cityName] = [];
         }
-      }
-    };
-
-    loadLightningData();
-    
-    // Lightning modunda her 10 saniyede bir veri güncelle (daha dinamik)
-    let interval: NodeJS.Timeout;
-    if (monitoringMode === 'lightning') {
-      interval = setInterval(loadLightningData, 10000); // 10 saniye
+        acc[cityName].push(disaster);
+        return acc;
+      }, {} as Record<string, DataItem[]>);
     }
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [monitoringMode]);
+  }, [aggregatedData, disasters]);
 
-
-
-
-  // Yeni DataItem formatına göre şehir verilerini grupla
-  const cityAlerts = disasters.reduce((acc, disaster) => {
-    // DataItem'da location yok, d alanından şehir adını çıkar
-    const cityName = disaster.d.split(' ')[0]; // İlk kelimeyi şehir adı olarak al
-    if (!acc[cityName]) {
-      acc[cityName] = [];
+  const citySustainabilityData = useMemo(() => {
+    if (aggregatedData && aggregatedData.length > 0) {
+      // Aggregated data'yı şehir bazında grupla
+      const grouped = AggregatedDataService.groupByCity(aggregatedData);
+      const result: Record<string, DataItem[]> = {};
+      
+      Object.entries(grouped).forEach(([city, items]) => {
+        result[city] = AggregatedDataService.transformToDataItems(items);
+      });
+      
+      return result;
+    } else {
+      // Fallback: DataItem formatını kullan
+      return sustainabilityData.reduce((acc, data) => {
+        const cityName = data.d.split(' ')[0];
+        if (!acc[cityName]) {
+          acc[cityName] = [];
+        }
+        acc[cityName].push(data);
+        return acc;
+      }, {} as Record<string, DataItem[]>);
     }
-    acc[cityName].push(disaster);
-    return acc;
-  }, {} as Record<string, DataItem[]>);
+  }, [aggregatedData, sustainabilityData]);
 
-  const citySustainabilityData = sustainabilityData.reduce((acc, data) => {
-    const cityName = data.d.split(' ')[0]; // İlk kelimeyi şehir adı olarak al
-    if (!acc[cityName]) {
-      acc[cityName] = [];
-    }
-    acc[cityName].push(data);
-    return acc;
-  }, {} as Record<string, DataItem[]>);
-
-  const cityLightningData = lightningData.reduce((acc, data) => {
+  const cityLightningData = (lightningData || []).reduce((acc, data) => {
     if (!acc[data.location]) {
       acc[data.location] = [];
     }
@@ -771,7 +802,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
     };
     
     // Her şehir için yoğunluk seviyesini hesapla
-    lightningData.forEach(data => {
+    (lightningData || []).forEach(data => {
       const strikes = data.strikes;
       const intensity = data.intensity;
       
@@ -1682,4 +1713,4 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, mo
   );
 };
 
-export default TurkeyMap;//ayetel kürsü
+export default TurkeyMap;

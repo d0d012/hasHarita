@@ -103,6 +103,41 @@ class TopicClassificationBatchResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
     items: List[TopicClassificationResponse]
 
+# Lightning data models
+class LightningStrike(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    timestamp: str
+    strike_time: int
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+    delay: float
+    mds: int
+    status: int
+    detectors: List[dict]
+
+class LightningDataResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    window: str
+    updated_at: str
+    total_strikes: int
+    strikes: List[LightningStrike]
+
+class LightningAggregatedItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    city: str = Field(min_length=1)
+    district: Optional[str] = None
+    strike_count: int = Field(ge=0)
+    avg_intensity: float = Field(ge=0)
+    last_strike: str
+    coordinates: List[GeoPoint]
+
+class LightningAggregatedResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    window: str
+    updated_at: str
+    total_strikes: int
+    items: List[LightningAggregatedItem]
+
 
 
 # --------- servis (lazy yükleme) ----------
@@ -560,3 +595,480 @@ def _agg_snapshot(level: str, window_str: str) -> dict:
         "purged": purge_total,
         "items": items,
     }
+
+# --------- Lightning data functions ----------
+
+def _load_lightning_data() -> List[LightningStrike]:
+    """Lightning verilerini yükler - tüm verileri yükler (zaman filtresi yok)"""
+    lightning_file = Path("backend/data/lightnigData/turkey_lightning_strikes.jsonl")
+    strikes = []
+    
+    if not lightning_file.exists():
+        return strikes
+    
+    logger.info(f"Loading all lightning data from file: {lightning_file}")
+    
+    try:
+        with open(lightning_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    data = json.loads(line)
+                    strikes.append(LightningStrike(**data))
+    except Exception as e:
+        logger.exception("Lightning data load error: %s", e)
+    
+    logger.info(f"Loaded {len(strikes)} lightning strikes")
+    return strikes
+
+def _get_city_from_coordinates(lat: float, lon: float) -> str:
+    """Koordinatlardan şehir adını döndürür (TurkeyMap.tsx ile uyumlu mapping)"""
+    # Türkiye şehir koordinatları (TurkeyMap.tsx ile uyumlu)
+    city_coords = {
+        # Marmara Bölgesi
+        "İstanbul": (41.0082, 28.9784),
+        "Edirne": (41.6771, 26.5557),
+        "Kırklareli": (41.7350, 27.2256),
+        "Tekirdağ": (40.9833, 27.5167),
+        "Çanakkale": (40.1553, 26.4142),
+        "Kocaeli": (40.8533, 29.8815),
+        "Bursa": (40.1826, 29.0665),
+        "Yalova": (40.6550, 29.2769),
+        "Sakarya": (40.7889, 30.4053),
+        "Bilecik": (40.1501, 29.9831),
+        "Balıkesir": (39.6484, 27.8826),
+        
+        # Ege Bölgesi
+        "İzmir": (38.4192, 27.1287),
+        "Manisa": (38.6191, 27.4289),
+        "Aydın": (37.8560, 27.8416),
+        "Denizli": (37.7765, 29.0864),
+        "Muğla": (37.2153, 28.3636),
+        "Afyonkarahisar": (38.7507, 30.5567),
+        "Kütahya": (39.4200, 29.9833),
+        "Uşak": (38.6823, 29.4082),
+        
+        # İç Anadolu Bölgesi
+        "Ankara": (39.9334, 32.8597),
+        "Konya": (37.8746, 32.4932),
+        "Kayseri": (38.7205, 35.4826),
+        "Sivas": (39.7477, 37.0179),
+        "Yozgat": (39.8181, 34.8147),
+        "Nevşehir": (38.6244, 34.7236),
+        "Kırşehir": (39.1425, 34.1709),
+        "Aksaray": (38.3687, 34.0370),
+        "Niğde": (37.9667, 34.6833),
+        "Karaman": (37.1759, 33.2287),
+        "Çankırı": (40.6013, 33.6134),
+        "Kırıkkale": (39.8468, 33.4988),
+        "Eskişehir": (39.7767, 30.5206),
+        
+        # Karadeniz Bölgesi
+        "Amasya": (40.6499, 35.8353),
+        "Artvin": (41.1828, 41.8183),
+        "Bartın": (41.6344, 32.3389),
+        "Bayburt": (40.2552, 40.2249),
+        "Bolu": (40.7314, 31.6081),
+        "Çorum": (40.5506, 34.9556),
+        "Düzce": (40.8438, 31.1565),
+        "Gümüşhane": (40.4603, 39.5086),
+        "Giresun": (40.9128, 38.3895),
+        "Karabük": (41.2061, 32.6204),
+        "Kastamonu": (41.3887, 33.7827),
+        "Ordu": (40.9839, 37.8764),
+        "Rize": (41.0201, 40.5234),
+        "Samsun": (41.2928, 36.3313),
+        "Sinop": (42.0231, 35.1531),
+        "Tokat": (40.3167, 36.5500),
+        "Trabzon": (41.0015, 39.7178),
+        "Zonguldak": (41.4564, 31.7987),
+        
+        # Doğu Anadolu Bölgesi
+        "Erzurum": (39.9334, 41.2767),
+        "Erzincan": (39.7500, 39.5000),
+        "Bingöl": (38.8847, 40.4982),
+        "Tunceli": (39.1079, 39.5401),
+        "Elazığ": (38.6810, 39.2264),
+        "Malatya": (38.3552, 38.3095),
+        "Bitlis": (38.3938, 42.1232),
+        "Muş": (38.9462, 41.7539),
+        "Van": (38.4891, 43.4089),
+        "Hakkari": (37.5833, 43.7333),
+        "Kars": (40.6013, 43.0975),
+        "Ardahan": (41.1105, 42.7022),
+        "Iğdır": (39.9208, 44.0048),
+        "Ağrı": (39.7191, 43.0503),
+        
+        # Güneydoğu Anadolu Bölgesi
+        "Şırnak": (37.5164, 42.4611),
+        "Mardin": (37.3212, 40.7245),
+        "Siirt": (37.9274, 41.9403),
+        "Batman": (37.8812, 41.1351),
+        "Gaziantep": (37.0662, 37.3833),
+        "Şanlıurfa": (37.1591, 38.7969),
+        "Diyarbakır": (37.9144, 40.2306),
+        "Kilis": (36.7184, 37.1212),
+        "Adıyaman": (37.7636, 38.2786),
+        "Kahramanmaraş": (37.5858, 36.9371),
+        
+        # Akdeniz Bölgesi
+        "Antalya": (36.8969, 30.7133),
+        "Adana": (37.0000, 35.3213),
+        "Mersin": (36.8000, 34.6333),
+        "Hatay": (36.4018, 36.3498),
+        "Osmaniye": (37.0682, 36.2616),
+        "Isparta": (37.7648, 30.5566),
+        "Burdur": (37.7206, 30.2906),
+    }
+    
+    min_distance = float('inf')
+    closest_city = "Bilinmeyen"
+    
+    for city, (city_lat, city_lon) in city_coords.items():
+        distance = ((lat - city_lat) ** 2 + (lon - city_lon) ** 2) ** 0.5
+        if distance < min_distance:
+            min_distance = distance
+            closest_city = city
+    
+    return closest_city
+
+def _aggregate_lightning_data(strikes: List[LightningStrike]) -> List[LightningAggregatedItem]:
+    """Lightning verilerini şehir bazında toplar"""
+    city_data = {}
+    
+    for strike in strikes:
+        city = _get_city_from_coordinates(strike.latitude, strike.longitude)
+        
+        if city not in city_data:
+            city_data[city] = {
+                "strikes": [],
+                "total_intensity": 0,
+                "last_strike": strike.timestamp
+            }
+        
+        city_data[city]["strikes"].append(strike)
+        city_data[city]["total_intensity"] += strike.mds
+        if strike.timestamp > city_data[city]["last_strike"]:
+            city_data[city]["last_strike"] = strike.timestamp
+    
+    items = []
+    for city, data in city_data.items():
+        strike_count = len(data["strikes"])
+        # Yıldırım sayısına göre yoğunluk hesapla (500 yıldırım = %100) - tam sayıya yuvarla
+        intensity_percentage = round(min(100, (strike_count / 500) * 100))
+        coordinates = [GeoPoint(lat=s.latitude, lon=s.longitude) for s in data["strikes"]]
+        
+        items.append(LightningAggregatedItem(
+            city=city,
+            district=None,
+            strike_count=strike_count,
+            avg_intensity=intensity_percentage,
+            last_strike=data["last_strike"],
+            coordinates=coordinates
+        ))
+    
+    return sorted(items, key=lambda x: x.strike_count, reverse=True)
+
+# --------- Disaster data models ----------
+class DisasterLog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    timestamp: str
+    type: str
+    severity: str
+    location: str
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+    description: str
+    damage_score: int = Field(ge=0, le=100)
+    affected_area: int = Field(ge=0)
+    casualties: int = Field(ge=0)
+    injuries: int = Field(ge=0)
+
+class DisasterDataResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    window: str
+    updated_at: str
+    total_disasters: int
+    disasters: List[DisasterLog]
+
+class DisasterAggregatedItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    city: str = Field(min_length=1)
+    district: Optional[str] = None
+    topic: str = Field(min_length=1)
+    count: int = Field(ge=0)
+    sentiment_summary: Dict[str, int]
+
+class DisasterAggregatedResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    window: str
+    updated_at: str
+    purged: int
+    items: List[DisasterAggregatedItem]
+
+# --------- Sustainability data models ----------
+class SustainabilityLog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    timestamp: str
+    type: str
+    category: str
+    location: str
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+    value: float
+    unit: str
+    description: str
+    status: str
+    impact_score: int = Field(ge=0, le=100)
+
+class SustainabilityDataResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    window: str
+    updated_at: str
+    total_logs: int
+    logs: List[SustainabilityLog]
+
+class SustainabilityAggregatedItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    city: str = Field(min_length=1)
+    district: Optional[str] = None
+    topic: str = Field(min_length=1)
+    count: int = Field(ge=0)
+    sentiment_summary: Dict[str, int]
+
+class SustainabilityAggregatedResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    window: str
+    updated_at: str
+    purged: int
+    items: List[SustainabilityAggregatedItem]
+
+# --------- Lightning endpoints ----------
+
+@app.get("/lightning/data", response_model=LightningDataResponse)
+def get_lightning_data(window: str = "15m"):
+    """Canlı lightning verilerini döndürür"""
+    try:
+        strikes = _load_lightning_data()
+        
+        return LightningDataResponse(
+            window=window,
+            updated_at=datetime.now(timezone.utc).isoformat(),
+            total_strikes=len(strikes),
+            strikes=strikes
+        )
+    except Exception as e:
+        logger.exception("Lightning data error: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/lightning/aggregates", response_model=LightningAggregatedResponse)
+def get_lightning_aggregates(window: str = "15m"):
+    """Lightning verilerini şehir bazında toplar"""
+    try:
+        strikes = _load_lightning_data()
+        aggregated = _aggregate_lightning_data(strikes)
+        
+        return LightningAggregatedResponse(
+            window=window,
+            updated_at=datetime.now(timezone.utc).isoformat(),
+            total_strikes=len(strikes),
+            items=aggregated
+        )
+    except Exception as e:
+        logger.exception("Lightning aggregates error: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+# --------- Disaster endpoints ----------
+
+def _load_disaster_data() -> List[DisasterLog]:
+    """Disaster verilerini yükler"""
+    disaster_file = Path("backend/data/disasterData/turkey_disaster_logs.jsonl")
+    disasters = []
+    
+    if not disaster_file.exists():
+        return disasters
+    
+    logger.info(f"Loading disaster data from file: {disaster_file}")
+    
+    try:
+        with open(disaster_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    data = json.loads(line)
+                    disasters.append(DisasterLog(**data))
+    except Exception as e:
+        logger.exception("Disaster data load error: %s", e)
+    
+    logger.info(f"Loaded {len(disasters)} disaster logs")
+    return disasters
+
+def _aggregate_disaster_data(disasters: List[DisasterLog]) -> List[DisasterAggregatedItem]:
+    """Disaster verilerini şehir ve tip bazında toplar"""
+    city_data = {}
+    
+    for disaster in disasters:
+        city = disaster.location
+        
+        if city not in city_data:
+            city_data[city] = {}
+        
+        disaster_type = disaster.type
+        if disaster_type not in city_data[city]:
+            city_data[city][disaster_type] = {
+                "count": 0,
+                "sentiment_summary": {"positive": 0, "neutral": 0, "negative": 0}
+            }
+        
+        city_data[city][disaster_type]["count"] += 1
+        
+        # Severity'ye göre sentiment hesapla
+        if disaster.severity in ["critical", "high"]:
+            city_data[city][disaster_type]["sentiment_summary"]["negative"] += 1
+        elif disaster.severity == "medium":
+            city_data[city][disaster_type]["sentiment_summary"]["neutral"] += 1
+        else:  # low
+            city_data[city][disaster_type]["sentiment_summary"]["positive"] += 1
+    
+    items = []
+    for city, types in city_data.items():
+        for disaster_type, data in types.items():
+            items.append(DisasterAggregatedItem(
+                city=city,
+                district=None,
+                topic=disaster_type,
+                count=data["count"],
+                sentiment_summary=data["sentiment_summary"]
+            ))
+    
+    return sorted(items, key=lambda x: x.count, reverse=True)
+
+@app.get("/disaster/data", response_model=DisasterDataResponse)
+def get_disaster_data(window: str = "15m"):
+    """Disaster verilerini döndürür"""
+    try:
+        disasters = _load_disaster_data()
+        
+        return DisasterDataResponse(
+            window=window,
+            updated_at=datetime.now(timezone.utc).isoformat(),
+            total_disasters=len(disasters),
+            disasters=disasters
+        )
+    except Exception as e:
+        logger.exception("Disaster data error: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/disaster/aggregates", response_model=DisasterAggregatedResponse)
+def get_disaster_aggregates(window: str = "15m"):
+    """Disaster verilerini şehir ve tip bazında toplar"""
+    try:
+        disasters = _load_disaster_data()
+        aggregated = _aggregate_disaster_data(disasters)
+        
+        return DisasterAggregatedResponse(
+            window=window,
+            updated_at=datetime.now(timezone.utc).isoformat(),
+            purged=0,
+            items=aggregated
+        )
+    except Exception as e:
+        logger.exception("Disaster aggregates error: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+# --------- Sustainability endpoints ----------
+
+def _load_sustainability_data() -> List[SustainabilityLog]:
+    """Sustainability verilerini yükler"""
+    sustainability_file = Path("backend/data/sustainabilityData/turkey_sustainability_logs.jsonl")
+    logs = []
+    
+    if not sustainability_file.exists():
+        return logs
+    
+    logger.info(f"Loading sustainability data from file: {sustainability_file}")
+    
+    try:
+        with open(sustainability_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    data = json.loads(line)
+                    logs.append(SustainabilityLog(**data))
+    except Exception as e:
+        logger.exception("Sustainability data load error: %s", e)
+    
+    logger.info(f"Loaded {len(logs)} sustainability logs")
+    return logs
+
+def _aggregate_sustainability_data(logs: List[SustainabilityLog]) -> List[SustainabilityAggregatedItem]:
+    """Sustainability verilerini şehir ve tip bazında toplar"""
+    city_data = {}
+    
+    for log in logs:
+        city = log.location
+        
+        if city not in city_data:
+            city_data[city] = {}
+        
+        log_type = log.type
+        if log_type not in city_data[city]:
+            city_data[city][log_type] = {
+                "count": 0,
+                "sentiment_summary": {"positive": 0, "neutral": 0, "negative": 0}
+            }
+        
+        city_data[city][log_type]["count"] += 1
+        
+        # Status'a göre sentiment hesapla
+        if log.status in ["excellent", "good"]:
+            city_data[city][log_type]["sentiment_summary"]["positive"] += 1
+        elif log.status == "fair":
+            city_data[city][log_type]["sentiment_summary"]["neutral"] += 1
+        else:  # poor
+            city_data[city][log_type]["sentiment_summary"]["negative"] += 1
+    
+    items = []
+    for city, types in city_data.items():
+        for log_type, data in types.items():
+            items.append(SustainabilityAggregatedItem(
+                city=city,
+                district=None,
+                topic=log_type,
+                count=data["count"],
+                sentiment_summary=data["sentiment_summary"]
+            ))
+    
+    return sorted(items, key=lambda x: x.count, reverse=True)
+
+@app.get("/sustainability/data", response_model=SustainabilityDataResponse)
+def get_sustainability_data(window: str = "15m"):
+    """Sustainability verilerini döndürür"""
+    try:
+        logs = _load_sustainability_data()
+        
+        return SustainabilityDataResponse(
+            window=window,
+            updated_at=datetime.now(timezone.utc).isoformat(),
+            total_logs=len(logs),
+            logs=logs
+        )
+    except Exception as e:
+        logger.exception("Sustainability data error: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/sustainability/aggregates", response_model=SustainabilityAggregatedResponse)
+def get_sustainability_aggregates(window: str = "15m"):
+    """Sustainability verilerini şehir ve tip bazında toplar"""
+    try:
+        logs = _load_sustainability_data()
+        aggregated = _aggregate_sustainability_data(logs)
+        
+        return SustainabilityAggregatedResponse(
+            window=window,
+            updated_at=datetime.now(timezone.utc).isoformat(),
+            purged=0,
+            items=aggregated
+        )
+    except Exception as e:
+        logger.exception("Sustainability aggregates error: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))

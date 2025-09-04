@@ -2,30 +2,32 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DataItem } from '../data/mockData';
+import type { AggregatedDataItem } from '../types/api';
+import AggregatedDataService from '../services/aggregatedDataService';
 import LinkPreview from './LinkPreview';
 
 interface LightningData {
   location: string;
   intensity: number;
   strikes: number;
-  lastStrike: Date;
+  lastUpdate: string;
   risk: 'low' | 'medium' | 'high';
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
 }
 
 interface ListProps {
   disasters: DataItem[];
   sustainabilityData: DataItem[];
+  aggregatedData?: AggregatedDataItem[];
   lightningData: LightningData[];
+  lightningAggregatedData?: any[];
   monitoringMode: 'disaster' | 'sustainability' | 'lightning';
   onTextAnalysis?: (text: string, coordinates?: { lat: number; lng: number }) => Promise<any>;
   onShowMoreLightning?: () => void;
+  onShowMoreDisasters?: () => void;
+  onShowMoreSustainability?: () => void;
 }
 
-const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningData, monitoringMode, onTextAnalysis, onShowMoreLightning }) => {
+const List: React.FC<ListProps> = ({ disasters, sustainabilityData, aggregatedData, lightningData, lightningAggregatedData, monitoringMode, onTextAnalysis, onShowMoreLightning, onShowMoreDisasters, onShowMoreSustainability }) => {
   const getSentimentColor = (score: number, isDisaster: boolean = true) => {
     if (isDisaster) {
       // Afet verileri için: yüksek skor = daha kritik (kırmızı)
@@ -130,25 +132,28 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
   };
 
   if (monitoringMode === 'disaster') {
+    // Aggregated data varsa onu kullan, yoksa disasters'ı kullan
+    const displayData = aggregatedData && aggregatedData.length > 0 
+      ? AggregatedDataService.transformToDataItems(aggregatedData)
+      : disasters;
+
     return (
       <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-primary flex items-center gap-2">
-            <span className="text-red-600">🚨</span>
             Afet Uyarıları
             <Badge variant="secondary" className="ml-auto">
-              {disasters.length} uyarı
+              {displayData.length} uyarı
             </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {disasters.length === 0 ? (
+          {displayData.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <div className="text-4xl mb-2">✅</div>
               <p>Aktif afet uyarısı bulunmuyor</p>
             </div>
           ) : (
-            disasters.map((disaster, index) => (
+            displayData.map((disaster, index) => (
               <div key={index} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -182,6 +187,19 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
               </div>
             ))
           )}
+          
+          {/* Daha Fazla Göster Butonu */}
+          {displayData.length > 0 && (
+            <div className="mt-4 pt-4 border-t">
+              <button
+                onClick={onShowMoreDisasters}
+                className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+              >
+                <span>Tüm Afet Kayıtlarını Görüntüle</span>
+                <span className="text-sm opacity-75">({displayData.length} toplam)</span>
+              </button>
+            </div>
+          )}
         </CardContent>
       </Card>
     );
@@ -198,14 +216,13 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
         <CardContent className="space-y-4">
           {lightningData.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <div className="text-4xl mb-2">☀️</div>
               <p>Aktif yıldırım aktivitesi bulunmuyor</p>
             </div>
           ) : (
             lightningData
               .filter(lightning => lightning && lightning.location)
               .slice(0, 15)
-              .sort((a, b) => new Date(b.lastStrike).getTime() - new Date(a.lastStrike).getTime())
+              .sort((a, b) => new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime())
               .map((lightning, index) => (
                 <div key={`${lightning.location}-${index}`} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20">
                   <div className="flex items-start justify-between mb-2">
@@ -213,7 +230,7 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
                       {getRiskLabel(lightning.risk)} - Yoğunluk: {lightning.intensity}%
                     </div>
                     <span className="text-xs text-muted-foreground">
-                      {getTimeAgo(lightning.lastStrike.toISOString())}
+                      {getTimeAgo(lightning.lastUpdate)}
                     </span>
                   </div>
                   <h4 className="font-semibold text-lg mb-1">
@@ -226,7 +243,7 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground">Son Aktivite:</span>
-                      <span className="font-medium">{formatTimestamp(lightning.lastStrike)}</span>
+                      <span className="font-medium">{formatTimestamp(new Date(lightning.lastUpdate))}</span>
                     </div>
                   </div>
                   <div className="mt-2">
@@ -254,7 +271,6 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
               >
                 <span>Tüm Yıldırım Kayıtlarını Görüntüle</span>
                 <span className="text-sm opacity-75">({lightningData.length} toplam)</span>
-                <span>→</span>
               </button>
             </div>
           )}
@@ -263,25 +279,28 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
     );
   }
 
+  // Aggregated data varsa onu kullan, yoksa sustainabilityData'yı kullan
+  const displayData = aggregatedData && aggregatedData.length > 0 
+    ? AggregatedDataService.transformToDataItems(aggregatedData)
+    : sustainabilityData;
+
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-primary flex items-center gap-2">
-          <span className="text-green-600">🌱</span>
           Sürdürülebilirlik Verileri
           <Badge variant="secondary" className="ml-auto">
-            {sustainabilityData.length} veri
+            {displayData.length} veri
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {sustainabilityData.length === 0 ? (
+        {displayData.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            <div className="text-4xl mb-2">📊</div>
             <p>Sürdürülebilirlik verisi bulunamadı</p>
           </div>
         ) : (
-          sustainabilityData.map((data, index) => (
+          displayData.map((data, index) => (
             <div key={index} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -333,21 +352,18 @@ const List: React.FC<ListProps> = ({ disasters, sustainabilityData, lightningDat
           ))
         )}
         
-        {/* Faydalı Linkler */}
-        <div className="mt-6 pt-4 border-t">
-          <h4 className="font-medium text-sm text-muted-foreground mb-3">Faydalı Linkler:</h4>
-          <div className="space-y-2 text-xs">
-            <LinkPreview url="https://www.afad.gov.tr/afet-bilgi-sistemi">
-              AFAD Afet Bilgi Sistemi
-            </LinkPreview>
-            <LinkPreview url="https://www.mgm.gov.tr/afetler/">
-              MGM Afet Meteorolojisi
-            </LinkPreview>
-            <LinkPreview url="https://www.csb.gov.tr/cevresel-gostergeler">
-              Çevresel Göstergeler
-            </LinkPreview>
+        {/* Daha Fazla Göster Butonu */}
+        {displayData.length > 0 && (
+          <div className="mt-4 pt-4 border-t">
+            <button
+              onClick={onShowMoreSustainability}
+              className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              <span>Tüm Sürdürülebilirlik Kayıtlarını Görüntüle</span>
+              <span className="text-sm opacity-75">({displayData.length} toplam)</span>
+            </button>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

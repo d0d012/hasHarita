@@ -24,33 +24,32 @@ const About = () => {
         </div>
 
         {/* Mission & Vision */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3">
+        <div className="max-w-4xl mx-auto space-y-6 mb-16">
+          <Card className="border-l-4 border-l-primary">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3 text-xl">
                 <Target className="w-6 h-6 text-primary" />
                 Misyonumuz
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription className="text-base leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Vatandaşların dijital etkileşimlerinden doğan kolektif bilgiyi anlamlandırarak, şehirlerin çevresel önceliklerini ve afet sonrası ihtiyaçlarını hızlı ve şeffaf biçimde görünür kılmaktır. Doğal dil işleme ve coğrafi bilgi sistemleri teknolojilerini birleştirerek, karar vericilere veri temelli içgörüler sunmak ve toplumsal dayanışmayı güçlendirmektir.
-
-              </CardDescription>
+              </p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3">
+          <Card className="border-l-4 border-l-primary">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-3 text-xl">
                 <Globe className="w-6 h-6 text-primary" />
                 Vizyonumuz
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription className="text-base leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 Şehirlerin çevresel dayanıklılığını artıran, afetlere karşı hazırlıklı ve sürdürülebilir bir kentsel gelecek inşa etmeye katkı sunan öncü bir karar destek sistemi olmaktır. Vatandaşların dijital sesini şehir yönetimine dahil eden, teknoloji ile toplumsal faydayı buluşturan küresel ölçekte referans bir platform haline gelmektir.
-              </CardDescription>
+              </p>
             </CardContent>
           </Card>
         </div>
