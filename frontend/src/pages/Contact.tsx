@@ -184,31 +184,6 @@ const Contact = () => {
             Sıkça Sorulan Sorular
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  Ne kadar sürede yanıt alırım?
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Genellikle 24 saat içinde yanıt veririz. 
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  Teknik destek alabilir miyim?
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  no figure it out
-                </CardDescription>
-              </CardContent>
-            </Card>
 
             <Card>
               <CardHeader>
@@ -218,7 +193,7 @@ const Contact = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Evet
+                  Evet, kabul ediyoruz. Diğer organizasyonlarla yaptığımız iş birlikleri sayesinde sahip olduğumuz veri akışını daha büyük kitlelere ulaştırmayı amaçlıyoruz.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -231,7 +206,7 @@ const Contact = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  trust me bro
+                  Veriler, gerçek zamanlı olarak güncellenir ve birçok filtreleme ve model analizinden geçer. Bu sayede verilerin doğruluğu artırılır.
                 </CardDescription>
               </CardContent>
             </Card>

@@ -5,10 +5,9 @@ import { Link } from 'react-router-dom';
 
 interface HeaderProps {
   activeAlertsCount: number;
-  apiStatus?: 'connected' | 'disconnected' | 'checking';
 }
 
-const Header: React.FC<HeaderProps> = ({ activeAlertsCount, apiStatus }) => {
+const Header: React.FC<HeaderProps> = ({ activeAlertsCount }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -35,28 +34,13 @@ const Header: React.FC<HeaderProps> = ({ activeAlertsCount, apiStatus }) => {
               <Link to="/api">API</Link>
             </Button>
             <Button asChild variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/15 hover:scale-105 text-lg font-medium px-6 py-3 transition-all duration-300 ease-in-out transform">
-              <Link to="/api-test">API Test</Link>
-            </Button>
-            <Button asChild variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/15 hover:scale-105 text-lg font-medium px-6 py-3 transition-all duration-300 ease-in-out transform">
               <Link to="/documentation">Dökümantasyon</Link>
             </Button>
             <Button asChild variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/15 hover:scale-105 text-lg font-medium px-6 py-3 transition-all duration-300 ease-in-out transform">
               <Link to="/contact">İletişim</Link>
             </Button>
             
-            {/* API Durumu Göstergesi */}
-            {apiStatus && (
-              <div className="flex items-center gap-2 ml-4 pl-4 border-l border-primary-foreground/20">
-                <div className={`w-2 h-2 rounded-full ${
-                  apiStatus === 'connected' ? 'bg-green-400' : 
-                  apiStatus === 'disconnected' ? 'bg-red-400' : 'bg-yellow-400'
-                }`} />
-                <span className="text-sm text-primary-foreground/80">
-                  {apiStatus === 'connected' ? 'API Bağlı' : 
-                   apiStatus === 'disconnected' ? 'API Kapalı' : 'Kontrol Ediliyor...'}
-                </span>
-              </div>
-            )}
+            
           </nav>
 
           {/* menü: mobil */}
@@ -80,9 +64,6 @@ const Header: React.FC<HeaderProps> = ({ activeAlertsCount, apiStatus }) => {
               </Button>
               <Button asChild variant="ghost" className="justify-start text-primary-foreground hover:bg-primary-foreground/15 hover:scale-102 text-lg font-medium py-4 px-4 transition-all duration-300 ease-in-out transform">
                 <Link to="/api">API Dokümantasyonu</Link>
-              </Button>
-              <Button asChild variant="ghost" className="justify-start text-primary-foreground hover:bg-primary-foreground/15 hover:scale-102 text-lg font-medium py-4 px-4 transition-all duration-300 ease-in-out transform">
-                <Link to="/api-test">API Test</Link>
               </Button>
               <Button asChild variant="ghost" className="justify-start text-primary-foreground hover:bg-primary-foreground/15 hover:scale-102 text-lg font-medium py-4 px-4 transition-all duration-300 ease-in-out transform">
                 <Link to="/documentation">Dökümantasyon</Link>

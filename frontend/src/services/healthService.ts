@@ -12,7 +12,7 @@ export class HealthService {
    */
   static async checkHealth(): Promise<HealthResponse> {
     try {
-      const response = await apiClient.get<HealthResponse>('/health');
+      const response = await apiClient.get<HealthResponse>('/healthz');
       return response;
     } catch (error) {
       console.error('Health check failed:', error);

@@ -17,11 +17,14 @@ export class SentimentService {
    */
   static async analyzeSentiment(request: SentimentRequest): Promise<SentimentResponse> {
     try {
-      const response = await apiClient.post<SentimentResponse>(
-        '/api/v1/predict/sentiment',
-        request
+      // backend/main.py tekil yerine batch endpoint sunuyor: /predict/sentiment
+      // Tek öğeyi batch'e sar ve ilk sonucu döndür
+      const batch = { items: [request] } as any;
+      const batchResponse = await apiClient.post<{ items: SentimentResponse[] }>(
+        '/predict/sentiment',
+        batch
       );
-      return response;
+      return batchResponse.items[0];
     } catch (error) {
       console.error('Sentiment analysis failed:', error);
       throw error;
@@ -33,11 +36,13 @@ export class SentimentService {
    */
   static async extractTopics(request: TopicsRequest): Promise<TopicsResponse> {
     try {
-      const response = await apiClient.post<TopicsResponse>(
-        '/api/v1/predict/topics',
-        request
+      // backend/main.py tekil yerine batch endpoint sunuyor: /predict/topics
+      const batch = { items: [request] } as any;
+      const batchResponse = await apiClient.post<{ items: TopicsResponse[] }>(
+        '/predict/topics',
+        batch
       );
-      return response;
+      return batchResponse.items[0];
     } catch (error) {
       console.error('Topic extraction failed:', error);
       throw error;
