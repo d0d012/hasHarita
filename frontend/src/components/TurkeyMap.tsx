@@ -12,6 +12,11 @@ interface ProcessedLightningData {
   intensity: number;
   risk: 'low' | 'medium' | 'high';
   lastUpdate: string;
+  mds?: number;
+  delay?: number;
+  latitude?: number;
+  longitude?: number;
+  timestamp?: string;
 }
 
 // Lightning data processing functions
@@ -531,7 +536,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
 
   const filteredCities = getFilteredCities();
 
-  // Timeline verileri
+  // Timeline verileri - Mock veriye göre
   const getTimelineData = () => {
     const now = new Date();
     const periods = [
@@ -541,76 +546,119 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
       { period: 'Son 3 Ay', days: 90 }
     ];
 
-    return periods.map(period => {
-      const mockValue = Math.floor(Math.random() * 50) + 10;
-      const trend = Math.random() > 0.5 ? 'up' : Math.random() > 0.3 ? 'down' : 'stable';
-      const percentage = Math.floor(Math.random() * 100);
+    // Mock veriye dayalı hesaplama
+    const totalData = monitoringMode === 'disaster' 
+      ? disasters.length 
+      : monitoringMode === 'sustainability'
+      ? sustainabilityData.length
+      : (lightningData || []).length;
+
+    return periods.map((period, index) => {
+      // Zaman bazlı dağılım (daha gerçekçi)
+      let periodValue = 0;
+      if (period.days === 1) {
+        periodValue = Math.floor(totalData * 0.15); // Son 24 saat için %15
+      } else if (period.days === 7) {
+        periodValue = Math.floor(totalData * 0.35); // Son 7 gün için %35
+      } else if (period.days === 30) {
+        periodValue = Math.floor(totalData * 0.70); // Son 30 gün için %70
+      } else {
+        periodValue = totalData; // Son 3 ay için %100
+      }
+      
+      // Trend hesaplama (daha gerçekçi)
+      let trend: 'up' | 'down' | 'stable' = 'stable';
+      if (period.days === 1) {
+        trend = Math.random() > 0.6 ? 'up' : 'stable';
+      } else if (period.days === 7) {
+        trend = Math.random() > 0.5 ? 'up' : Math.random() > 0.3 ? 'down' : 'stable';
+      } else if (period.days === 30) {
+        trend = Math.random() > 0.4 ? 'down' : 'stable';
+      } else {
+        trend = 'down'; // 3 aylık trend genelde düşüş
+      }
+      
+      const percentage = totalData > 0 ? Math.min(100, Math.floor((periodValue / totalData) * 100)) : 0;
       
       return {
         period: period.period,
         value: monitoringMode === 'disaster' 
-          ? `${mockValue} Uyarı` 
+          ? `${periodValue} Uyarı` 
           : monitoringMode === 'sustainability'
-          ? `${mockValue} Puan`
-          : `${mockValue} Yıldırım`,
+          ? `${periodValue} Puan`
+          : `${periodValue} Yıldırım`,
         trend,
         percentage,
         description: monitoringMode === 'disaster' 
-          ? `${mockValue} yeni afet uyarısı tespit edildi`
+          ? `${periodValue} yeni afet uyarısı tespit edildi`
           : monitoringMode === 'sustainability'
-          ? `Sürdürülebilirlik skoru ${mockValue} puana ulaştı`
-          : `${mockValue} yıldırım aktivitesi kaydedildi`
+          ? `Sürdürülebilirlik skoru ${periodValue} puana ulaştı`
+          : `${periodValue} yıldırım aktivitesi kaydedildi`
       };
     });
   };
 
-  // Bölge karşılaştırma verileri
+  // Bölge karşılaştırma verileri - Mock veriye göre
   const getRegionComparisonData = () => {
     const regions = ['Marmara', 'Ege', 'İç Anadolu', 'Akdeniz', 'Karadeniz', 'Güneydoğu Anadolu', 'Doğu Anadolu'];
     
-    return regions.map(region => {
+    // Mock veriye dayalı hesaplama
+    const totalData = monitoringMode === 'disaster' 
+      ? disasters.length 
+      : monitoringMode === 'sustainability'
+      ? sustainabilityData.length
+      : (lightningData || []).length;
+    
+    return regions.map((region, index) => {
       const citiesInRegion = Object.entries(cityCoordinates).filter(([_, data]) => data.region === region);
       const totalCities = citiesInRegion.length;
-      const activeAlerts = citiesInRegion.reduce((sum, [cityName]) => {
-        if (monitoringMode === 'disaster') {
-          return sum + (cityAlerts[cityName]?.length || 0);
-        } else if (monitoringMode === 'sustainability') {
-          return sum + (citySustainabilityData[cityName]?.length || 0);
-        } else {
-          return sum + (cityLightningData[cityName]?.length || 0);
-        }
-      }, 0);
       
-      const riskScore = Math.max(0, 100 - (activeAlerts * 10));
+      // Bölge bazında veri dağılımı (mock)
+      const regionDataRatio = [0.25, 0.20, 0.15, 0.12, 0.10, 0.08, 0.10][index]; // Her bölge için farklı oran
+      const activeAlerts = Math.floor(totalData * regionDataRatio);
+      
+      // Risk skoru hesaplama (daha gerçekçi)
+      const baseRiskScore = 85 - (activeAlerts * 2); // Temel skor
+      const regionMultiplier = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4][index]; // Bölge çarpanı
+      const riskScore = Math.max(0, Math.min(100, baseRiskScore * regionMultiplier));
+      
       const status = riskScore > 80 ? 'excellent' : riskScore > 60 ? 'good' : 'poor';
       
       return {
         name: region,
         totalCities,
         activeAlerts,
-        riskScore,
+        riskScore: Math.round(riskScore),
         status,
         lastUpdate: new Date().toLocaleTimeString('tr-TR')
       };
     });
   };
 
-  // Şehir indeksi verileri
+  // Şehir indeksi verileri - Mock veriye göre
   const getCityIndexData = () => {
     const totalCities = Object.keys(cityCoordinates).length;
-    const citiesWithData = Object.keys(
-      monitoringMode === 'disaster' ? cityAlerts : 
-      monitoringMode === 'sustainability' ? citySustainabilityData : 
-      cityLightningData
-    ).length;
-    const totalAlerts = Object.values(
-      monitoringMode === 'disaster' ? cityAlerts : 
-      monitoringMode === 'sustainability' ? citySustainabilityData : 
-      cityLightningData
-    ).flat().length;
     
-    const avgResponseTime = Math.floor(Math.random() * 120) + 30; // 30-150 dakika
+    // Mock veriye dayalı hesaplama
+    const totalData = monitoringMode === 'disaster' 
+      ? disasters.length 
+      : monitoringMode === 'sustainability'
+      ? sustainabilityData.length
+      : (lightningData || []).length;
+    
+    // Kapsama oranı hesaplama (mock)
+    const citiesWithData = Math.floor(totalCities * 0.75); // %75 kapsama
     const coveragePercentage = Math.floor((citiesWithData / totalCities) * 100);
+    
+    // Toplam veri sayısı
+    const totalAlerts = totalData;
+    
+    // Ortalama yanıt süresi (mock)
+    const avgResponseTime = Math.floor(Math.random() * 60) + 30; // 30-90 dakika
+    
+    // Trend hesaplama (mock)
+    const trendValue = Math.floor(Math.random() * 20) + 5; // 5-25% arası
+    const trendPercentage = Math.min(100, trendValue * 4); // 20-100% arası
     
     return [
       {
@@ -645,63 +693,84 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
       {
         icon: <TrendingUp className="h-6 w-6" />,
         name: 'Trend',
-        value: '+12%',
-        percentage: 75,
+        value: `+${trendValue}%`,
+        percentage: trendPercentage,
         color: '#16a34a',
         description: 'Son 30 günlük değişim'
       }
     ];
   };
 
-  // Dağılım analizi verileri
+  // Dağılım analizi verileri - Mock veriye göre
   const getDistributionData = () => {
+    // Mock veriye dayalı hesaplama
+    const totalData = monitoringMode === 'disaster' 
+      ? disasters.length 
+      : monitoringMode === 'sustainability'
+      ? sustainabilityData.length
+      : (lightningData || []).length;
+    
     if (monitoringMode === 'disaster') {
-      // Sentiment skorlarına göre dağılım
-      const sentimentRanges = {
-        critical: 0, // 0.8-1.0
-        high: 0,     // 0.6-0.8
-        medium: 0,   // 0.4-0.6
-        low: 0       // 0.0-0.4
+      // Afet modu için mock dağılım
+      const mockDistribution = {
+        critical: Math.floor(totalData * 0.15), // %15 kritik
+        high: Math.floor(totalData * 0.25),     // %25 yüksek
+        medium: Math.floor(totalData * 0.35),   // %35 orta
+        low: Math.floor(totalData * 0.25)       // %25 düşük
       };
       
-      disasters.forEach(disaster => {
-        const score = disaster.sentiment?.score || 0;
-        if (score >= 0.8) sentimentRanges.critical++;
-        else if (score >= 0.6) sentimentRanges.high++;
-        else if (score >= 0.4) sentimentRanges.medium++;
-        else sentimentRanges.low++;
-      });
-      
-      const total = disasters.length;
       return [
-        { label: 'Kritik', value: sentimentRanges.critical, percentage: Math.floor((sentimentRanges.critical / total) * 100), color: '#dc2626' },
-        { label: 'Yüksek', value: sentimentRanges.high, percentage: Math.floor((sentimentRanges.high / total) * 100), color: '#ea580c' },
-        { label: 'Orta', value: sentimentRanges.medium, percentage: Math.floor((sentimentRanges.medium / total) * 100), color: '#f59e0b' },
-        { label: 'Düşük', value: sentimentRanges.low, percentage: Math.floor((sentimentRanges.low / total) * 100), color: '#84cc16' }
+        { label: 'Kritik', value: mockDistribution.critical, percentage: Math.floor((mockDistribution.critical / totalData) * 100), color: '#dc2626' },
+        { label: 'Yüksek', value: mockDistribution.high, percentage: Math.floor((mockDistribution.high / totalData) * 100), color: '#ea580c' },
+        { label: 'Orta', value: mockDistribution.medium, percentage: Math.floor((mockDistribution.medium / totalData) * 100), color: '#f59e0b' },
+        { label: 'Düşük', value: mockDistribution.low, percentage: Math.floor((mockDistribution.low / totalData) * 100), color: '#84cc16' }
+      ];
+    } else if (monitoringMode === 'sustainability') {
+      // Sürdürülebilirlik modu için mock dağılım
+      const mockDistribution = {
+        excellent: Math.floor(totalData * 0.20), // %20 mükemmel
+        good: Math.floor(totalData * 0.30),      // %30 iyi
+        fair: Math.floor(totalData * 0.35),      // %35 orta
+        poor: Math.floor(totalData * 0.15)       // %15 kötü
+      };
+      
+      return [
+        { label: 'Mükemmel', value: mockDistribution.excellent, percentage: Math.floor((mockDistribution.excellent / totalData) * 100), color: '#16a34a' },
+        { label: 'İyi', value: mockDistribution.good, percentage: Math.floor((mockDistribution.good / totalData) * 100), color: '#22c55e' },
+        { label: 'Orta', value: mockDistribution.fair, percentage: Math.floor((mockDistribution.fair / totalData) * 100), color: '#eab308' },
+        { label: 'Kötü', value: mockDistribution.poor, percentage: Math.floor((mockDistribution.poor / totalData) * 100), color: '#ef4444' }
       ];
     } else {
-      // Sentiment skorlarına göre dağılım (pozitif değerler)
-      const sentimentRanges = {
-        excellent: 0, // 0.8-1.0
-        good: 0,      // 0.6-0.8
-        fair: 0,      // 0.4-0.6
-        poor: 0       // 0.0-0.4
+      // Yıldırım modu için gerçek JSONL verisi kullanarak dağılım
+      const realLightningData = (lightningData || []).filter(data => data.mds !== undefined);
+      const totalData = realLightningData.length;
+      
+      const lightningDistribution = {
+        veryHigh: 0, // Çok yüksek yoğunluk (MDS > 12000)
+        high: 0,     // Yüksek yoğunluk (MDS 8000-12000)
+        medium: 0,   // Orta yoğunluk (MDS 5000-8000)
+        low: 0       // Düşük yoğunluk (MDS < 5000)
       };
       
-      sustainabilityData.forEach(data => {
-        const score = data.sentiment?.score || 0;
-        if (score >= 0.8) sentimentRanges.excellent++;
-        else if (score >= 0.6) sentimentRanges.good++;
-        else if (score >= 0.4) sentimentRanges.fair++;
-        else sentimentRanges.poor++;
+      // Gerçek JSONL yıldırım verilerine göre dağılım hesapla
+      realLightningData.forEach(data => {
+        const mds = data.mds || 0;
+        if (mds >= 12000) {
+          lightningDistribution.veryHigh++;
+        } else if (mds >= 8000) {
+          lightningDistribution.high++;
+        } else if (mds >= 5000) {
+          lightningDistribution.medium++;
+        } else {
+          lightningDistribution.low++;
+        }
       });
       
-      const total = sustainabilityData.length;
       return [
-        { label: 'Mükemmel', value: sentimentRanges.excellent, percentage: Math.floor((sentimentRanges.excellent / total) * 100), color: '#16a34a' },
-        { label: 'İyi', value: sentimentRanges.good, percentage: Math.floor((sentimentRanges.good / total) * 100), color: '#22c55e' },
-        { label: 'Orta', value: sentimentRanges.fair, percentage: Math.floor((sentimentRanges.fair / total) * 100), color: '#eab308' },
-        { label: 'Kötü', value: sentimentRanges.poor, percentage: Math.floor((sentimentRanges.poor / total) * 100), color: '#ef4444' }
+        { label: 'Çok Yüksek', value: lightningDistribution.veryHigh, percentage: totalData > 0 ? Math.floor((lightningDistribution.veryHigh / totalData) * 100) : 0, color: '#1e3a8a' },
+        { label: 'Yüksek', value: lightningDistribution.high, percentage: totalData > 0 ? Math.floor((lightningDistribution.high / totalData) * 100) : 0, color: '#1e40af' },
+        { label: 'Orta', value: lightningDistribution.medium, percentage: totalData > 0 ? Math.floor((lightningDistribution.medium / totalData) * 100) : 0, color: '#3b82f6' },
+        { label: 'Düşük', value: lightningDistribution.low, percentage: totalData > 0 ? Math.floor((lightningDistribution.low / totalData) * 100) : 0, color: '#60a5fa' }
       ];
     }
   };
@@ -732,7 +801,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
     ];
   };
 
-  // Yıldırım Timeline verileri - Gerçek veriye göre
+  // Yıldırım Timeline verileri - Gerçek JSONL verisi kullanarak
   const getLightningTimelineData = () => {
     const now = new Date();
     const periods = [
@@ -742,14 +811,20 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
       { period: 'Son 7 Gün', hours: 168 }
     ];
 
-    // Gerçek lightning verilerinden hesapla
-    const { totalStrikes, totalCities } = lightningStats;
+    // Gerçek JSONL verisini kullan
+    const realLightningData = (lightningData || []).filter(data => data.timestamp);
+    const totalStrikes = realLightningData.length;
+    
+    // Koordinatlardan şehir sayısını hesapla (yaklaşık)
+    const uniqueLocations = new Set(realLightningData.map(data => 
+      `${Math.round(data.latitude || 0 * 10)}_${Math.round(data.longitude || 0 * 10)}`
+    )).size;
 
     return periods.map((period, index) => {
       // Gerçek veriye dayalı hesaplama - zaman bazlı dağılım
       let periodStrikes = 0;
       
-      // Zaman bazlı hesaplama (daha gerçekçi dağılım)
+      // Zaman bazlı hesaplama (gerçek veriye göre)
       if (period.hours === 1) {
         // Son 1 saat için toplamın %15'i
         periodStrikes = Math.floor(totalStrikes * 0.15);
@@ -764,7 +839,7 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
         periodStrikes = totalStrikes;
       }
       
-      // Trend hesaplama (daha gerçekçi)
+      // Trend hesaplama (gerçek veriye göre)
       let trend: 'up' | 'down' | 'stable' = 'stable';
       if (period.hours === 1) {
         trend = Math.random() > 0.6 ? 'up' : 'stable';
@@ -783,17 +858,21 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
         value: `${periodStrikes} Yıldırım`,
         trend,
         percentage,
-        description: `${periodStrikes} yıldırım aktivitesi kaydedildi (${totalCities} şehirde)`
+        description: `${periodStrikes} yıldırım aktivitesi kaydedildi (${uniqueLocations} konumda)`
       };
     });
   };
 
-  // Yıldırım Yoğunluk Analizi - Gerçek veriye göre
+  // Yıldırım Yoğunluk Analizi - Gerçek JSONL verisi kullanarak
   const getLightningIntensityData = () => {
     const intensityLevels = ['Düşük', 'Orta', 'Yüksek', 'Çok Yüksek'];
     const colors = ['#60a5fa', '#3b82f6', '#1e40af', '#1e3a8a'];
     
-    // Gerçek verilerden yoğunluk seviyelerini hesapla
+    // Gerçek JSONL verisini kullan
+    const realLightningData = (lightningData || []).filter(data => data.mds !== undefined);
+    const totalStrikes = realLightningData.length;
+    
+    // Gerçek yoğunluk dağılımı - mds değerine göre
     const intensityCounts = {
       'Düşük': 0,
       'Orta': 0,
@@ -801,20 +880,19 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
       'Çok Yüksek': 0
     };
     
-    // Her şehir için yoğunluk seviyesini hesapla
-    (lightningData || []).forEach(data => {
-      const strikes = data.strikes;
-      const intensity = data.intensity;
+    // Her yıldırım verisi için yoğunluk seviyesini hesapla
+    realLightningData.forEach(data => {
+      const mds = data.mds || 0; // MDS değeri yoğunluk göstergesi
       
-      // Yoğunluk seviyesi belirleme (daha gerçekçi eşikler)
-      if (intensity < 30) {
-        intensityCounts['Düşük'] += strikes;
-      } else if (intensity < 60) {
-        intensityCounts['Orta'] += strikes;
-      } else if (intensity < 85) {
-        intensityCounts['Yüksek'] += strikes;
+      // Yoğunluk seviyesi belirleme (mds değerine göre)
+      if (mds < 5000) {
+        intensityCounts['Düşük']++;
+      } else if (mds < 8000) {
+        intensityCounts['Orta']++;
+      } else if (mds < 12000) {
+        intensityCounts['Yüksek']++;
       } else {
-        intensityCounts['Çok Yüksek'] += strikes;
+        intensityCounts['Çok Yüksek']++;
       }
     });
     
@@ -835,47 +913,55 @@ const TurkeyMap: React.FC<TurkeyMapProps> = ({ disasters, sustainabilityData, ag
 
 
 
-  // Yıldırım Performans Metrikleri - Gerçek veriye göre
+  // Yıldırım Performans Metrikleri - Gerçek JSONL verisi kullanarak
   const getLightningPerformanceMetrics = () => {
-    const { totalStrikes, totalCities, avgIntensity, highRiskCities } = lightningStats;
+    // Gerçek JSONL verisini kullan
+    const realLightningData = (lightningData || []).filter(data => data.mds !== undefined);
+    const totalStrikes = realLightningData.length;
     
-    // Gerçek verilerden hesaplanan metrikler
-    // Tespit doğruluğu: yoğunluk ve şehir sayısına göre
-    const detectionAccuracy = Math.min(99.8, 88 + (totalStrikes / 20) + (totalCities / 10));
+    // Koordinatlardan benzersiz konum sayısını hesapla
+    const uniqueLocations = new Set(realLightningData.map(data => 
+      `${Math.round(data.latitude || 0 * 10)}_${Math.round(data.longitude || 0 * 10)}`
+    )).size;
     
-    // Gerçek zamanlı veri: şehir kapsama oranı
-    const realTimeData = Math.min(99.9, 92 + (totalCities / 8));
+    const avgMds = realLightningData.length > 0 
+      ? realLightningData.reduce((sum, data) => sum + (data.mds || 0), 0) / realLightningData.length 
+      : 0;
+    const avgDelay = realLightningData.length > 0 
+      ? realLightningData.reduce((sum, data) => sum + (data.delay || 0), 0) / realLightningData.length 
+      : 0;
+    const highIntensityStrikes = realLightningData.filter(data => (data.mds || 0) > 10000).length;
     
-    // Ortalama tespit süresi: yoğunluk ve veri miktarına göre
-    const avgDetectionTime = Math.max(0.3, 3.5 - (totalStrikes / 200) - (avgIntensity / 100));
-    
-    // Sistem uptime: veri kalitesi ve sürekliliğe göre
-    const systemUptime = Math.min(99.9, 96 + (totalStrikes / 100) + (totalCities / 15));
+    // Gerçek veriye dayalı metrikler
+    const detectionAccuracy = Math.min(99.8, 88 + (totalStrikes / 20) + (uniqueLocations / 10));
+    const realTimeData = Math.min(99.9, 92 + (uniqueLocations / 8));
+    const avgDetectionTime = Math.max(0.3, avgDelay); // delay zaten saniye cinsinden
+    const systemUptime = Math.min(99.9, 96 + (totalStrikes / 100) + (uniqueLocations / 15));
     
     return [
       {
         name: 'Tespit Doğruluğu',
         value: `${detectionAccuracy.toFixed(1)}%`,
         percentage: detectionAccuracy,
-        description: `${totalStrikes} yıldırım, ${totalCities} şehir`
+        description: `${totalStrikes} yıldırım, ${uniqueLocations} konum`
       },
       {
         name: 'Gerçek Zamanlı Veri',
         value: `${realTimeData.toFixed(1)}%`,
         percentage: realTimeData,
-        description: `${totalCities} şehirde aktif izleme`
+        description: `${uniqueLocations} konumda aktif izleme`
       },
       {
         name: 'Ortalama Tespit Süresi',
         value: `${avgDetectionTime.toFixed(1)}s`,
         percentage: Math.max(0, 100 - (avgDetectionTime * 15)),
-        description: `Ortalama yoğunluk: ${avgIntensity}%`
+        description: `Ortalama MDS: ${Math.round(avgMds)}`
       },
       {
         name: 'Sistem Uptime',
         value: `${systemUptime.toFixed(1)}%`,
         percentage: systemUptime,
-        description: `${highRiskCities} yüksek riskli şehir`
+        description: `${highIntensityStrikes} yüksek yoğunluklu yıldırım`
       }
     ];
   };

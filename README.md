@@ -16,7 +16,7 @@ Vatandaşların dijital etkileşimlerinden doğan kolektif bilgiyi anlamlandıra
 
 ##  Özellikler
 
-- **⚡ Yıldırım Takibi**: Gerçek zamanlı yıldırım verilerini şehir bazında analiz
+- ** Yıldırım Takibi**: Gerçek zamanlı yıldırım verilerini şehir bazında analiz
 - ** Afet Yönetimi**: Doğal afet verilerini ve hasar skorlarını takip
 - ** Sürdürülebilirlik**: Çevresel sürdürülebilirlik metriklerini izleme
 - ** Sentiment Analizi**: Sosyal medya verilerinden duygu analizi
@@ -48,7 +48,7 @@ Vatandaşların dijital etkileşimlerinden doğan kolektif bilgiyi anlamlandıra
 - **Twitter API** - Sosyal medya veri toplama
 - **Coğrafi Koordinat Sistemi** - Konum tabanlı analiz
 
-## 🚀 Kurulum ve Çalıştırma
+##  Kurulum ve Çalıştırma
 
 ### Gereksinimler
 
@@ -115,7 +115,7 @@ Projenin tam işlevselliği için veri dosyalarını hazırlamanız gerekebilir:
 # backend/data/sustainabilityData/ klasörüne turkey_sustainability_logs.jsonl dosyasını ekleyin
 ```
 
-## 📁 Proje Yapısı
+##  Proje Yapısı
 
 ```
 hasHarita/
@@ -142,19 +142,11 @@ hasHarita/
 ├── contracts/                 # API şemaları
 ├── docs/                     # Dokümantasyon
 └── samples/                  # Örnek veri dosyaları
-```
+'''
 
-## 🔧 Geliştirme
 
-### Environment Değişkenleri
 
-Frontend için `.env` dosyası oluşturun:
 
-```env
-VITE_API_BASE_URL=http://localhost:8000
-VITE_APP_ENV=development
-VITE_USE_MOCK_API=false
-```
 
 ### API Endpoints
 
@@ -185,7 +177,7 @@ npm run build
 npm run build:dev
 ```
 
-## 👥 Ekip
+## Ekip
 
 ### Tuğrap Efe Dikpınar
 
@@ -195,14 +187,13 @@ npm run build:dev
 
 
 
-## 📞 İletişim
+## İletişim
 
 - **Website**: [hasharita.com](https://hasharita.com)
 - **GitHub**: [github.com/d0d012/hasHarita](https://github.com/d0d012/hasHarita)
 
-## 🙏 Teşekkürler
+## Teşekkürler
 
 - Elif Bülbül
-- 
 
 

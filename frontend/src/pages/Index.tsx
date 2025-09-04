@@ -5,7 +5,7 @@ import TurkeyMap from '../components/TurkeyMap';
 import List from '../components/List';
 import Footer from '../components/Footer';
 import { mockDisasterData, mockSustainabilityData, DataItem } from '../data/mockData';
-import { useApiConnectionTest, useTextAnalysis } from '../hooks/useApi';
+import { useTextAnalysis } from '../hooks/useApi';
 import { config } from '../config/environment';
 import AggregatedDataService from '../services/aggregatedDataService';
 import LightningService from '../services/lightningService';
@@ -71,14 +71,12 @@ const Index = () => {
   const [lightningAggregatedData, setLightningAggregatedData] = useState<LightningAggregatedItem[]>([]);
   const [aggregatedData, setAggregatedData] = useState<AggregatedDataItem[]>([]);
   const [monitoringMode, setMonitoringMode] = useState<'disaster' | 'sustainability' | 'lightning'>('disaster');
-  const [apiStatus, setApiStatus] = useState<'connected' | 'disconnected' | 'checking'>('checking');
   const [showAllLightning, setShowAllLightning] = useState(false);
   const [lightningLoading, setLightningLoading] = useState(true);
   const [lightningAggregatedLoading, setLightningAggregatedLoading] = useState(false);
   const [aggregatedLoading, setAggregatedLoading] = useState(false);
 
-  // API bağlantı testi
-  const { data: connectionTest } = useApiConnectionTest();
+  // API ile metin analizi
   const textAnalysisMutation = useTextAnalysis();
 
   // Aggregated data'yı yükle
@@ -153,12 +151,6 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    // API bağlantı durumunu güncelle
-    if (connectionTest) {
-      setApiStatus(connectionTest.isConnected ? 'connected' : 'disconnected');
-    }
-  }, [connectionTest]);
 
   // API ile metin analizi yapma fonksiyonu
   const analyzeText = async (text: string, coordinates?: { lat: number; lng: number }) => {
@@ -199,28 +191,6 @@ const Index = () => {
       />
       
       <main className="container mx-auto px-4 py-6 flex-1">
-        {/* API Durumu Göstergesi */}
-        {!config.useMockApi && (
-          <div className="mb-4 p-3 rounded-lg border">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${
-                apiStatus === 'connected' ? 'bg-green-500' : 
-                apiStatus === 'disconnected' ? 'bg-red-500' : 'bg-yellow-500'
-              }`} />
-              <span className="text-sm">
-                API Durumu: {
-                  apiStatus === 'connected' ? 'Bağlı' : 
-                  apiStatus === 'disconnected' ? 'Bağlantı Yok' : 'Kontrol Ediliyor...'
-                }
-              </span>
-              {config.apiBaseUrl && (
-                <span className="text-xs text-muted-foreground ml-2">
-                  ({config.apiBaseUrl})
-                </span>
-              )}
-            </div>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           {/* harita bölümü - 2/3 alanı */}
