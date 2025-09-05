@@ -1,5 +1,4 @@
 # hasHarita 
-![WhatsApp Image 2025-08-31 at 23 28 37](https://github.com/user-attachments/assets/cc5163a1-04d4-4216-9b43-286b4a67497a)
 
 **Açık Kaynak Sosyo-Çevresel Karar Destek Sistemi**
 
@@ -17,12 +16,12 @@ Vatandaşların dijital etkileşimlerinden doğan kolektif bilgiyi anlamlandıra
 
 ##  Özellikler
 
-- ** Yıldırım Takibi**: Gerçek zamanlı yıldırım verilerini şehir bazında analiz
-- ** Afet Yönetimi**: Doğal afet verilerini ve hasar skorlarını takip
-- ** Sürdürülebilirlik**: Çevresel sürdürülebilirlik metriklerini izleme
-- ** Sentiment Analizi**: Sosyal medya verilerinden duygu analizi
-- ** Coğrafi Görselleştirme**: Türkiye haritası üzerinde interaktif veri gösterimi
-- ** Makine Öğrenmesi**: NLP ve topic classification ile akıllı veri işleme
+- *-* Yıldırım Takibi**: Gerçek zamanlı yıldırım verilerini şehir bazında analiz
+- *-* Afet Yönetimi**: Doğal afet verilerini ve hasar skorlarını takip
+- *-* Sürdürülebilirlik**: Çevresel sürdürülebilirlik metriklerini izleme
+- *-* Sentiment Analizi**: Sosyal medya verilerinden duygu analizi
+- *-* Coğrafi Görselleştirme**: Türkiye haritası üzerinde interaktif veri gösterimi
+- *-* Makine Öğrenmesi**: NLP ve topic classification ile akıllı veri işleme
 
 ##  Teknoloji Stack
 
@@ -56,7 +55,7 @@ Vatandaşların dijital etkileşimlerinden doğan kolektif bilgiyi anlamlandıra
 
 - Python 3.13+
 - Node.js 18+
-- npm veya yarn
+- npm
 
 ### 1. Projeyi Klonlayın
 
@@ -81,8 +80,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Backend'i çalıştırın
-#kök klasör dizininden
- python -m uvicorn backend.main:app --reload --port 8000
+cd backend
+python main.py
 ```
 
 Backend varsayılan olarak `http://localhost:8000` adresinde çalışacaktır.
@@ -102,31 +101,6 @@ npm run dev
 
 Frontend varsayılan olarak `http://localhost:8080` adresinde çalışacaktır.
 
-### 4. Google Analytics Kurulumu
-
-Web analitik takibi için Google Analytics 4 (GA4) entegrasyonu mevcuttur:
-
-1. **Google Analytics Hesabı Oluşturun:**
-   - [Google Analytics](https://analytics.google.com/) adresine gidin
-   - Yeni bir GA4 property oluşturun
-   - Tracking ID'nizi alın (format: `G-XXXXXXXXXX`)
-
-2. **Environment Variables Ayarlayın:**
-   ```bash
-   # Frontend dizininde .env.local dosyası oluşturun
-   cd frontend
-   touch .env.local
-   ```
-
-3. **Tracking ID'yi Ekleyin:**
-   ```bash
-   # .env.local dosyasına aşağıdaki satırı ekleyin
-   VITE_GA_TRACKING_ID=G-XXXXXXXXXX
-   ```
-
-4. **Geliştirme Ortamında Test Edin:**
-   - Development modunda da analytics çalışır
-   - Console'da "Google Analytics initialized" mesajını göreceksiniz
 
 ### 5. Veri Hazırlama
 
@@ -207,10 +181,10 @@ npm run build:dev
 
 ## Ekip
 
-### Tuğrap Efe Dikpınar
-
-
 ### Ahmet Mert Tezcan
+
+
+### Tuğrap Efe Dikpınar
 
 
 
@@ -220,8 +194,9 @@ npm run build:dev
 - **Website**: [hasharita.com](https://hasharita.com)
 - **GitHub**: [github.com/d0d012/hasHarita](https://github.com/d0d012/hasHarita)
 
-## Elif Bülbül'e Özel Teşekkürlerimzi Sunarız.
+### tugrapefedikpinar@gmail.com
+### ahmertezcan14@gmail.com
 
-
+## Teşekkürler
 
 
