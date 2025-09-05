@@ -1,4 +1,5 @@
 # hasHarita 
+![WhatsApp Image 2025-08-31 at 23 28 37](https://github.com/user-attachments/assets/cc5163a1-04d4-4216-9b43-286b4a67497a)
 
 **Açık Kaynak Sosyo-Çevresel Karar Destek Sistemi**
 
@@ -80,8 +81,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Backend'i çalıştırın
-cd backend
-python main.py
+#kök klasör dizininden
+ python -m uvicorn backend.main:app --reload --port 8000
 ```
 
 Backend varsayılan olarak `http://localhost:8000` adresinde çalışacaktır.
@@ -219,8 +220,8 @@ npm run build:dev
 - **Website**: [hasharita.com](https://hasharita.com)
 - **GitHub**: [github.com/d0d012/hasHarita](https://github.com/d0d012/hasHarita)
 
-## Teşekkürler
+## Elif Bülbül'e Özel Teşekkürlerimzi Sunarız.
 
-- Elif Bülbül
+
 
 
