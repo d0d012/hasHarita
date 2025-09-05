@@ -80,7 +80,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Backend'i çalıştırın
- kök klasör dizininden
+#kök klasör dizininden
  python -m uvicorn backend.main:app --reload --port 8000
 ```
 
@@ -219,8 +219,8 @@ npm run build:dev
 - **Website**: [hasharita.com](https://hasharita.com)
 - **GitHub**: [github.com/d0d012/hasHarita](https://github.com/d0d012/hasHarita)
 
-## Teşekkürler
+## Elif Bülbül'e Özel Teşekkürlerimzi Sunarız.
 
-- Elif Bülbül
+
 
 
