@@ -80,8 +80,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Backend'i çalıştırın
-cd backend
-python main.py
+ kök klasör dizininden
+ python -m uvicorn backend.main:app --reload --port 8000
 ```
 
 Backend varsayılan olarak `http://localhost:8000` adresinde çalışacaktır.
