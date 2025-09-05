@@ -142,7 +142,7 @@ const API = () => {
           <Card>
             <CardContent className="pt-6">
               <p className="text-muted-foreground mb-4">
-                kimsin la
+                API key kullanımı için kimlik doğrulama gereklidir.
               </p>
             </CardContent>
           </Card>
@@ -156,7 +156,7 @@ const API = () => {
           <Card>
             <CardContent className="pt-6">
               <p className="text-muted-foreground mb-4">
-                API kullanımında dakikada maksimum 543759847594387345 istek sınırı bulunmaktadır.
+                API kullanımında dakikada maksimum 50 istek sınırı bulunmaktadır.
               </p>
             </CardContent>
           </Card>
