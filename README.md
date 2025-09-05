@@ -1,4 +1,5 @@
 # hasHarita 
+![WhatsApp Image 2025-08-31 at 23 28 37](https://github.com/user-attachments/assets/cc5163a1-04d4-4216-9b43-286b4a67497a)
 
 **Açık Kaynak Sosyo-Çevresel Karar Destek Sistemi**
 
